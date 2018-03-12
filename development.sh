@@ -1,12 +1,23 @@
 #!/bin/sh
 
+CONF_DIR=/root/config
+CONF_BACKUP=/root/config-backup
+
 echo "Installing System Services..."
 sudo apt-get update -y > /dev/null 2>&1
 
+if [ ! -e "$CONF_DIR" ] ; then
+	cp -a ~/bin/admin/config $CONF_DIR
+fi
+
+if [ ! -e "$CONF_BACKUP" ] ; then
+	sudo mkdir -p $CONF_BACKUP
+fi
+
 # APM
-#sudo apt-get install -y apache2
-#sudo apt-get install -y mysql-server mysql-client
-#sudo apt-get install -y php libapache2-mod-php php-xml php-gd php-mysql
+sudo apt-get install -y apache2
+sudo apt-get install -y mysql-server mysql-client
+sudo apt-get install -y php libapache2-mod-php php-xml php-gd php-mysql
 
 # SSH
 sudo apt-get install -q -y openssh-server
@@ -15,7 +26,8 @@ sudo apt-get install -q -y openssh-server
 sudo apt-get install -q -y samba
 #sudo smbpasswd -a jyhuh
 #sudo vi /etc/samba/smb.conf
-sudo cp ./server_conf/smb.conf /etc/samba/smb.conf
+sudo cp -a /etc/samba/smb.conf $CONF_BACKUP
+sudo cp -a $CONF_DIR/smb.conf /etc/samba/smb.conf
 sudo /etc/init.d/smbd restart
 #(echo vagrant; echo vagrant) | sudo smbpasswd -s -a vagrant
 
@@ -25,7 +37,8 @@ sudo apt-get install -q -y tftpd-hpa tftp-hpa
 
 # NFS
 sudo apt-get install -q -y nfs-kernel-server
-sudo cp ./server_conf/exports /etc/exports
+sudo cp -a /etc/exports $CONF_BACKUP
+sudo cp -a $CONF_DIR/exports /etc/exports
 mkdir -p /nfs
 sudo groupadd nfs
 sudo chown nfs:nfs /nfs
@@ -35,7 +48,8 @@ sudo /etc/init.d/nfs-kernel-server restart
 # VCS
 sudo apt-get install -q -y subversion git-core
 
-sudo cp ./server_conf/vsftpd.conf /etc/vsftpd.conf
+sudo cp -a /etc/vsftpd.conf $CONF_BACKUP
+sudo cp -a $CONF_DIR/vsftpd.conf /etc/vsftpd.conf
 sudo touch /etc/vsftpd.chroot_list
 sudo /etc/init.d/vsftpd restart
 
@@ -48,7 +62,8 @@ sudo apt-get install -y docker.io
 sudo mkdir -p /tftpboot
 sudo chown tftp:tftp /tftpboot
 sudo chmod g+w /tftpboot
-sudo cp ./server_conf/tftpd-hpa /etc/default/tftpd-hpa
+sudo cp -a /etc/default/tftpd-hpa $CONF_BACKUP
+sudo cp -a $CONF_DIR/tftpd-hpa /etc/default/tftpd-hpa
 sudo /etc/init.d/tftpd-hpa restart
 
 # for Development
