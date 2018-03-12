@@ -1,0 +1,31 @@
+# Enable 256-color mode when screen is started with TERM=xterm-256color
+# Taken from: http://frexx.de/xterm-256-notes/
+#
+# Note that TERM != "xterm-256color" within a screen window. Rather it is
+# "screen" or "screen-bce"
+#
+# terminfo and termcap for nice 256 color terminal
+# allow bold colors - necessary for some reason
+#attrcolor b ".I"
+# tell screen how to set colors. AB = background, AF=foreground
+#termcapinfo xterm-256color 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+startup_message off
+defscrollback 50000
+
+#shelltitle '$ |bash'
+
+backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+
+hardstatus alwayslastline 
+# Very nice tabbed colored hardstatus line
+#hardstatus string '%{= Kd}%{KY}%`%{= Kd}|%-w%{= KG}%n %t%{= Kd}%+w %-= %{Kw} %H%{KW} %Y-%m-%d%{= KY} %c%{-}'
+hardstatus string '%{= kc}%H%{= ky}[%`] %{= kd}%-w%{= KG}%n [%t]%{= kd}%+w %-=%{kC} %Y-%m-%d%{= kC} %c%{-}'
+
+# change command character from ctrl-a to ctrl-b (emacs users may want this)
+#escape ^Bb
+
+# Hide hardstatus: ctrl-a f 
+bind f eval "hardstatus ignore"
+# Show hardstatus: ctrl-a F
+bind F eval "hardstatus alwayslastline"

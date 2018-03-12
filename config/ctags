@@ -1,0 +1,10 @@
+--langmap=sh:+.inc
+--langmap=asm:+.ld
+--langmap=asm:+.lds
+--langmap=asm:+.scl
+--langmap=make:+.min
+
+--langdef=XML
+--langmap=XML:.xml
+
+--langmap=Java:+.aidl

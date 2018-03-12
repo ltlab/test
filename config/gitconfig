@@ -1,0 +1,45 @@
+[user]
+
+[merge]
+#tool = kdiff3
+#	tool = bc
+
+[color]
+	ui = auto
+	status = auto
+#	diff = auto
+#	branch = auto
+#	interactive = auto
+#	grep = auto
+
+[diff]
+	rename = copy
+#	tool = bc
+
+[pager]
+	color = true
+
+[alias]
+#	bcdiff = difftool --dir-diff
+	visual = !gitk
+	st = status
+	sh = show
+	co = checkout
+	ci = commit
+
+[http]
+	cookiefile = /home/vagrant/.gitcookies
+	postBuffer = 33554432
+	#postBuffer = 67108864
+[difftool "bc"]
+	trustExitCode = true
+[mergetool "bc"]
+	trustExitCode = true
+[difftool]
+	prompt = false
+[core]
+	editor = vi
+[tar "tar.xz"]
+	command = xz -c
+[push]
+	default = simple
