@@ -3,7 +3,7 @@
 LOCAL_ADMIN_PATH=~/bin/admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 
-if [ -z "`sudo > /dev/null 2>&1`" ] ; then
+if [ -z "`which sudo > /dev/null 2>&1`" ] ; then
 	apt-get update -y > /dev/null 2>&1
 	apt-get install -y sudo
 else
