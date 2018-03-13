@@ -83,3 +83,5 @@ sudo usermod -G sambashare -a $USER_ID
 sudo usermod -G nfs -a $USER_ID
 
 (echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
+
+#usermod -G sudo -a aosp
