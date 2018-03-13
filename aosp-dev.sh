@@ -172,3 +172,6 @@ sudo mv ./51-android.rules /etc/udev/rules.d/
 sudo chmod a+r /etc/udev/rules.d/51-android.rules
 
 sudo service udev restart
+
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+sudo chmod a+x ~/bin/repo
