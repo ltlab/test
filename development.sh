@@ -85,7 +85,7 @@ sudo apt-get install -y docker.io
 sudo mkdir -p /tftpboot
 sudo chown tftp:tftp /tftpboot
 sudo chmod g+w /tftpboot
-sudo cp -a /etc/default/tftpd-hpa $CONF_BACKUP
+sudo cp -a --backup=numbered /etc/default/tftpd-hpa $CONF_BACKUP
 sudo cp -a $CONF_PATH/tftpd-hpa /etc/default/tftpd-hpa
 sudo /etc/init.d/tftpd-hpa restart
 
@@ -100,6 +100,9 @@ sudo apt-get install -y gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
 sudo apt-get install -y ncurses-dev libssl-dev
+
+sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
+sudo cp -a $CONF_PATH/etc_profile /etc/profile
 
 # Remote Desktop
 #sudo apt-get install -y xrdp

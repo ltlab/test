@@ -11,6 +11,7 @@ CONF_BACKUP=$USER_HOME/config-backup
 
 ITEMS="config \
 	bashrc \
+	profile \
 	vimrc \
 	vim \
 	tmux.conf \
