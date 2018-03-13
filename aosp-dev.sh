@@ -17,6 +17,9 @@ sudo apt-get update
 sudo apt-get install -y openjdk-7-jdk
 sudo apt-get install -y openjdk-8-jdk
 
+#	Change java for lollipop by jyhuh 2018-02-22 14:12:48
+sudo update-java-alternatives -s java-1.7.0-openjdk-amd64
+
 sudo apt-get install -y android-tools-adb
 sudo apt-get install -y android-tools-fastboot
 
