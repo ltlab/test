@@ -11,7 +11,7 @@ fi
 if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 	sudo mkdir -p $LOCAL_ADMIN_PATH
 	sudo cp -av ./config $LOCAL_CONF_PATH
-	#sudo cp -av ./system_conf/* $LOCAL_CONF_PATH
+	sudo cp -av ./system_conf/* $LOCAL_CONF_PATH
 	sudo cp -av ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
 	sudo chown $USER:$USER ~/bin
