@@ -24,7 +24,8 @@ update()
 	src=$CONF_PATH/$item
 	dst=$USER_HOME/.$item
 
-	if [ ! -e $src ] ; then
+	#if [ ! -e $src ] ; then
+	if [ -z "`sudo ls $src 2>&1`" ] ; then
 		echo "WARN: $src NOT exists..."
 		return 1
 	fi
@@ -35,6 +36,8 @@ update()
 	fi
 	echo "update $src to $dst"
 	sudo cp -a $src $dst
+
+	sudo chown -R $USER_ID:$USER_ID $dst
 
 	return 0
 }
@@ -52,6 +55,7 @@ fi
 # configuration
 if [ ! -e "$CONF_BACKUP" ] ; then
 	sudo mkdir -p $CONF_BACKUP
+	sudo chown $USER_ID:$USER_ID $CONF_BACKUP
 fi
 
 for item in ${ITEMS}

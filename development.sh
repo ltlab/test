@@ -61,7 +61,7 @@ sudo apt-get install -q -y tftpd-hpa tftp-hpa
 sudo apt-get install -q -y nfs-kernel-server
 sudo cp -a /etc/exports $CONF_BACKUP
 sudo cp -a $CONF_PATH/exports /etc/exports
-mkdir -p /nfs
+sudo mkdir -p /nfs
 #sudo groupadd nfs
 sudo useradd nfs -u 2000 -U
 sudo chown nfs:nfs /nfs
