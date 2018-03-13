@@ -10,11 +10,11 @@ LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 
 echo "Installing System Services..."
 
-if [ -z "`which sudo > /dev/null 2>&1`" ] ; then
-	apt-get update -y > /dev/null 2>&1
+if [ -z "`which sudo`" ] ; then
+	apt-get update
 	apt-get install -y sudo
 else
-	sudo apt-get update -y > /dev/null 2>&1
+	sudo apt-get update
 fi
 
 if [ ! -e "$CONF_PATH" ] ; then
