@@ -1,0 +1,147 @@
+--- vim-org/syntax/c-org.vim	2006-06-24 19:09:56.000000000 +0900
++++ vim-org/syntax/c.vim	2009-06-29 12:06:18.000000000 +0900
+@@ -219,6 +219,7 @@
+ " For compilers with asm keyword - error if not c_c_vim_compatible.
+ syn keyword       cKRStatement      asm
+ syn cluster       cStatement        add=cKRStatement
++"if !exists("c_c_vim_compatible") || exists("c_gnu")
+ if !exists("c_c_vim_compatible") || exists("c_gnu")
+   syn keyword     cGNUStatement     __asm__
+   syn cluster     cStatement        add=cGNUStatement
+@@ -239,7 +240,7 @@
+   syn cluster     cType             add=c99Type
+ endif
+ if !exists("c_c_vim_compatible") || exists("c_gnu")
+-  syn keyword     cGnuType          __label__ __complex__ __volatile__
++  syn keyword     cGNUType          __label__ __complex__ __volatile__
+   syn cluster     cType             add=cGNUType
+ endif
+ 
+@@ -376,7 +377,8 @@
+   " This explains why the 0 flag is omitted for string print format etc.
+ 
+   " Anything other than the following patterns are undefined format strings
+-  syn match       cFormatError      display contained "%[^"]"
++"   deleted by elechole
++"syn match       cFormatError      display contained "%[^"]"
+   syn match       cFormatError      display contained "%\""me=e-1
+   " Catch implementation defined scanlists
+   syn match       cFormatError      display contained "%\*\=\(0*[1-9]\d*\)\=\[\(\^.\|[^^]\)[^]-]*-[^]]*-\=\]"
+@@ -444,16 +446,25 @@
+ " Hex integer
+ syn match         cHex              display "\<0x\x\+\(u\=l\=\|lu\)\>"
+ " But there is one illegal form of hex ...
+-syn match         cHexError         display "\<0x\x*e[-+]"
++"syn match         cHexError         display "\<0x\x*e[-+]"
++"------------------------ elechole
++syn match         cHexError         display "\<0x\x*[g-z,G-Z]\x*\(u\=l\=\|lu\)\>"
+ " Octal integers
++" ----------------------- elechole
+ syn match         cOctalZero        display contained "0"
+-syn match         cOctal            display "\<0\+\(u\=l\=\|lu\)\>" contains=cOctalZero
++"syn match         cOctal            display "\<0\+\(u\=l\=\|lu\)\>" contains=cOctalZero
++" added by elechole
++    syn match	cOctal		display contained "0\o\+\(u\=l\{0,2}\|ll\=u\)\>" contains=cOctalZero
++syn match	cNumbers	display transparent "\<\d\|\.\d" contains=cDecimal,cFloat,cOctalError,cOctal,cHex,cHexError
+ if exists("c_no_octal")
+   syn match       cOctalError       display "\<0\+[1-9]\d*\(u\=l\=\|lu\)\>"
+ else
+-  syn match       cOctal            display "\<0\o*\(u\=l\=\|lu\)\>" contains=cOctalZero
++    " Flag the first zero of an octal number as something special
++    syn match	cOctal		display contained "0\o\+\(u\=l\{0,2}\|ll\=u\)\>" contains=cOctalZero
++"   syn match       cOctal            display "\<0\o*\(u\=l\=\|lu\)\>" contains=cOctalZero
+   syn match       cOctalError       display "\<0\o*[89]\d*\(u\=l\=\|lu\)\>"
+ endif
++"-------------------------
+ syn cluster       cInteger          contains=cDecimal,cHex,cHexError,cOctal,cOctalError
+ syn cluster       cIntegerNoOctalErr contains=cDecimal,cHex,cHexError,cOctal
+ " Fp with dot, optional exponent
+@@ -918,10 +929,31 @@
+ if exists("c_minlines")
+   let b:c_minlines = c_minlines
+ else
+-  let b:c_minlines = 15
++"---------------------  elechole
++   if !exists("c_no_if0")
++    let b:c_minlines = 50	" #if 0 constructs can be long
++  else
++    let b:c_minlines = 15	" mostly for () constructs
++  endif
++"----------------------
++" let b:c_minlines = 15
+ endif
+ exec "syn sync ccomment cComment minlines=" . b:c_minlines
++"----------------------
++if !exists("c_no_if0")
++  if !exists("c_no_if0_fold")
++    syn region	cCppOut		start="^\s*\(%:\|#\)\s*if\s\+0\+\>" end=".\@=\|$" contains=cCppOut2 fold
++  else
++    syn region	cCppOut		start="^\s*\(%:\|#\)\s*if\s\+0\+\>" end=".\@=\|$" contains=cCppOut2
++  endif
++  syn region	cCppOut2	contained start="0" end="^\s*\(%:\|#\)\s*\(endif\>\|else\>\|elif\>\)" contains=cSpaceError,cCppSkip
++  syn region	cCppSkip	contained start="^\s*\(%:\|#\)\s*\(if\>\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" contains=cSpaceError,cCppSkip
++endif
+ 
++hi def link cCppSkip		cCppOut
++hi def link cCppOut2		cCppOut
++hi def link cCppOut		Comment
++"----------------------
+ 
+ " Define the default highlighting.
+ " Only used when an item doesn't have highlighting yet
+@@ -931,13 +963,15 @@
+ 
+ hi def link cStatement             Statement
+ hi def link c89Statement           cStatement
+-if exists("c_c_vim_compatible")
++"--------------------    elechole
++"if exists("c_c_vim_compatible")
+   hi def link cKRStatement         cStatement
+   hi def link cKRStorageClass      cStorageClass
+-else
+-  hi def link cKRStatement         cError
+-  hi def link cKRStorageClass      cError
+-endif
++"else
++"  hi def link cKRStatement         cError
++"  hi def link cKRStorageClass      cError
++"endif
++"--------------------    elechole
+ hi def link cLabel                 Label
+ hi def link cUserLabel             cLabel
+ hi def link cConditional           Conditional
+@@ -1166,12 +1200,28 @@
+   hi def link cMathConstant        cConstant
+ 
+ else
+-  hi def link cGNUError            cError
+-  hi def link cGNUStatement        cGNUError
+-  hi def link cGNUOperator         cGNUError
+-  hi def link cGNUType             cGNUError
+-  hi def link cGNUStorageClass     cGNUError
+-  hi def link cGNUConstant         cGNUError
++"--------------------    elechole
++    if exists("c_gnu")
++        hi def link cGNUType           cType
++        hi def link cGNUStatement      c89Statement
++        hi def link cGNUOperator       cOperator
++        hi def link cGNUStorageClass   cStorageClass
++        hi def link cGNUConstant       cConstant
++    else
++        hi def link cGNUError            cError
++        hi def link cGNUStatement        cGNUError
++        hi def link cGNUOperator         cGNUError
++        hi def link cGNUType             cGNUError
++        hi def link cGNUStorageClass     cGNUError
++        hi def link cGNUConstant         cGNUError
++    endif
++"--------------------    elechole
++"  hi def link cGNUError            cError
++"  hi def link cGNUStatement        cGNUError
++"  hi def link cGNUOperator         cGNUError
++"  hi def link cGNUType             cGNUError
++"  hi def link cGNUStorageClass     cGNUError
++"  hi def link cGNUConstant         cGNUError
+ endif
+ 
+ let b:current_syntax = "c"

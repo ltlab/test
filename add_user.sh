@@ -6,12 +6,13 @@ set -e
 USER_ID=$1
 USER_HOME=/home/$USER_ID
 
-CONF_DIR=/root/config
+CONF_PATH=/root/config
 CONF_BACKUP=$USER_HOME/config-backup
 
 ITEMS="config \
 	bashrc \
 	vimrc \
+	vim \
 	tmux.conf \
 	screenrc \
 	ctags \
@@ -20,7 +21,7 @@ ITEMS="config \
 update()
 {
 	item=$1
-	src=$CONF_DIR/$item
+	src=$CONF_PATH/$item
 	dst=$USER_HOME/.$item
 
 	if [ ! -e $src ] ; then
