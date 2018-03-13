@@ -23,7 +23,7 @@ if [ ! -e "$CONF_PATH" ] ; then
 		./cp_to_admin.sh
 		#exit 1
 	fi
-	cp -a $LOCAL_CONF_PATH $CONF_PATH
+	sudo cp -a $LOCAL_CONF_PATH $CONF_PATH
 fi
 
 if [ ! -e "$CONF_BACKUP" ] ; then
@@ -108,3 +108,5 @@ sudo apt-get install -y ncurses-dev libssl-dev
 #sudo /etc/init.d/xrdp restart
 
 #sudo smbpasswd -a $USER
+
+#apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
