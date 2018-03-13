@@ -32,7 +32,7 @@ update()
 
 	if [ -e $dst ] ; then
 		echo "Backup $item to $CONF_BACKUP..."
-		sudo cp -a $dst $CONF_BACKUP
+		sudo mv --backup=numbered $dst $CONF_BACKUP
 	fi
 	echo "update $src to $dst"
 	sudo cp -a $src $dst
