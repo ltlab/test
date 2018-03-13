@@ -11,7 +11,7 @@ sudo apt-get install -y gnupg flex bison gperf
 sudo apt-get install -y x11proto-core-dev libx11-dev
 sudo apt-get install -y lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc
 
-echo -e "\n" | sudo apt-get-repository ppa:openjdk-r/ppa
+echo -e "\n" | sudo add-apt-repository ppa:openjdk-r/ppa
 sudo apt-get update
 
 sudo apt-get install -y openjdk-7-jdk
