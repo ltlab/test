@@ -1,0 +1,53 @@
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+if [ "$PS1" ]; then
+  if [ "$BASH" ] && [ "$BASH" != "/bin/sh" ]; then
+    # The file bash.bashrc already sets the default PS1.
+    # PS1='\h:\w\$ '
+    if [ -f /etc/bash.bashrc ]; then
+      . /etc/bash.bashrc
+    fi
+  else
+    if [ "`id -u`" -eq 0 ]; then
+      PS1='# '
+    else
+      PS1='$ '
+    fi
+  fi
+fi
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+tty_tmp=`tty 2>/dev/null|/bin/sed -r '/^[^\/]/d;s/^\/dev\/([^\/]+)\/?([0-9]+)$/\1 \2/g'`
+ttytype="${tty_tmp% *}"
+
+if [ "$ttytype" = "tty" ]; then
+	echo "You are in Console."
+	ttyno=${tty_tmp##* }
+
+	LANG="en_US.UTF-8"
+	LANGUAGE="en_US:en"
+	LC_ALL=$LANG
+	export LANG LANGUAGE LC_ALL
+else
+	if [ "$USER" = "jenkins" ] ; then
+		echo "You are jenkins"
+		LANG="en_US.UTF-8"
+		LANGUAGE="en_US:en"
+		LC_ALL=$LANG
+	else
+		echo "Maybe you are in X-Window."
+		LANG="ko_KR.UTF-8"
+		LANGUAGE="ko_KR:ko:en_US:en"
+		LC_ALL=$LANG
+	fi
+	export LANG LANGUAGE LC_ALL
+fi
