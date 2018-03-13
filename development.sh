@@ -4,7 +4,7 @@
 #set -x	#	debug
 
 CONF_PATH=/root/config
-CONF_BACKUP=/root/config-backup
+CONF_BACKUP=/root/.config-backup
 LOCAL_ADMIN_PATH=~/bin/admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 

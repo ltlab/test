@@ -7,7 +7,7 @@ USER_ID=$1
 USER_HOME=/home/$USER_ID
 
 CONF_PATH=/root/config
-CONF_BACKUP=$USER_HOME/config-backup
+CONF_BACKUP=$USER_HOME/.config-backup
 
 ITEMS="config \
 	bashrc \
@@ -85,4 +85,4 @@ sudo usermod -G nfs -a $USER_ID
 
 (echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
 
-#usermod -G sudo -a aosp
+#sudo usermod -G sudo -a $USER_ID
