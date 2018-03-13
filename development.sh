@@ -48,7 +48,7 @@ sudo apt-get install -q -y openssh-server
 sudo apt-get install -q -y samba
 #sudo smbpasswd -a jyhuh
 #sudo vi /etc/samba/smb.conf
-sudo cp -a /etc/samba/smb.conf $CONF_BACKUP
+sudo cp -a --backup=numbered /etc/samba/smb.conf $CONF_BACKUP
 sudo cp -a $CONF_PATH/smb.conf /etc/samba/smb.conf
 sudo /etc/init.d/smbd restart
 #(echo vagrant; echo vagrant) | sudo smbpasswd -s -a vagrant
@@ -59,8 +59,8 @@ sudo apt-get install -q -y tftpd-hpa tftp-hpa
 
 # NFS
 sudo apt-get install -q -y nfs-kernel-server
-sudo cp -a /etc/exports $CONF_BACKUP
-sudo cp -a $CONF_PATH/exports /etc/exports
+sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
+#sudo cp -a $CONF_PATH/exports /etc/exports
 sudo mkdir -p /nfs
 #sudo groupadd nfs
 sudo useradd nfs -u 2000 -U
@@ -71,7 +71,7 @@ sudo /etc/init.d/nfs-kernel-server restart
 # VCS
 sudo apt-get install -q -y subversion git-core
 
-sudo cp -a /etc/vsftpd.conf $CONF_BACKUP
+sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP
 sudo cp -a $CONF_PATH/vsftpd.conf /etc/vsftpd.conf
 sudo touch /etc/vsftpd.chroot_list
 sudo /etc/init.d/vsftpd restart
