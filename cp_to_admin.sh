@@ -19,7 +19,7 @@ if [ -z "`ifconfig -a | grep eth`" ] ; then
 	sudo sed -i "s/CMDLINE_LINUX=\"\"/CMDLINE_LINUX=\"net.ifnames=0 biosname=0\"/" /etc/default/grub
 	sudo update-grub2
 	if [ -e "$UDEV_NET_FILE" ] ; then
-		sudo mv $UDEV_NET_FILE CONF_BACKUP
+		sudo mv $UDEV_NET_FILE $CONF_BACKUP
 	fi
 fi
 
