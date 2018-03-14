@@ -17,6 +17,7 @@ ITEMS="config \
 	tmux.conf \
 	screenrc \
 	ctags \
+	git-conf.sh \
 	gitconfig"
 
 update()
