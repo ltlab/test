@@ -4,7 +4,7 @@
 #set -x	#	debug
 
 CONF_PATH=/root/config
-CONF_BACKUP=/root/config-backup
+CONF_BACKUP=/root/.config-backup
 LOCAL_ADMIN_PATH=~/bin/admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 
@@ -17,6 +17,10 @@ else
 	sudo apt-get update
 fi
 
+if [ ! -e "$CONF_BACKUP" ] ; then
+	sudo mkdir -p $CONF_BACKUP
+fi
+
 if [ ! -e "$CONF_PATH" ] ; then
 	if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 		echo "WARN: $LOCAL_CONF_PATH and $CONF_PATH NOT exist..."
@@ -24,10 +28,6 @@ if [ ! -e "$CONF_PATH" ] ; then
 		#exit 1
 	fi
 	sudo cp -a $LOCAL_CONF_PATH $CONF_PATH
-fi
-
-if [ ! -e "$CONF_BACKUP" ] ; then
-	sudo mkdir -p $CONF_BACKUP
 fi
 
 # for Development
