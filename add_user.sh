@@ -65,7 +65,7 @@ do
 	update $item
 done
 
-sudo cp -a $CONF_PATH/home-bin $USER_HOME/bin
+sudo cp -a $CONF_PATH/home-bin/* $USER_HOME/bin/
 sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
 
 if [ -z "`grep $USER_ID /etc/exports`" ] ; then
