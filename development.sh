@@ -112,4 +112,7 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 
 #sudo smbpasswd -a $USER
 
-#apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+#sudo apt-get install libpython2.7-dev
+#\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
