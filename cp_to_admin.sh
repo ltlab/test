@@ -46,10 +46,10 @@ if [ -z "`ifconfig -a | grep eth`" ] ; then
 	sudo sed -i "s/CMDLINE_LINUX=\"\"/CMDLINE_LINUX=\"net.ifnames=0 biosdevname=0\"/" /etc/default/grub
 	sudo update-grub2
 	if [ -e "$UDEV_NET_FILE" ] ; then
-		sudo mv $UDEV_NET_FILE $CONF_BACKUP
+		sudo mv --backup=numbered $UDEV_NET_FILE $CONF_BACKUP
 	fi
 	if [ -e "$NET_INTERFACE_FILE" ] ; then
-		sudo mv $NET_INTERFACE_FILE $CONF_BACKUP
+		sudo mv --backup=numbered $NET_INTERFACE_FILE $CONF_BACKUP
 		sudo mv ./interfaces $NET_INTERFACE_FILE
 	else
 		rm ./interfaces
