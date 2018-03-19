@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOCAL_ADMIN_PATH=~/bin/admin
+LOCAL_ADMIN_PATH=~/.bin-admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 CONF_BACKUP=/root/.config-backup
 
@@ -29,5 +29,6 @@ if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 	sudo cp -a ./system_conf/* $LOCAL_CONF_PATH
 	sudo cp -a ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
+	sudo ln -s $PWD/config/home-bin/ ~/bin
 	sudo chown $USER:$USER ~/bin
 fi
