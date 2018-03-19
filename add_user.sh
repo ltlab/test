@@ -13,6 +13,7 @@ ITEMS="config \
 	bashrc \
 	profile \
 	vimrc \
+	home-bin \
 	vim \
 	tmux.conf \
 	screenrc \
@@ -65,9 +66,6 @@ do
 	update $item
 done
 
-sudo cp -a $CONF_PATH/home-bin/* $USER_HOME/bin/
-sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
-
 if [ -z "`grep $USER_ID /etc/exports`" ] ; then
 	sudo mkdir -p $USER_HOME/nfs
 	sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
@@ -90,3 +88,6 @@ sudo usermod -G nfs -a $USER_ID
 (echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
 
 #sudo usermod -G sudo -a $USER_ID
+
+sudo mv $USER_HOME/.home-bin $USER_HOME/bin/
+sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
