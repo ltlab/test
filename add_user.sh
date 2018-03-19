@@ -88,5 +88,9 @@ sudo usermod -G nfs -a $USER_ID
 
 #sudo usermod -G sudo -a $USER_ID
 
-sudo mv $USER_HOME/.home-bin $USER_HOME/bin/
-sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
+if [ ! -e "$USER_HOME/bin" ] ; then
+	sudo mv $USER_HOME/.home-bin $USER_HOME/bin/
+	sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
+#else
+#	rm -rf $USER_HOME/.home-bin
+fi
