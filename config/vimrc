@@ -160,6 +160,7 @@ set relativenumber
 syntax on
 set history=500
 set nobackup
+set noswapfile
 set hlsearch	"	Highlighting Search results
 set showmode
 set tabstop=4
