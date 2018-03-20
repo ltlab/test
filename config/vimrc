@@ -56,7 +56,7 @@ Plugin 'The-NERD-tree'
 
 Plugin 'AutoComplPop'
 
-"Plugin 'altercation/vim-colors-solarized'
+Plugin 'altercation/vim-colors-solarized'
 
 Plugin 'Syntastic'
 "Plugin 'taglist.vim'
@@ -96,10 +96,6 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-set background=dark
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -175,8 +171,6 @@ set cindent
 set cinoptions=g0,0,l1,t0
 set autoindent
 set smartindent
-set bg=dark
-"set bg=light
 set backspace=indent,eol,start
 set visualbell		"	Alert 음을 화면 깜박임으로 바꿔보여주기
 set ffs=unix,dos,mac
@@ -247,15 +241,28 @@ if has("gui_running")
 	"set scrolloff=3
 endif
 
-set gfn=LucidaSansTypewriter\ 9
+"set gfn=LucidaSansTypewriter\ 9
+set gfn=D2Coding\ 12
 set fileencoding=utf-8
 set fileencodings=utf-8,cp949,euc-kr
 
 behave xterm
 
+syntax enable
+
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+set background=dark
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
+"let g:solarized_degrade=1
+"let g:solarized_bold=0
+"let g:solarized_contrast="high"
+"let g:solarized_visibility="high"
+"colorscheme solarized
+
 "colorscheme torte
 colorscheme elechole_colorscheme
-"colorscheme solarized
 
 highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
 highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
