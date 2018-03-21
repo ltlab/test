@@ -1,7 +1,11 @@
 #!/bin/sh
 
 PLUGIN_URL="https://github.com/VundleVim/Vundle.vim.git"
-PLUGIN_PATH="$HOME/.vim/bundle/Vundle.vim"
+if [ -z "$1" ] ; then
+	PLUGIN_PATH="$HOME/.vim/bundle/Vundle.vim"
+else
+	PLUGIN_PATH="$1/.vim/bundle/Vundle.vim"
+fi
 
 if [ ! -e "$PLUGIN_PATH" ] ; then
 	git clone $PLUGIN_URL $PLUGIN_PATH
