@@ -133,7 +133,7 @@ noremap <leader><leader> zf%
 set lazyredraw
 
 "Directories for swp Files
-set backupdir=~/.vim_backup
+"set backupdir=~/.vim_backup
 "set directory=~/.vim_backup
 
 map ,noi :set noai<CR>:set nocindent<CR>:set nosmartindent<CR>
@@ -197,12 +197,12 @@ set ttyfast
 "set scs
 
 se cursorline
-autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
-autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=17 guibg=#000060
-autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=236 guibg=#303030
-autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=236 guibg=#303030
-autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=236 guibg=#303030
-autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=236 guibg=#303030
+"autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
+"autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=17 guibg=#000060
+"autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=236 guibg=#303030
+"autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=236 guibg=#303030
+"autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=236 guibg=#303030
+"autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=236 guibg=#303030
 
 "============= ctag config ==============
 set tags+=tags
@@ -248,33 +248,6 @@ set fileencoding=utf-8
 set fileencodings=utf-8,cp949,euc-kr
 
 behave xterm
-
-syntax enable
-
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-let g:solarized_termcolors=256
-"let g:solarized_termtrans=1
-"let g:solarized_degrade=1
-"let g:solarized_bold=0
-"let g:solarized_contrast="high"
-"let g:solarized_visibility="high"
-set background=dark
-
-"colorscheme solarized
-
-"colorscheme torte
-colorscheme elechole_colorscheme
-
-highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
-highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
-
-" Trailing White-spaces....
-highlight TrailingWhiteSpace guibg=#505050 ctermbg=DarkGray
-match TrailingWhiteSpace /\s\+$/
-autocmd InsertEnter * match TrailingWhiteSpace /\s\+\%#\@<!$/
-autocmd InsertLeave * match TrailingWhiteSpace /\s\+$/
-autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
 
 "set cscopetag
 "set csprg=/usr/bin/cscope
@@ -330,6 +303,38 @@ let g:UltiSnipsEditSplit="vertical"
 "nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
 "nnoremap <leader>t :YcmCompleter GetType<CR>
 "nnoremap <leader>p :YcmCompleter GetParent<CR>
+
+syntax enable
+
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+let g:solarized_termcolors=256
+"let g:solarized_termcolors=16
+"let g:solarized_termtrans=1
+"let g:solarized_degrade=1
+"let g:solarized_bold=0
+"let g:solarized_contrast="high"
+"let g:solarized_visibility="high"
+set background=dark
+
+"colorscheme solarized
+
+"colorscheme torte
+colorscheme elechole_colorscheme
+
+highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
+highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
+
+" Trailing White-spaces....
+highlight TrailingWhiteSpace guibg=#505050 ctermbg=DarkGray
+match TrailingWhiteSpace /\s\+$/
+autocmd InsertEnter * match TrailingWhiteSpace /\s\+\%#\@<!$/
+autocmd InsertLeave * match TrailingWhiteSpace /\s\+$/
+autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
+
+"set colorcolumn=81
+"hi ColorColumn ctermbg=52 guibg=DarkRed
+"syn match ColorColumn /\%81v.\*/
 
 "	vim-cpp-enhanced-highlighting
 "let g:cpp_experimental_simple_template_highlight = 1
