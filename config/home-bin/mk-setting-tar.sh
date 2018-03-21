@@ -16,7 +16,7 @@ find ./setting/test_src/ -exec file {} \; | grep -i elf | sed 's/://' | awk '{pr
 #	.config/powerline \
 #	--exclude="*.swp" --exclude="cscope.*" --exclude="tags" --exclude="*~" --exclude="view"
 tar -zcvf elechole-setting_$DATE_TAG.tar.gz ./setting/ .subversion \
-	--exclude="*.swp" --exclude="cscope.*" --exclude="tags" --exclude="*~" --exclude="view"
+	--exclude=".git" --exclude=".svn" --exclude="*.swp" --exclude="cscope.*" --exclude="tags" --exclude="*~" --exclude="view" --exclude="*.lst"
 
 #./firefox-FEBE/
 #echo "TAG: $DATE_TAG TAG1: $DATE_TAG1  TAG: $TIME_TAG  TAG1: $TIME_TAG1"
