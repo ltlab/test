@@ -180,6 +180,10 @@ else
 	echo "FCITX is Running."
 fi
 
+#	ack
+alias ack="ack --nogroup --column"
+alias ack-grep="ack-grep --nogroup --column"
+
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
 
