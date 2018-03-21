@@ -133,7 +133,7 @@ noremap <leader><leader> zf%
 set lazyredraw
 
 "Directories for swp Files
-"set backupdir=~/.vim_backup
+set backupdir=~/.vim_backup
 "set directory=~/.vim_backup
 
 map ,noi :set noai<CR>:set nocindent<CR>:set nosmartindent<CR>
@@ -253,13 +253,14 @@ syntax enable
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
-set background=dark
 let g:solarized_termcolors=256
-let g:solarized_termtrans=1
+"let g:solarized_termtrans=1
 "let g:solarized_degrade=1
 "let g:solarized_bold=0
 "let g:solarized_contrast="high"
 "let g:solarized_visibility="high"
+set background=dark
+
 "colorscheme solarized
 
 "colorscheme torte
