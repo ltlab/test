@@ -38,7 +38,7 @@ Plugin 'VundleVim/Vundle.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'		"Need for airline
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -295,12 +295,12 @@ let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-nnoremap <silent> ,ff :UltiSnipsEdit<CR>
-"let g:UltiSnipsExpandTrigger="<c-i>"
+let g:UltiSnipsListSnippets="<s-tab>"
+"let g:UltiSnipsExpandTrigger="<c-i>"	"Do NOT Use This. 'tab' input is not working.
 "let g:UltiSnipsListSnippets="<s-tab>"
 "let g:UltiSnipsJumpForwardTrigger="<C-j>"
 "let g:UltiSnipsJumpBackwardTrigger="<C-k>"
-let g:UltiSnipsEditSplit="vertical"
+nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 
 " Deoplete.
 "let g:deoplete#enable_at_startup = 1
