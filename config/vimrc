@@ -38,7 +38,7 @@ Plugin 'VundleVim/Vundle.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-"Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -53,10 +53,11 @@ Plugin 'VundleVim/Vundle.vim'
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
 Plugin 'The-NERD-tree'
-
-Plugin 'AutoComplPop'
+Plugin 'MultipleSearch'
 
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'Syntastic'
 "Plugin 'taglist.vim'
@@ -66,9 +67,14 @@ Plugin 'Syntastic'
 "Plugin 'cscope_plus.vim'
 "Plugin 'cscope-wrapper'
 
+Plugin 'ack.vim'
 Plugin 'delimitMate.vim'
+
+Plugin 'Yggdroot/indentLine'
+
+Plugin 'AutoComplPop'
 Plugin 'SirVer/ultisnips'
-"Plugin 'honza/vim-snippets'
+Plugin 'honza/vim-snippets'
 
 "Plugin 'justinmk/vim-syntax-extra'
 Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -126,6 +132,10 @@ if filereadable("/etc/vim/vimrc.local")
 endif
 
 "=========== By elechole
+
+"	map leader key. default: '\'
+"let mapleader=','
+
 noremap <leader>f ]}v[{zf
 noremap <leader><leader> zf%
 
@@ -281,9 +291,15 @@ behave xterm
 "let delimitMate_expand_cr=1
 
 " UltiSnips
+let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+nnoremap <silent> ,ff :UltiSnipsEdit<CR>
+"let g:UltiSnipsExpandTrigger="<c-i>"
+"let g:UltiSnipsListSnippets="<s-tab>"
+"let g:UltiSnipsJumpForwardTrigger="<C-j>"
+"let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 let g:UltiSnipsEditSplit="vertical"
 
 " Deoplete.
@@ -304,6 +320,40 @@ let g:UltiSnipsEditSplit="vertical"
 "nnoremap <leader>t :YcmCompleter GetType<CR>
 "nnoremap <leader>p :YcmCompleter GetParent<CR>
 
+" for vim-airline
+let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
+"let g:airline_theme='dark'
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+"set laststatus=2 " turn on bottom bar
+let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
+
+" for MultipleSearch
+let g:MultipleSearchMaxColors=11
+let g:MultipleSearchColorSequence="darkcyan,gray,LightCyan,LightBlue,LightGreen,blue,green,magenta,cyan,gray,brown"
+let g:MultipleSearchTextColorSequence="white,DarkRed,black,black,black,white,black,white,red,black,white"
+"nmap ,H 0vv\*,<space>
+nnoremap <silent> ,H :SearchReset <CR>
+nnoremap <silent> ,h :SearchBuffers <C-R>=expand("<cword>")<CR><CR>
+vnoremap <silent> ,h y:SearchBuffers <C-R>"<CR>
+
+"Plugin Yggdroot/indentLine
+let g:indentLine_color_gui = '#385900'
+let g:indentLine_color_term = 100
+let g:indentLine_char = '|'
+let g:indentLine_first_char = ''
+let g:indentLine_showFirstIndentLevel = 0
+let g:indentLine_enabled = 0
+let g:indentLine_fileTypeExclude = ['help', 'nerdtree', 'text', 'sh']
+let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+let g:indentLine_maxLines = 3000
+nnoremap \il :IndentLinesToggle<CR>
+ 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax enable
 
 " If using a dark background within the editing area and syntax highlighting
@@ -331,6 +381,10 @@ match TrailingWhiteSpace /\s\+$/
 autocmd InsertEnter * match TrailingWhiteSpace /\s\+\%#\@<!$/
 autocmd InsertLeave * match TrailingWhiteSpace /\s\+$/
 autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
+
+"	set textwidth and 'gg' 'gqG'
+"set textwidth=80
+"set formatoptions+=w
 
 "set colorcolumn=81
 "hi ColorColumn ctermbg=52 guibg=DarkRed
