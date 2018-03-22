@@ -1,0 +1,5 @@
+/dev/cobd0      /               ext3    defaults    0 1
+/dev/cobd1      none            swap    sw          0 0
+#cofs0:/         /tftpboot       cofs    uid=0,gid=1000,user,noexec,dmask=0775,fmask=0666   0 0
+cofs0:/         /tftpboot       cofs    uid=1000,gid=1000,user,noexec,dmask=0775,fmask=0777   0 0
+proc            /proc           proc    defaults    0 0

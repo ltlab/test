@@ -1,0 +1,82 @@
+0. install packages
+	- ia32-libs, gcc-multilibs, g++-multilibs
+	- zlib1g-dev
+	- libssl-dev
+
+1. Build gSOAP
+	This is NOT: ./configure --prefix=/home/jyhuh/work/gsoap-2.8.15/_install --enable-debug --enable-samples
+
+	./configure --prefix=$PWD/_install/host --build=i686
+
+	./configure --prefix=$PWD/_install/host --enable-debug CFLAGS="-g -O2 -D__ONVIF_CTR__"
+
+	./configure --build=i686 --host=arm-hisiv100nptl-linux --prefix=$PWD/_install/arm --enable-debug --disable-ssl CFLAGS="-g -O2 -D__ONVIF_CTR__ -march=armv7-a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mfloat-abi=softfp" CXXFLAGS="-g -O2 -D__ONVIF_CTR__ -march=armv7-a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mfloat-abi=softfp"
+
+2. Test for Onvif
+	This is NOT: ../gsoap/wsdl2h -c -nonvif -Nonvif -o devicemgmt.h -t ../gsoap/WS/typemap.dat http://www.onvif.org/ver10/device/wsdl/devicemgmt.wsdl http://www.w3.org/2006/03/addressing/ws-addr.xsd
+
+	- making header file from wsdl file.
+	../_install/host/bin/wsdl2h -c -nonvif -Nonvif -o devicemgmt.h -t ../host_install/share/gsoap/WS/typemap.dat http://www.onvif.org/ver10/device/wsdl/devicemgmt.wsdl
+
+	- making gsoap stub files from header file.
+	../_install/host/bin/soapcpp2 -cx -T -n -ponvif -I../host_install/share/gsoap/import:../host_install/share/gsoap devicemgmt.h
+
+- for PC
+	gcc onvifTester.c onvifServer.c onvifC.c ../host_install/share/gsoap/custom/duration.c -I../host_install/include -L../host_install/lib -lgsoap -lgsoapck -D__ONVIF_CTR__ -I./ -o test_server
+
+	gcc test_client.c onvifClient.c onvifC.c ../host_install/share/gsoap/custom/duration.c -I../host_install/include -L../host_install/lib -lgsoap -lgsoapck -D__ONVIF_CTR__ -I./ -o test_client
+
+- for ARM
+	arm-hisiv100nptl-linux-gcc onvifTester.c onvifServer.c onvifC.c ../arm_install/share/gsoap/custom/duration.c -I../arm_install/include -L../arm_install/lib -lgsoap -lgsoapck -lm -D__ONVIF_CTR__ -I./ -o test_server_arm
+
+	arm-hisiv100nptl-linux-gcc test_client.c onvifClient.c onvifC.c ../arm_install/share/gsoap/custom/duration.c -I../arm_install/include -L../arm_install/lib -lgsoap -lgsoapck -lm -D__ONVIF_CTR__ -I./ -o test_client_arm
+
+
+3. Discovery
+
+	../_install/host/bin/wsdl2h -c -nonvif -Nonvif -o discovery.h -t ../host_install/share/gsoap/WS/typemap.dat http://www.onvif.org/onvif/ver10/network/wsdl/remotediscovery.wsdl
+
+	../_install/host/bin/soapcpp2 -cx -T -n -ponvif -I../host_install/share/gsoap/import:../host_install/share/gsoap discovery.h
+
+	arm-hisiv100nptl-linux-gcc onvifTester.c onvifServer.c onvifC.c -I../arm_install/include -L../arm_install/lib -lgsoap -lgsoapck -lm -D__ONVIF_CTR__ -I./ -o discovery_server_arm
+
+===============================================================================
+./configure --build=i686 --prefix=/home/jyhuh/work/gsoap-2.8.18/_install/host
+
+# make && make install
+# cd [ install_dir ]
+
+### wsdl2h and soapcpp2 man page....
+- wsdl2h
+    -c: C Source / -f: C++ Class
+    -d: Use DOM to populate xs:any, xs:anyType and xs:anyAttribute
+    -e: simple enum names
+    -g: Global top-level element declarations
+    -x: Do NOT Generate _XML any|anyAttribute extensibility elements
+    -y: Generate typedef synonyms for structs and enums
+
+- soapcpp2
+    -c: C Source / -j: C++ Class
+    -C: Generate Client-side code only
+    -L: Do NOT Generate soapClientLib / soapServerLib
+    -x: Do NOT generate sample XML message files
+    -I: path for #import
+    -d: path for save files
+
+#### C++ ######
+../bin/wsdl2h -fdegxy -t ../share/gsoap/WS/typemap.dat http://www.onvif.org/onvif/ver10/network/wsdl/remotediscovery.wsdl http://www.onvif.org/onvif/ver10/device/wsdl/devicemgmt.wsdl http://www.onvif.org/onvif/ver20/imaging/wsdl/imaging.wsdl http://www.onvif.org/onvif/ver10/media/wsdl/media.wsdl http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd   -o onvifNVC.h
+
+# -j: Generate Proxy Classes
+../bin/soapcpp2 -C -L -j -x -I../share/gsoap/import:../share/gsoap onvifNVC.h
+
+#### C ######
+
+../bin/wsdl2h -cdegxy -t ../share/gsoap/WS/typemap.dat http://www.onvif.org/onvif/ver10/network/wsdl/remotediscovery.wsdl http://www.onvif.org/onvif/ver10/device/wsdl/devicemgmt.wsdl http://www.onvif.org/onvif/ver20/imaging/wsdl/imaging.wsdl http://www.onvif.org/onvif/ver10/media/wsdl/media.wsdl http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd   -o onvifNVC.h
+
+../bin/soapcpp2 -C -L -c -x -I../share/gsoap/import:../share/gsoap onvifNVC.h
+
+### soapcpp2 ERROR 발생시.....
+    wsa5.h(288): **ERROR**: remote method name clash: struct/class 'SOAP_ENV__Fault' already declared at line 274
+===> copy gsoap/import/wsdd.h --> gsoap/import/wsdd5.h
+===> 생성된 onvifNVC.h 에서
+    #import "wsdd10.h" ==> #import "wsdd5.h" 또는 "wsdd.h"로 수정.

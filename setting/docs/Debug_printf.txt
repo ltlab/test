@@ -1,0 +1,28 @@
+
+=========================================================
+#ifdef	DEBUG_VME
+	#define	DEBUG_PRINT( fmt, ... )	printf( "[%s, %d] " fmt, __FILE__, __LINE__, ##__VA_ARGS__ )
+/*	#define	DEBUG_PRINT( fmt, args... )	printf( "[%s, %d] " fmt, __FILE__, __LINE__, ##args )
+*/
+#else
+	#define	DEBUG_PRINT( x, ... )
+#endif
+=========================================================
+#ifdef	_DEBUG_
+#	define DPRINTF(msg, args...) fprintf(stderr, "%d : " msg, __LINE__, ## args)
+#else	/*	_DEBUG_	*/	
+#	define DPRINTF(msg, args...) if (0)
+#endif	/*	_DEBUG_	*/
+=========================================================
+#ifdef _DEBUG
+
+#define DUMP(PRNSTR,...)  printf( \
+ "dumping   [%010u,%s,%04d] " #PRNSTR "\n", \
+ (unsigned int)pthread_self(), __FILE__,__LINE__,__VA_ARGS__)
+
+#else
+
+#define DUMP(PRNSTR,...)
+
+#endif
+==========================================================

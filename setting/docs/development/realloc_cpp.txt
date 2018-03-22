@@ -1,0 +1,28 @@
+
+
+Use ::std::vector!
+
+Type* t = (Type*)malloc(sizeof(Type)*n) 
+memset(t, 0, sizeof(Type)*m)
+
+becomes
+
+::std::vector<Type> t(n, 0);
+
+Then
+
+t = (Type*)realloc(t, sizeof(Type) * n2);
+
+becomes
+
+t.resize(n2);
+
+If you want to pass pointer into function, instead of
+
+Foo(t)
+
+use
+
+Foo(&t[0])
+
+It is absolutely correct C++ code, because vector is a smart C-array.

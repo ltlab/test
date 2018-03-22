@@ -1,0 +1,23 @@
+
+# printf(), scanf(): <stdio.h>
+	- linker flag
+		integer:	-Wl,-u,vfprintf, -lprintf_min
+					-Wl,-u,vfscanf, -lscanf_min
+		float:		-Wl,-u,vfprintf, -lprintf_flt
+					-Wl,-u,vfscanf, -lscanf_flt
+	- stdout, stdin, stderr
+		fdevopen( <stdout>, <stdin>, <stderr> );
+			ex) fdevopen( PutCharUART1, 0, 0 );
+			:
+			:
+		fclose(); 
+		OR
+
+		static int PutCharUART1( char c, FILE *stream );
+		static FILE mystdout = FDEV_SETUP_STREAM( PutCharUART1, NULL, _FDEV_SETUP_WRITE);
+			:
+			:
+		stdout = &mystdout;
+			:
+			:
+		fdev_close();

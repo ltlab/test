@@ -1,0 +1,14 @@
+./openRTSP -q -d 10 -w 1280 -h 720 -f 30 rtsp://192.168.10.44/cam0_0 >test.mov
+./openRTSP -4 -d 10 -w 1280 -h 720 -f 30 rtsp://192.168.10.44/cam0_0 >test.mp4
+./openRTSP -i -d 10 -w 1280 -h 720 -f 30 rtsp://192.168.10.44/cam0_0 >test.avi
+
+
+./openRTSP -d 10 rtsp://192.168.10.44/cam0_0
+	=> audio-[codec], video-[codec]
+
+- H.264
+	rtsp://media.lscube.org/tests/tc.mov
+	rtsp://streaming1.osu.edu/media2/ufsap/ufsap.mov
+	rtsp://212.77.7.133:80/h264lan.sdp
+	http://www.wowza.com/_h264/BigBuckBunny_175k.mov
+	rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov

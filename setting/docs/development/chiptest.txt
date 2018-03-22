@@ -1,0 +1,53 @@
+- Power Management
+	- POWER_CON( 0x8030_0014 )
+	- PMU_WE[31] : Write Enable
+	- PWR_OFF_DELAY[15:8] : Power off state delay time
+	- BOOT_CON[2] : 0 = RESET, 1 = NORMAL
+	- PMU state [1:0]
+		- b'00 : normal
+		- b'01 : standby
+		- b'10 : power down
+		- b'11 : ARM sleep
+	- Test Sequence
+		-> m -32 0x80300014 0x80000000	//	Write Enable
+		-> m -32 0x80300014 0x80008040	//	Delay and Wake up source setting
+		-> m -32 0x80300014 0x1			//	PMU state setting
+
+- PWM Test
+	-  
+
+- I2C Master
+	- I2C Master <-> I2C Slave
+	- initI2cMaster()에서 clk 설정
+		- STANDARD: 100kbps
+		- FAST: 400kbps
+		- HIGH: 3.4Mbps
+	- shell
+		-> i2c -8 r 0x56 0x0 0x10
+		-> i2c -8 w [devID] [addr] [ data ..... ]
+- I2C Slave
+	- Read Only: 0x0 ~ 0x19, 0xE0 ~ 0xFF
+	- R/W: 0x1A ~ 0xDF
+	- Tunicam
+		- i2c_test.tss 실행 후 확인.
+
+- SPI Test
+	- SPI Master <-> SPI Slave
+	- Master
+		- /makeRule/option.min
+			- USE_HIF_TEST = Yes
+		- Hardware support
+			- I2C => SPI로 Hardwired: Board to Board 연결
+			- DIP S/W setting
+		- shell
+			-> spi clk [Hz]
+			-> spi w [address] [data ....]
+			-> spi r [address] [number]
+	- Slave
+		- initUartTx()
+			- rSYS_CTL_PAD_FUNC1 부분 comment 처리
+		- Hardware support
+			- I2C => SPI로 Hardwired: Board to Board 연결
+			- Tunicam Board SPI 연결: Tunicam으로 SPI 제어.. 
+				cf) Rotaty SW 2 => I2C, 6 => SPI
+			- DIP S/W setting

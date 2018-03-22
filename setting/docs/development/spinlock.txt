@@ -1,0 +1,7 @@
+요구사항 	 추천방법
+ lock 부담이 적어야 하는 경우 	 Spinlock
+ lock 기간이 짧은 경우 	 Spinlock
+ lock 기간이 긴 경우 	 Semaphore
+ 인터럽트 핸들러에서 lock을 해야하는 경우 	 Spinlock(반 드시)
+ lock을 소유한 채 휴면해야 하는 경우 	 Semaphore(반 드시)
+

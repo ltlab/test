@@ -1,0 +1,33 @@
+Patch
+==============================
+1. Patch 만들기
+	diff -urN <original_dir> <modified_dir> > <patchfile>
+		-u: unified format
+		-c: context format
+		-r: recursive, 하위 경로 포함
+		-N: 새로 만들어진 파일 포함
+		
+2. Patch 적용하기
+	cd <original_dir>
+	patch -p1 < ../<patchfile>
+
+	- <patchfile> 구성
+		diff -urN uClinux-dist.orig/.config uClinux-dist/.config
+		--- uClinux-dist.orig/.config   
+		+++ uClinux-dist/.config  
+		@@ -0,0 +1,94 @@
+			-p#: 경로명을 몇꺼풀 벗길 것인가에 대한 것
+			-p0: 하나도 안벗긴다는 것이다
+		ex)		
+		/home/khei/project/uClinux-dist
+		project 폴더 내에서 패치 작업을 할딴 -p0
+		uClinux-dist 폴더 내에서 패치를 할땐 -p1을 쓴다는것
+
+		두가지만 명심하자
+		1) diff 파일을 열어서 경로를 본다
+		2) 경로의 최상단에서 -p0 옵션으로 작업을 한다(위의 예에선 project)
+
+
+patch -d <directory> -p1 < [patch file]
+patch -d <directory> -p1 -R < [patch file]: reverse patch...
+

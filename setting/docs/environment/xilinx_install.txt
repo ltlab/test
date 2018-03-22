@@ -1,0 +1,26 @@
+XILINX ISE & MODELSIM SE INSTALL
+================================================================
+
+1. XILINX ISE
+	- Download from www.xilinx.com
+	- Library install
+		# apt-get install libmotif3 libcurl3
+		# cd <setup_path>	//	CD-ROM
+		# export DISPLAY=:0		// DISPLAY => # glxinfo
+		# ./setup
+	- Execute
+		# /opt/Xlinx91i/bin/lin/ise
+
+
+2. MODELSIM SE
+	- # cd <install_path>
+	- uncompress modelsim-base.tar.gz, modelsim-docs.tar.gz, modelsim-<platform>.exe.gz
+		- <install_path>/modeltech is INSTALL_DIR
+	- copy license.dat to <install_path>/modeltech
+	- edit ~/.bash_profile
+		- LM_LICENSE_FILE=/opt/modeltech/license.dat
+		- PATH=$PATH:/opt/modeltech/bin:/opt/Xlinx91i/bin/lin
+	- excute
+		# /opt/modeltech/bin/vsim
+
+ 

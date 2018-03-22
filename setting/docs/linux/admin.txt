@@ -1,0 +1,107 @@
+서버관리자가 해야하는 계정생성 관련업무에는 다음과 같은 것들이 있다.
+
+ - /etc/passwd 파일에 사용자의 계정(ID 및 패스워드)생성
+ - /etc/shadow 파일에 계정 패스워드 등록
+ - /etc/group파일에 사용자의 그룹생성
+ - /home에 사용자의 홈디렉토리 생성
+ - FTP사용을 위한 FTP사용 환경설정
+ - 메일사용을 위한 메일환경설정
+ - 사용자의 로그인정보 및 환경설정
+ - 사용자의 디렉토리 및 파일 소유권 변경 및 확인
+ - DB 사용을 위한 환경설정 및 응용프로그램사용을 위한 환경설정
+ - 기타 응용 소프트웨어 사용을 위한 설정등
+ ==========================================================
+
+# sudo adduser [username] [추가할 그룹]
+# sudo gpasswd -a [username] [added group]
+# sudo gpasswd -d [username] [deleted group]
+
+# usermod -g [기본그룹] -G [그룹들]     : 기본그룹 변경
+
+ - userdel <account> : home dir 그대로
+   userdel -r <account> : home dir 삭제 
+ - useradd [-c comment] [-d home_dir]
+           [-e expire_date] [-f inactive_time]
+           [-g initial_group] [-G group[,...]]
+           [-m [-k skeleton_dir] | -M] [-p passwd]
+           [-s shell] [-u uid [ -o]] [-n] [-r] login
+ 	linux의 adduser는 링크임.
+	ex) # useradd -d /home/sspark1 -u 600 -s /bin/csh sspark1
+		홈디렉토리  /home/sspark1, UID 600, 쉘 C Shell로 지정
+		# grep sspark1 /etc/passwd
+			sspark1:x:600:600::/home/sspark1:/bin/csh
+
+		# useradd -c 박성수 -e 2004-12-12 -d /home/sspark2 -u 601 -s /bin/ksh -p 12345 sspark2
+			-c 박성수        : 계정사용자의 간단한 설명
+			-e 2004-12-12    : 계정사용 종료일자
+			-d /home/sspark2 : 홈디렉토리 위치
+			-u 601           : UID 601로 지정
+			-s /bin/ksh      : 사용할 기본쉘을 Korn Shell로 지정
+			-p 12345    : 패스워드를 12345로 지정
+			sspark2     : 생성할 계정명
+
+		# grep sspark2 /etc/passwd
+			sspark2:x:601:601:박성수:/home/sspark2:/bin/ksh
+		# grep sspark2 /etc/shadow
+			sspark2:12345:12314:0:99999:7::12764:
+		# grep sspark2 /etc/group
+			sspark2:x:601:
+
+- groupadd [-g GID [-o]] [-f] [-K KEY=VALUE] group
+	- o, --non-unique : 하나의 GID에 여러개의 그룹 지정
+	ex) # groupadd -g 200 -o arirang2
+		# grep arirang /etc/group
+			arirang::200:
+			arirang2::200:
+
+- usermod -u uid [-o] | -g group | -G group[[,group]...] |
+          -d dir [-m] | -s shell | -c comment |
+          -l new_logname | -f inactive | -e expire
+          -A authorization [, authorization ...] |
+          -P profile [, profile ...] | -R role [, role ...] login
+
+			argument	description
+			account	새로 변경될 사용자 계정(필수)
+			-A authorizations	변경되는 사용자에게 부여될 하나 이상의 권한들
+			-c comment	/etc/passwd의 comment 필드에 놓일 코멘트 내용
+			-d directory	변경될 account의 홈디렉토리
+			-e date	만료 날짜로 지정한 날짜가 지나면 계정을 사용할 수 없음
+			-f days	계정을 사용할 수 없게 되기 전의 inactive되는 최대 날짜
+			-g group	UID가 기본그룹으로 속할 GID 또는 그룹이름
+			-G group	UID가 제2그룹에 속할 GID 또는 그룹이름
+			-m	홈디렉토리가 없으면 새로 만듬. 홈디렉토리는 -b와 account이름이나 -d로 지정함
+			-o	이미 존재하는 UID를 덮어 씀
+			-p profiles	실행할 profile을 지정함
+			-R roles	사용자 롤을 지정
+			-s shell	login 쉘을 지정, 지정하지 않으면 디폴트로 /bin/sh임
+			-u uid	변경될 사용자 계정에 대한 UID를 지정함.
+					지정하지 않으면 현재 최종UID의 다음 번호임
+					sys/param.h에 정의한 MAXUID 이하의 수
+	ex) # ls -ld /export/home/user?
+		drwxr-xr-x  2 user1 other 512 Oct 23 15:11 /export/home/user1
+		drwxr-xr-x  2 user2 other 512 Oct 23 15:47 /export/home/user2
+		# usermod -l user3 -d /export/home/user3 -m user1
+		64 blocks
+		# ls -ld /export/home/user?
+		drwxr-xr-x  2 user2 other 512 Oct 23 15:47 /export/home/user2
+		drwxr-xr-x  2 user3 other 512 Oct 23 15:11 /export/home/user3
+
+		# usermod -g oinstall -G dba oracle
+		# id -a oracle
+		uid=1002(oracle) gid=102(oinstall) groups=103(dba)
+
+- change default group
+	sudo usermod -g <GROUP> <USER>
+	ex) sudo usermod -g ktnc elechole
+
+- add user to group
+	# sudo usermod -G [group] -a [username]
+
+- sudoers
+	sudo -l <user>
+		=> user의 sudoers 설정 확인
+
+
+hostnamectl set-hostname [ new hostname ]
+/etc/hosts
+127.0.1.1	[ new hostname ]

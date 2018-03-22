@@ -1,0 +1,8 @@
+Kernel
+=============================================================
+- Minimum defconfig
+	- make [BOARD_NAME]_defconfig
+	- make savedefconfig
+		=> /defconfig라는 파일 생성됨
+
+

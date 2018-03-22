@@ -1,0 +1,109 @@
+REDMINE 
+============================================================
+
+- Redmine package
+	# sudo apt-get install redmine redmine-mysql
+	# sudo ln -s /usr/share/redmine/public /var/www/redmine
+
+- Database 
+	# sudo vi /etc/redmine/default/database.yml
+		adapter: mysql
+		database: redmine_default
+		host: localhost
+		username: redmine
+		passwod: xxxxx
+		encoding: utf8
+
+	# sudo vi /etc/apache2/mods-available/passenger.conf
+		<IfModule mod_passenger.c>
+		  PassengerRoot /usr
+		  PassengerRuby /usr/bin/ruby
+		  PassengerDefaultUser www-data
+		</IfModule>
+
+	# sudo vi /etc/apache2/sites-available/default
+		</Directory>
+
+			<Directory "/var/www/redmine">
+					RailsBaseURI /redmine
+		</Directory>
+	
+	# rake db 과정은 mysql 및 업로드 위치 변경 후 적용할 것.
+	# cd /usr/share/redmine
+	# rake db:migrate RAILS_ENV=production
+		=> Connect redmine( http://[host ip]/redmine )
+
+	# mysql -u root -p
+		=> enter root password of mysql
+		mysql> use redmine_default
+		mysql> show variables like 'c%';
+      => encoding 확인
+
+- MySql 저장 위치 변경
+	# sudo /etc/init.d/mysql stop
+	# sudo cp -r /var/lib/mysql /home/user/
+	# sudo chown -R mysql:mysql /home/user/mysql
+
+	# sudo gedit /etc/mysql/my.cnf
+		[mysqld]
+			#datadir=/var/lib/mysql
+			datadir=/home/user/mysql 
+
+	# sudo gedit /etc/apparmor.d/usr.sbin.mysqld
+		# /var/lib/mysql/ r,
+		# /var/lib/mysql/** rwk,
+
+		/home/user/mysql/ r,
+		/home/user/mysql/** rwk, 
+
+	# sudo /etc/init.d/apparmor reload
+	# sudo /etc/init.d/mysql restart 
+
+- Redmine 업로드 파일 저장 위치 변경
+	# sudo vi /usr/share/redmine/config/environment.rb
+		ENV['RAILS_VAR'] ||= "/var/lib/redmine/#{ENV['X_DEBIAN_SITEID']}"
+		=> ENV['RAILS_VAR'] ||= "/srv/redmine/#{ENV['X_DEBIAN_SITEID']}"
+
+	# sudo /etc/init.d/apache2 restart
+
+- Set Encoding to UTF-8 for Korean
+	# mysql -u root -p
+		=> enter root password of mysql
+		mysql> use redmine_default
+		mysql> show variables like 'c%';
+
+	# sudo vi /etc/mysql/mysql.cnf
+		[client]
+		default-character-set=utf8
+		 
+		[mysqld]
+		init_connect=SET collation_connection = utf8_general_ci
+		init_connect=SET NAMES utf8
+		default-character-set=utf8
+		character-set-server=utf8
+		collation-server=utf8_general_ci
+		 
+		[mysql]
+		default-character-set=utf8
+
+	mysql> drop database redmine_default
+  mysql> create database redmine_default default character set utf8 collate utf8_general_ci;
+  
+ 	# cd /usr/share/redmine
+	# rake db:migrate RAILS_ENV=production
+
+ 		mysql> use redmine_default
+		mysql> show variables like 'c%';
+      => encoding 확인
+
+- Subversion + SSH
+	- repository: svn+ssh://[id]@[serverIP]/[svn repository path]
+		ex) svn+ssh://jyhuh@localhost/srv/svn/test
+
+	- apache user: www-data, home=/var/www
+	- www-data로 svn+ssh의 ssh 연결 가능할 것.(passwordless)
+		=>	# ssh www-data@localhost
+			# ssh-keygen
+			- /var/www/.ssh/id_rsa => /home/jyhuh/.ssh/authorized_keys2 에 복사.
+			# ssh jyhuh@localhost => password 없이 접속 되는지 확인
+	- redmine에서 repository 확인.

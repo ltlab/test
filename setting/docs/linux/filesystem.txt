@@ -1,0 +1,75 @@
+File System
+============================================
+- Basic
+	- Primary superblock(1), Backup superblocks(1~n)
+	- superblock 생성: mke2fs로 파일시스템을 생성할 때
+	- backup superblock 위치 확인: dumpe2fs
+	- mke2fs 실행시에 -b옵션을 사용하여 파일시스템의 블록사이즈에 따라서 달라짐.(기본:4k)
+
+	- Block Group = 8192 Blocks
+	  Superblock: 1st block in the block group
+	  Primary superblock = superblock in 1st block group in the file system
+	  Backup superblocks = other superblocks in the block group
+
+	만약 블록사이즈가 1024(1k)이라면 백업수퍼블록은 8193블록에 존재한다.
+	만약 블록사이즈가 2048(2k)이라면 백업수퍼블록은 16384블록에 존재한다.
+	만약 블록사이즈가 4096(4k)이라면 백업수퍼블록은 32768블록에 존재한다.
+	
+	===> 블록사이즈가 4k이면, 백업수퍼블록의 위치들은,,,,,
+		* primary superblock은 0번블록에 위치함
+	1번 백업수퍼블록의 위치 : 32768블록에 위치하고 있음
+	2번 백업수퍼블록의 위치 : 98304블록에 위치하고 있음
+	3번 백업수퍼블록의 위치 : 163840블록에 위치하고 있음
+	4번 백업수퍼블록의 위치 : 229376블록에 위치하고 있음
+	5번 백업수퍼블록의 위치 : 294912블록에 위치하고 있음
+	6번 백업수퍼블록의 위치 : 819200블록에 위치하고 있음
+	7번 백업수퍼블록의 위치 : 884739블록에 위치하고 있음
+	8번 백업수퍼블록의 위치 : 1605632블록에 위치하고 있음
+
+	-  백업수퍼블록이 정확하게 지정하여 e2fsck를 실행하면 e2fsck는 파일시스템의 체크를 수행하면서 primary superblock을 새롭게 업데이트하게 됨.
+
+- dumpe2fs : Superblock 및 backup superblock 정보 확인
+	# dumpe2fs [device]
+	# mke2fs -n [device: /dev/sda7]
+
+- e2fsck
+	# e2fsck -b [superblock location] -f [device: /dev/sda3]
+		options:
+			-N: Don't execute, just show what would be done.
+			-A: Walk through the /etc/fstab file and try to check all filesystems in one run.
+
+- backup using dd command
+	# dd if=[device: /dev/sda2] of=[backupfile: /disk2/backup-sda2.img]
+
+- Badblocks : badblock 확인
+	# badblocks -v -o [output file] [device: /dev/sda2]
+
+- XFS
+	# xfs_check [device]
+		-s: error만 표시
+	# xfs_info [device]
+		XFS 파일 시스템 정보를 표시한다.
+	# xfs_repair
+		-n: 복구가 필요한 것만 보기. 복구는 안함.
+		시스템을 복구하는 데 마운트 검사가 충분치 않을 때 XFS 파일 시스템을 복구한다.
+	# xfs_growfs
+		XFS 파일 시스템을 확장한다(다른 파티션을 사용할 수 있는 것으로 가정). 
+	# xfs_admin
+		XFS 파일 시스템의 매개변수를 변경한다.
+	# xfs_db
+		XFS 파일 시스템을 검사하거나 디버그한다. 
+
+- ext2 및 ext3 파일 시스템용 도구
+	- tune2fs
+		ext2 및 ext3 파일 시스템에 대한 매개변수를 조정한다. 이 매개변수를 사용하여 저널을 ext2 시스템에 추가하면 이 시스템이 ext3 시스템으로 될 뿐 아니라, 최대 마운트 수를 표시하거나 설정한 후 검사가 실행된다. 또한, 레이블을 지정하고 다양한 선택적 기능을 설정하거나 사용 안 할 수 있다.
+	- dumpe2fs
+		ext2 또는 ext3 파일 시스템에 대한 superblock 및 블록 그룹 디스크립터 정보를 인쇄한다.
+	- debugfs
+		대화식 파일 시스템 디버거이다. debugfs를 사용하여 ext2 또는 ext3 파일 시스템의 상태를 검사하거나 변경한다.
+
+- Reiserfs 파일 시스템용 도구
+	- reiserfstune
+		ReiserFS 파일 시스템에 대한 매개변수를 표시하고 조정한다.
+	- debugreiserfs
+		ReiserFS 파일 시스템에 대한 dumpe2fs 및 debugfs와 유사한 기능을 수행한다.
+

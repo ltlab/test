@@ -1,0 +1,571 @@
+Script Programming
+=================================
+- #!/bin/sh
+- $ENV_VARIABLE] => ex. $HOME, $USER
+- Excute Command: $(cmd) or 'cmd'=> ex. $(pwd), TEST=`uname -a`
+
+	if [ -[condition] [file] ] ; then
+		cmd
+	elif
+		cmd
+	if
+- Date
+	date '+%Y-%m-%d'
+	=> 2008-12-26
+	date '+%y-%m-%d'
+	=> 08-12-26
+
+# Basic commands
+	- source, . (점(dot) 명령어)
+		스크립트에서 source file-name이라고 불린다면 file-name을 읽어 들여 실행한다.
+
+	- exit
+		스크립트를 종료 시킨다.
+	- exit [n]
+		상태값 n을 가지고 쉘을 종료한다.
+
+	- exec
+		이 쉘 내부 명령은 현재의 프로세스를 주어진 명령어로 대치시킵니다.
+	- exec [[-] 명령 [인수]]
+		명령 을 명시하면 그 명령으로 쉘 프로세스를 교체한다. 
+
+	- alias [이름[=값] ...]
+		별칭
+		아무런 인수  없이  Alias를  실행하면 표준 출력에 이름=값의 형식으로 앨리어스 목록을 출력 한다.
+		인수를 사용하면, 각각의 이름에 대하여 값을 앨리어스로 정의한다.
+
+	- cd [디렉토리]
+		현재 디렉토리를 디렉토리로 변경한다.
+
+	- echo [-neE] [인수 ...]
+		스페이스로  구분되어  있는  인수들을  출력한다.
+
+	- eval [인수 ...]
+		모든  인수를  읽어  하나의 명령으로 결합한다.
+
+	- export [-nf] [이름[=단어]] ...
+		나열한  이름  을 그 다음에 나오는 명령들의 환경에 자동적으로 export되도록 기억해 둔다. 
+
+	- history [n]
+		옵션이 없으면, 행 번호와 함께 명령 히스토리 목록을 표시한다.
+
+	- kill [-s sigspec -sigspec ] [ pid | jobspec ]
+		pid 또는 jobspec이 가리키는 프로세스에게 sigspec이 가리키는 시그널을 보낸다.
+		참고 : killall 은 bash 내장 명령이 아니다. ( killall 은 이름에 의하여 프로세스에 kill 명령 처리를 하도록 되어 있는 외부 명려임.)
+
+	- wait [n]
+		특정 프로세스를 기다리다가 종료값을 반환한다.  n 은 프로세스 ID이거나 jobspec 임.
+
+# Environment variable
+	HOME : 사용자의 홈디렉토리
+	PATH : 실행파일을 찾는 경로
+	LANG : 프로그램 사용시 기본 지원되는 언어
+	PWD : 사용자의 현재 작업하는 디렉토리
+	TERM : 로긴 터미널 타입
+	SHELL : 로그인해서 사용하는 쉘
+	USER : 사용자의 이름
+	DISPLAY : X 디스플레이 이름
+	 VISUAL : visual 편집기의 이름
+	EDITOR : 기본 편집기의 이름
+	COLUMNS : 현재 터미널이나 윈도우 터미널의 컬럼수
+	PS1 : 명령프롬프트변수
+	PS2 : 2차 명령프롬프트이다. 명령행에서 를 사용하여 명령행을 연장했을 때 나타난다.
+	BASH : 사용하는 bash 쉘의 경로
+	BASH_VERSION : bash의 버전
+	HISTFILE : history 파일의 경로
+	HISTFILESIZE : history 파일의 크기
+	HISTSIZE : history에 저장되는 갯수
+	HISTCONTROL : 중복되어지는 명령에 대한 기록 유무를 지정하는 변수이다.
+	HOSTNAME : 호스트의 이름
+	LINES : 터미널의 라인 수
+	LOGNAME :로그인이름
+	LS_COLORS : ls 명령의 색상관련 옵션
+	MAIL : 메일을 보관하는 경로
+	MAILCHECK : 메일확인시간
+	OSTYPE : 운영체제 타입
+	SHLVL :쉘의 레벨
+	TERM :터미널종류
+	UID : 사용자의 UID
+	USERNAME : 사용자이름
+
+$ export PATH=$PATH:/opt/cross-tool/4.3.1/bin
+
+# Meta character
+	메타 문자는 어떤 문자들을 특수하게 처리하는데, 이러한 문자들을 가리 킨다.
+
+	 기호                  의   미  
+
+	   >                     표준 출력을 화일에 기록하는 출력 리다이렉션
+	   >>                   표준 출력을 화일 끝에 덧붙이는 출력 리다이렉션
+	   <                     화일로 부터 표준 입력을 읽는 입력 리다이렉션
+	   *                     1개 이상의 문자와 일치하는 화일 치환 대표 문자
+	   ?                     단일 문자와 일치하는 화일 치환 대표 문자
+	  [...]                  대괄호 사이의 어떤 문자와도 일치하는 화일 치환 대표 문자
+	  `command`    command 로 부터의 출력에 의해 대치되는 명령어 치환
+	   |                      어떤 프로세스의 출력을 다른 프로세스의 입력으로 보내는 파이프 기호
+	   ;                     하나의 라인에 2개 이상의 명려어를 사용할때 구분자로 사용
+	   ||                     이전의 명령이 실패하면 실행하는 조건부 실행 ( OR  )
+	   &&                이전의 명령이 성공하면 실행하는 조건부 실행 ( AND )
+	   &                    명령어를 백그라운드로 실행
+	   #                     개행 전까지 뒤다르는 모든 문자들을 주석으로 처리
+	   $                      변수 접근 
+
+# variable and condition 처리
+	bash 에서 변수는 변수가 처음 사용되는 순간 참조가 생성되므로 변수를 따로 선언할 필요는 없다.
+
+	------------------------------
+	#!/bin/bash 
+
+	STR="FALINUX!" 
+	echo $STR
+	------------------------------
+
+	STR이라는 변수가 생성되면서 "FALINUX!" 문자열을 변수에 넣고 출력하는 예제 이다.
+
+- if-then 조건문
+	---------------------
+	#!/bin/bash 
+
+	if [ "fa" = "fa" ]; then 
+			echo "true"
+	fi 
+	-------------------
+	쉘에서 조건문은 if 와 fi가 쌍이라는 것이다.
+	조건이 참일때 "true"가 출력 된다.
+
+	- if-then-else 조건문
+	---------------------
+	#!/bin/bash 
+
+	if [ "fa" = "fa" ]; then 
+			echo "true"
+	else
+			echo "false"
+	fi 
+	-------------------
+
+	쉘에서 조건문은 if 와 fi가 쌍이며, 이 쌍안에 else가 존재 하게 된다.
+	조건이 참일때 "true"가 출력 된다.
+	조건이 참이 아닐경우, "false"가 출력 된다.
+
+	1. 문자열
+		[ stringName ] - 문자열이 널(NULL)인지 체크, Null이 아니면 참
+		[ -n stringName ] - 문자열의 사이즈가 0 이상인지 체크, 0 이상이면 참
+		[ -z stringName ] - 문자열의 사이즈가 0 인지 체크, 0이면 참
+		[ stringNameA = stringNameB ] - A문자열과 B문자열이 같은지 체크, 같으면 참
+		[ stringNameA != stringNameB ] - A문자열과 B문자열이 다른지 체크, 다르면 참
+
+	2. 대소관계
+		[ intA -ge 100 ] - 숫자 A가 100보다 크거나 같은지 체크, 100 이상이면 참
+		[ intA -gt 100 ] - 숫자 A가 100보다 큰지 체크, 100이 넘으면 참
+		[ intA -le 100 ] - 숫자 A가 100보다 작거나 같은지 체크, 100 이하이면 참
+		[ intA -lt 100 ] - 숫자 A가 100보자 작은지 체크, 100 미만이면 참
+
+	3. 파일
+		[ -r filename ] - 해당 파일이 읽기 가능한지 체크
+		[ -w filename ] - 해당 파일이 쓰기 가능한지 체크
+		[ -x filename ] - 해당 파일이 실행 가능한지 체크
+		[ -s filename ] - 해당 파일의 사이즈가 제로 이상인지 체크
+		[ -d filename ] - 해당 파일이 디렉토리 파일인지 체크
+		[ -f filename ] - 해당 파일이 보통 파일인지 체크
+		[ -h filename ] - 해당 파일이 링크 파일인지 체크
+
+	4. 조건문 결합
+		[ 조건문A -a 조건문B ] - 조건문 A와 B가 모두 참인지 체크, -a는 AND
+		[ 조건문A -o 조건문B ] - 조건문 A와 B중 참이 하나라도 있는지 체크, -o는 OR
+
+	- 정수 비교
+		-eq
+			같음
+			if [ "$a" -eq "$b" ]
+		-ne
+			같지 않음
+			if [ "$a" -ne "$b" ]
+		-gt
+			더 큼
+			if ["$a" -gt "$b" ]
+		-ge
+			더 크거나 같음
+			if [ "$a" -ge "$b" ]
+		-lt
+			더 작음
+			if [ "$a" -lt "$b" ]
+		-le
+			더 작거나 같음
+			if [ "$a" -le "$b" ]
+		<
+			더 작음(이중 소괄호에서)
+			(("$a" < "$b"))
+		<=
+			더 작거나 같음(이중 소괄호에서)
+			(("$a" <= "$b"))
+		>
+			더 큼(이중 소괄호에서)
+			(("$a" > "$b"))
+		>=
+			더 크거나 같음(이중 소괄호에서)
+			(("$a" >= "$b"))
+
+	- 문자열 비교
+		=
+			같음
+			if [ "$a" = "$b" ]
+		==
+			같음
+			if [ "$a" == "$b" ]
+			= 와 동의어입니다.
+		!=
+			같지 않음
+			if [ "$a" != "$b" ]
+			이 연산자는 [[ ... ]] 에서 패턴 매칭을 사용합니다.
+		<
+			아스키 알파벳 순서에서 더 작음
+			if [[ "$a" < "$b" ]]
+			if [ "$a" \< "$b" ]
+			"<" 가 [ ] 에서 쓰일 때는 이스케이프를 시켜야 하는 것에 주의하세요.
+		>
+			아스키 알파벳 순서에서 더 큼
+			if [[ "$a" > "$b" ]]
+			if [ "$a" \> "$b" ]
+			">" 가 [ ] 에서 쓰일 때는 이스케이프를 시켜야 하는 것에 주의하세요.
+			이 비교 연산자를 어떻게 응용하는지 예 26-4에서 살펴보세요.
+		-z
+			문자열이 "null"임. 즉, 길이가 0
+		-n
+			문자열이 "null"이 아님.
+
+	- bash 에서 파일과 관련된 조건을을 테스트 하는 내용입니다.
+		-e : 존재하는 파일
+		-f : 보통 파일(디렉토리나 디바이스 파일이 아님)
+		-s : 파일 크기가 0 이 아님
+		-d : 파일이 디렉토리
+		-b : 파일이 블럭 디바이스(플로피나 시디롬 등등)
+		-c : 파일이 문자 디바이스(키보드, 모뎀, 사운드 카드 등등)
+		-p : 파일이 파이프
+		-h : 파일이 심볼릭 링크
+		-L : 파일이 심볼릭 링크
+		-N : 마지막으로 읽힌 후에 변경 됐음
+		f1 -nt f2 : f1 파일이 f2 파일보다 최신임
+		f1 -ot f2 : f1 파일이 f2 파일보다 예전것임
+		f1 -ef f2 : f1 파일과 f2 파일이 같은 파일을 하드 링크하고 있음
+		! : "not" 조건이 안 맞으면 참
+		----------------------------------------------------------------
+		#!/bin/bash
+
+		FILE1="./ex1.sh"
+		FILE2="./ex2.sh"
+		LFILE1="./ex1_s_link.sh"
+
+		DIR="./dir"
+
+		if [ -e $FILE1 ] ; then
+				echo "File Exist"
+		else
+				echo "File Not Found"
+		fi
+
+		if [ -d $DIR ] ; then
+				echo "Dir Exist"
+		else
+				echo "Dir Not Exist"
+		fi
+
+		if [ -L $LFILE1 ] ; then
+				echo "File Exist"
+		else
+				echo "File Not Found"
+		fi
+
+		if [ $FILE2 -nt $FILE1 ] ; then
+				echo "File Exist"
+		else
+				echo "File Not Found"
+		fi
+		------------------------------------------------------------
+		$ ls -al
+		total 40
+		drwxr-xr-x 2 jhpark jhpark 4096 Apr 16 07:53 .
+		drwxr-xr-x 7 jhpark jhpark 4096 Apr 16 07:52 ..
+		-rwxrwxrwx 1 jhpark jhpark   74 Apr  9 17:07 ex1.sh
+		lrwxrwxrwx 1 jhpark jhpark    6 Apr 16 07:47 ex1_s_link__.sh -> ex1.sh
+		-rwxrwxrwx 1 jhpark jhpark   95 Apr  9 17:04 ex2.sh
+		-rwxrwxrwx 1 jhpark jhpark  394 Apr 16 07:52 file_test.sh
+		$ ./file_test.sh
+		File Exist
+		Dir Not Exist
+		File Not Found
+		File Not Found
+
+# Loop(for, while)
+	다음의 예는  while 을 이용하여 0~9 까지의 파일을 생성하는 예제 이다.
+	------------------------------
+	#!/bin/bash 
+	 
+	i=0 
+	while [ $i -le 10 ] 
+	do 
+			touch $i 
+			i=$((i+1)) 
+	done 
+	------------------------------
+
+	while 문의 문법은 while [ 조건 ] do <실행문> done 의 형태를 이용한다.
+
+	다음의 예는  for 을 이용하여 0~9 까지의 파일을 생성하는 예제 이다.
+	------------------------------
+	#!/bin/bash
+
+	for i in 0 1 2 3 4 5 6 7 8 9 
+	do
+		 touch $i   
+	done
+	------------------------------
+
+	for 문의 문법은 for <변수> in 1 2 3 4 5 ... N do <실행문> done 의 형태를 이용한다.
+
+	다른  (C 언어와 유사한 ) 형태 의 for  loop 사용법은 다음과 같다.
+
+	------------------------------
+	#!/bin/bash
+
+	for ((i=0; i<10; i++))
+	do
+		   touch $i
+	done
+	-------------------------------------
+
+# Substring 처리
+	Substring 처리를 하기 위하여 bash 에서는 "#,##,%,%%"의 네 종류의 연산자를 이용하여, 문자열을 조작 하게 된다.
+
+	- #: 구분자 앞쪽(왼쪽)의 문자열(단어)을 삭제, 문자열 앞쪽에서부터 문자열을 하나씩 삭제하는데 첫번째 구분자 앞까지 삭제
+		---------------------
+		#!/bin/bash
+
+		x="arm ubuntu linux test string."
+		echo ${x#* }
+		---------------------
+		ubuntu linux test string.
+
+	- ##: 마지막 구분자 앞쪽(왼쪽)의 문자열(단어)을 삭제, 문자열 앞쪽에서부터 문자열을 하나씩 삭제하는데 마지막 구분자 앞까지 삭제
+		---------------------
+		#!/bin/bash
+
+		x="arm ubuntu linux test string."
+		echo ${x##* }
+		---------------------
+		string.
+
+	- %: 마지막 구분자 뒤쪽(오른쪽)의 문자열(단어)을 삭제, 문자열 뒤쪽에서부터 문자열을 하나씩 삭제하는데 첫번째 구분자 앞까지 삭제 한다.
+		---------------------
+		#!/bin/bash
+
+		$x = "arm ubuntu linux test string."
+		$echo ${x% *}
+		---------------------
+		arm ubuntu linux test
+
+		만일 문자열 안에 ":"뒤에 문자들만 삭제 하고 싶을 경우,
+		---------------------
+		#!/bin/bash
+
+		$x=11111:222
+		echo ${x%:*}
+		---------------------
+		11111
+
+	- %%: 구분자 뒤쪽(오른쪽)의 문자열(단어)을 삭제, 문자열 두쪽에서부터 문자열을 하나씩 삭제하는데 마지막 구분자 앞까지 삭제
+		---------------------
+		#!/bin/bash
+
+		$x = "arm ubuntu linux test string."
+		$echo ${x%% *}
+		---------------------
+		arm
+
+# Function
+	- Syntax
+		function fun_name {
+		command1 ...
+		command2 ...
+		}
+		또는
+		fun_name {
+		command1 ...
+		command2 ...
+		}
+		함수 호출의 경우 반드시 함수를 호출 하기 전에 함수가 구현 되어 있어야 사용 할 수 있다.
+
+	- 작성 내용 ( fun_test.sh )
+		----------------------------------------
+		#!/bin/bash
+
+		fa_function ()
+		{
+		  echo "this is fa_funciton"
+		  echo "fa_function calling"
+		}
+
+		fa_function
+
+		exit 0
+		----------------------------------------
+
+		실행 결과
+		-----------------------------------------
+		$ ./fun_test.sh 
+		  this is fa_function
+		  fa_function calling
+		-----------------------------------------
+
+	- Arguments
+		- 첫번째 인자는 $1,  두번째 인자는 $2, 세번째 인자는 $3, 네번째 인자는 $4 ...
+		- 인자의 개수는  $# 을 이용
+
+		----------------------------------------------------------
+		#!/bin/sh
+
+		argc=$#
+
+		argv0=$0
+		argv1=$1
+		argv2=$2
+		argv3=$3
+		argv4=$4
+
+		fa_argcv()
+		{
+				if [ 0 -eq $argc ]
+				then
+						echo "argc:$argc"
+						echo "argv0:$argv0"
+				fi
+				if [ 1 -eq $argc ]
+				then
+						echo "argc:$argc"
+						echo "argv0:$argv0"
+						echo "argv1:$argv1"
+				fi
+				if [ 2 -eq $argc ]
+				then
+						echo "argc:$argc"
+						echo "argv0:$argv0"
+						echo "argv1:$argv1"
+						echo "argv2:$argv2"
+				fi
+				if [ 3 -eq $argc ]
+				then
+						echo "argc:$argc"
+						echo "argv0:$argv0"
+						echo "argv1:$argv1"
+						echo "argv2:$argv2"
+						echo "argv3:$argv3"
+				fi
+				if [ 4 -eq $argc ]
+				then
+						echo "argc:$argc"
+						echo "argv0:$argv0"
+						echo "argv1:$argv1"
+						echo "argv2:$argv2"
+						echo "argv3:$argv3"
+						echo "argv4:$argv4"
+				fi
+
+		}
+
+		fa_argcv
+
+		exit 0
+		----------------------------------------------------------
+		$ ./sample.sh
+		argc:0
+		argv0:./sample.sh
+		$ ./sample.sh 9
+		argc:1
+		argv0:./sample.sh
+		argv1:9
+		$ ./sample.sh 9 8
+		argc:2
+		argv0:./sample.sh
+		argv1:9
+		argv2:8
+		$ ./sample.sh 9 8 7
+		argc:3
+		argv0:./sample.sh
+		argv1:9
+		argv2:8
+		argv3:7
+		$ ./sample.sh 9 8 7 6
+		argc:4
+		argv0:./sample.sh
+		argv1:9
+		argv2:8
+		argv3:7
+		argv4:6
+		$ ./sample.sh 9 8 7 6 5
+		------------------------------------------
+
+# Input 처리
+	read1.sh =====================
+	#!/bin/sh
+
+	echo "Please, enter your OS "
+	read OS
+	echo "You $OS OS Users. "
+	===================================
+	$ ./read1.sh
+	Please, enter your OS
+	Ubuntu
+	You Ubuntu OS Users.
+	$ ./read1.sh
+	Please, enter your OS
+	Fedora
+	You Fedora OS Users.
+
+	2개 이상의 입력을 받아 들일 수도 있습니다.
+	read2.sh =====================
+	#!/bin/sh
+
+	echo "Please, enter your OS "
+	read OS VER
+	echo "$OS $VER Users. "
+	===================================
+	$ ./read2.sh
+	Please, enter your OS
+	Ubuntu
+	Ubuntu  Users.
+
+	$ ./read2.sh
+	Please, enter your OS
+	Ubuntu 10.04
+	Ubuntu 10.04 Users.
+
+# command 치환
+	- 명령어 치환의 형태는 역따옴표(`...`)를 사용 하는 것이다.
+	  또한 명령어의 출력은 다른 명령어의 인자로 사용 할 수 있으며, 실행 명령어의 결과를 포함하고 있는 변수를 만들 수 있다.
+	-------- is_dir.sh -----------------------
+	#!/bin/bash
+
+	if [ -d $1 ] ; then
+			echo "1"
+	else
+			echo "0"
+	fi
+	-------- is_dir.sh -----------------------
+	------ cmd_ex.sh ---------------
+	#!/bin/bash
+
+	CMD=`./is_dir.sh /tmp`
+
+	if [ $CMD -eq 1 ]; then
+		echo "/tmp DIR EXIST"
+	else
+		echo "/tmp DIR NOT EXIST"
+	fi
+	------ cmd_ex.sh ---------------
+	위의 cmd_ex.sh 에서 CMD라는 변수에 ./is_dir.sh /tmp 의 실행 결과 값을 받아 오는 것을 확인 할 수 있다
+
+	실행 결과는 다음과 같다.
+
+	$ ./cmd_ex.sh
+	/tmp DIR EXIST
+

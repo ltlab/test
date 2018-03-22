@@ -1,0 +1,15 @@
+KERNELDIR	=	/lib/modules/$(shell uname -r)/build
+
+CFLAGS	:=	-D__KERNEL -DMODULE -I$(KERNELDIR)/include -O -Wall
+
+TARGET	:=	test.o
+OBJS	:=	test1.o test2.o test3.o
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(LD) -r $^ -o $@
+
+clean:
+	rm -rf *.o
+	rm -rf *~

@@ -1,0 +1,73 @@
+coLinux
+=================================
+install dir: D:\coLinux
+
+0. Booting, Windows Service....
+	- dos > colinux-daemon.exe @[config file] -t nt
+		- -t nt: execute in cmd window
+	- dos > colinux-daemon.exe @[config file] --install-service "coLinux"
+	- dos > colinux-daemon.exe --remove-service "coLinux"
+	- dos > net [ start | stop ] "coLinux"
+	- dos > fsutil file createnew [new.img] [size in BYTE]
+	  dos > copy /b [org_rootfs.img]+[new.img] [new_rootfs.img]
+
+		# resize2fs /dev/cobd0	//	filesystem image resizing
+		# mkswap /dev/cobd1
+		# swapon -a
+		/etc/fstab
+			/dev/cobd1	none	swap	sw	0 0
+
+1. Config file(*.conf)
+	kernel=vmlinux
+
+	cobd0="d:\coLinux\root.fs"
+	cobd1="d:\coLinux\swap.fs"
+
+	cofs0=c:\
+	cofs1=d:\
+
+	root=/dev/cobd0
+	ro
+	initrd=initrd.gz
+
+	mem=1024
+
+	#	Bridged Network
+	eth0=tuntap,"coLinuxNet"
+	eth1=slirp
+
+2. 한글 설정
+	# sudo apt-get install locales
+	# sudo dpkg-reconfigure locales
+		- ko_KR.EUC-KR, ko_KR.UTF-8
+
+	# sudo apt-get install language-pack-ko
+	# sudo locale-gen ko_KR.EUC-KR
+
+	# sudo ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+3. Install Packages
+	- manpage: man-db, manpages-ko
+	- development: vim, ctags, cscope, build-essential
+	- tftp: tftp-hpa tftpd-hpa xinetd
+	- nfs: nfs-kernel-server, (portmap)
+	- samba: samba, smbfs
+	- ftp: vsftpd
+	- zip: zip, unzip
+	- wget: wget
+	- SVN, GIT: subversion, git-core
+	- for kernel compile(menuconfig): libcurses5-dev
+	- Packet Analisis: tcpdump, ngrep
+
+4. Etc.....
+	- Mount Windows Partitions
+		# sudo mount -t cofs cofs1 /mnt
+		- /etc/fstab
+			cofs:/		/c_drive	cofs	uid=0,gid=1000,user,noexec,dmask=0775,fmask=0666	0	0
+
+	- TAP 버전 문제 발생시 드라이버 재설치
+		- 상태 명령: dos > tapcontrol.exe hwids TAP0801co
+		- 제거 명령: dos > tapcontrol.exe remove TAP0801co
+		- 설치 명령: dos > tapcontrol.exe install OemWin2k.inf tap0801co
+
+

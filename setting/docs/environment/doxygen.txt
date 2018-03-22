@@ -1,0 +1,7 @@
+Doxygen
+------------------------
+
+# sudo apt-get install doxygen doxygen-gui
+# sudo apt-get install texlive-extra-utils
+# doxywizard ==> GUI
+

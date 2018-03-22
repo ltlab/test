@@ -1,0 +1,63 @@
+
+
+5. Mount NTFS
+	- /dev/fuse 허가거부"라는 메시지가 나오면서 마운트가 실패할 경우.
+		    * fuse module이 부팅때마다 항상 올라가도록 한다.
+	$ sudo echo "fuse" >> /etc/modules
+
+    * fuse의 권한을 설정한다.
+      파일/etc/udev/rules.d/xx-fuse.rules(xx는 숫자)을 확인한다.
+
+          KERNEL=="fuse", NAME="%k", MODE="0666",OWNER="root" GROUP="fuse"
+
+	- /etc/fstab
+
+    		/dev/sdb1    /media/SS160G    ntfs-3g    users,noauto,uid=1000,gid=100,fmask=0113,dmask=0002,locale=ko_KR.utf8  0 0
+
+    * /dev/sdb1  
+          o 마운트하고자 하는 NTFS 파티션
+          o "/dev/sdb1 허가거부"라는 에러메시지가 뜰 경우.
+                +  /dev/sdb1의 유저,그룹, 각 권한을 확인하고 /dev/sdb1의 그붑에 일반 유저도 포함시킨다.
+
+                + 파일 /etc/udev/rules.d/50-udev.rules에서 block device의 권한 설정을 확인 후 변경한다.
+                  (일반사용자가 read/write할 수 있도록 하려면 MODE를 0640에서 0660으로 변경)
+
+    * /media/SS160G
+      ntfs 파티션을 마운트하는 디렉토리.  디렉토리를 만들 때,  일반 사용자가 접근가능하도록 소유자, 그룹을 설정한다.
+
+          $ sudo mkdir /media/SS160G
+          $ sudo chown taiheon:users /media/SS160G
+
+    * ntfs-3g
+      마운트 타입
+    * users,noauto,uid=1000,gid=100,fmask=0113,dmask=0002,locale=ko_KR.utf8
+          o users
+            모든 사용자가 mount, unmount 할수 있도록 한다. 이것이 가능하려면 먼저 ntfs-3g를 setuid시켜야 한다.
+
+                $ sudo chmod u+s /usr/bin/ntfs-3g
+
+          o noauto
+            부팅할 때 자동으로 마운트 되지 않도록 한다.
+          o uid=1000
+            마운트된 파일과 디렉토리의 소유자를 지정한다. uid를 지정 혹은 변경하려면 usefmod 명령을 사용한다.
+
+                $ sudo usermod -u 1000 <사용자계정>
+
+          o gid=100
+            마운트된 파일과 디렉토리의 그룹을 지정한다. gid를 지정 혹은 변경하려면 groupmod 명령을 사용한다.
+
+                $ sudo groupmod -g 100 <group>
+
+          o fmask=0113
+            마운트된 파일의 퍼미션을 지정한다. mask가 0113이므로 권한은 0664(rw-rw-r--)가 된다.
+          o dmask=0002
+            마운트된 디렉토리의 퍼미션을 지정한다.  mask가 0002이므로 권한은 0775(rwxrwxr-x)가 된다.
+          o locale=ko_KR.utf8
+            사용할 로케일 
+
+- SAMBA에서 NTFS 마운트...
+	smbmount //[IP or Host]/[Share name] [/mountpoint] -o username=xxx,pssword=xxx,iocharset=utf8,file_mode=0664,dir_mode=0775
+	ex) sudo smbmount //192.168.14.200/ISO_temp /mnt -o username=elechole,password=026rese,iocharset=utf8,file_mode=0664,dir_mode=0775
+
+	mount -t cifs -o username=xxx,password=yyy,iocharset=utf8,file_mode=0664,dir_mode=0775 //111.111.111.111/test /test
+

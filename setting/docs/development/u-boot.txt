@@ -1,0 +1,24 @@
+
+0. Build Sequence
+-----------------------------
+make <boardname>_config
+make all
+------------------------------
+
+1. ./Makefile
+- BUILD_DIR: default=$(0)
+- CROSS_COMPILE = arm-linux-
+    /lib_arm/config.mk
+	=> CROSS_COMPILE = arm-ktnc-linux-gnu-
+- smdk2410_config 찾아서 다음을 추가
+	<boardname>_config:	unconfig
+		@$(MKCONFIG) ------- => 보드에 맞도록...
+	smdk2410의 경우 arm arm920t smdk2410 NULL s3c24x0
+		arm: [ARCH] include/asm-[ARCH]
+		arm920t: cpu/[CPU]
+		smdk2410: board/[BOARD]
+		NULL: board/[VENDOR]/[BOARD]
+		s3c24x0: cpu/[CPU]/[SOC]
+- /include/configs/XXX.h ===> /include/configs/<boardname>.h
+	=> 적당한 config 관련 파일 복사하여 수정
+

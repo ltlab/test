@@ -1,0 +1,91 @@
+- visual diff tools : meld, kdiff, kompare
+- editor : bluefish, gedit, kate
+- hex editor : heme, hexedit
+
+- KSCOPE for Ubuntu 8.10 Intrepid
+	"kscope: error while loading shared libraries: libkateinterfaces.so.0: 		cannot open shared object file: No such file or directory"
+	then did
+
+	wget ftp.debian.org/debian/pool/main/k/kdebase/kate_3.5.9.dfsg.1-6_i386.deb
+	ar x kate_3.5.9.dfsg.1-6_i386.deb
+	tar xzf data.tar.gz
+	sudo cp usr/lib/libkateinterfaces.so.0.0.0 /usr/local/lib
+	sudo cp usr/lib/libkateutils.so.0 /usr/local/lib
+	sudo ldconfig
+
+	Now kscope launches ok
+==============================================
+- 삼성 S3C64xx 계열용 cross-Compiler Package
+	간단한 컴파일러 스펙은 다음과 같습니다.
+	Kernel Header  : 2.6.20
+	Binutils Version : 2.19 / GCC Version : 4.3.2 / GLIBC Version : 2.7
+	아래 링크의 파일을 다운로드 받으셔서 호스트 시스템의 /opt 디렉터리에 압축을 푸시고
+	PATH 잡으셔서 사용하시면 됩니다.
+	다운로드 주소 : ftp://jhkim.kr/mirror/aesop/4.3.2-eabi-arm.tar.gz
+==============================================
+- Crosstool 0.43 - ARM Softfloat / ARM11-VFP EABI 지원
+	고도리님이 아래에 올리신 ARM EABI 지원 크로스 툴체인 자료를 바탕으로,
+	Crosstool 0.43의 이솝 포럼 버전을 만들어 봤습니다.
+
+	Crosstool 0.43 버전을 기반으로 다음과 같은 사항을 추가 하였습니다.
+
+	1) ARM EABI 지원 및 Software Floating Point 연산 지원 기능
+	=> "demo-arm-softfloat-eabi.sh" 실행
+
+	2) ARM EABI 지원 및 Hardware VFP 연산 기능과 ARMv6 아키텍처(ARM11) 지원 기능
+	=> "demo-armv6-vfp-eabi.sh" 실행
+
+	이 스크립트를 가지고 크로스 컴파일러가 정상적으로 오류없이 잘 생성되는 것 까지는
+확인해 봤습니다. ^^
+
+	다음 Crosstool 강의는 이 자료를 바탕으로 설명해 드리려고 합니다. :)
+
+	P.S : 혹시 오류 사항 있으면 말씀해 주세요.
+                                                              이솝 임베디드 포럼, 김재훈 드림
+==============================================
+- kernel의 make menuconfig를 위한 준비
+	sudo apt-get install gawk
+	sudo update-alternatives --config awk 
+	sudo apt-get install build-essential
+	apt-get install libncurses5 libncurses5-dev
+	apt-get install kernel-package
+	apt-get install fakeroot
+
+- Install crosstool-ng
+	Error 발생시에 참고..
+		makeinfo => texinfo
+		curses.h 파일이 없다는 내용의 에러인데요. 데비안의 경우 curses.h 파일은 libncurses5-dev 패키지에 포함
+
+	$ wget http://ymorin.is-a-geek.org/download/crosstool-ng/crosstool-ng-1.3.1.tar.bz2
+	$ tar -jxvf crosstool-ng-0.3.2.tar.bz2
+	$ cd crosstool-ng-0.3.2
+	$ ./configure --prefix=/opt/cross-ng
+	$ make
+	$ sudo make install
+
+- using cross-ng
+	$ export PATH="${PATH}:/opt/cross-ng/bin"
+	$ mkdir toolchain-dev && cd ./toolchain-dev
+		=> crosstool-ng를 사용하여 빌드하고자 하는 크로스 툴체인을 위한 빌드 디렉토리
+	$ ct-ng menuconfig
+		=> 실제 크로스 툴체인의 Configuration
+		   /opt/cross-ng/lib/cross-ng-1.3.1/samples/ 아래에 보면 각종 config 파일들이 있다. 유사한 파일을 빌드 디렉토리로 복사하여 사용하면 편하다.
+	$ ct-ng build
+
+- Crosstool-ng configuration
+	- General target options
+		- Arch. Level: ex. armv5te, armv6, etc...
+			- configuration flag: --with-arch=XXXX, -march=XXXX
+		- Emit assembly: ex. xscale
+			- configuration flag: --with-cpu=XXXX, -mcpu=XXXX
+		- Tune for CPU: ex. xscale
+			- configuration flag: --with-tune=XXXX, -mtune=XXXX
+	- sjlJ: setjmp/longjmp for exception
+		- exception에서 setjmp/longjmp 사용에 대한 설정인듯..
+			off: C compiler-> Use sjlj -> Force not using sjlj
+				- configuration switch: --disable-sjlj-exceptions
+			on: C compiler-> Use sjlj -> Force using sjlj
+				- configuration switch: --enable-sjlj-exceptions
+			default: Let configure decide
+
+

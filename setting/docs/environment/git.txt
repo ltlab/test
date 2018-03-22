@@ -1,0 +1,39 @@
+GIT
+----------------------------------------------------
+- Make local repository
+	# mkdir <git-local-repository>
+	# cd <git-local-repository>
+	# git init
+
+- Clone git repository from remote server
+	# git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+
+- branch
+
+- tag
+
+- fetch
+
+- Update from remote server
+	# cd <git-local-repository>
+	# git pull
+
+- Commit to local repository
+	#
+
+- checkout
+
+- push
+
+- pull
+
+- show
+
+- log
+
+- reset
+
+- rebase
+
+
+

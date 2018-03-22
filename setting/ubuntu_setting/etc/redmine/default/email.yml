@@ -1,0 +1,9 @@
+production:
+  delivery_method: :smtp
+  smtp_settings:
+    address: mail.nettop.co.kr
+    port: 587
+    domain: nettop.co.kr
+    authentication: :login
+    user_name: jyhuh@nettop.co.kr
+    password: h45364078

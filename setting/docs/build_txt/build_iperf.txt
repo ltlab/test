@@ -1,0 +1,1 @@
+ac_cv_func_malloc_0_nonnull=yes ./configure --build=i686-linux --host=arm-hisiv100nptl-linux --prefix=/home/jyhuh/work/iperf-2.0.5/_install

@@ -1,0 +1,5 @@
+# libpcap and tcpdump
+
+CC=arm-hisiv100nptl-linux-gcc ac_cv_linux_vers=2 ./configure --host=arm-none-linux-gnueabi --prefix=/home/jyhuh/work/test/tcpdump/tcpdump-4.7.4/../_install --with-pcap=linux
+
+capture cmd: ./sbin/tcpdump -vv -x -i eth1 -w test.cap tcp port 4080 and host 192.168.10.150

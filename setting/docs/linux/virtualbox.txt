@@ -1,0 +1,20 @@
+
+
+- Virtualbox setting
+	sudo /etc/init.d/vboxdrv setup
+	- Permission setting
+		vboxusers에 user 추가
+	- Ethernet
+		- Host I/F: masquerading bt TAP0
+			GW: 192.168.10.1(TAP0's IP)
+	- USB Host
+		sudo vi /etc/init.d/mountdevsubfs.sh
+			# Add following list into start().
+			mkdir -p /dev/bus/usb/.usbfs
+			domount usbfs "" /dev/bus/usb/.usbfs -obusmode=0700,devmode=0600,listmode=0644
+			ln -s .usbfs/devices /dev/bus/usb/devices
+			mount -rbind /dev/bus/usb /proc/bus/usb
+		sudo vi /etc/fstab
+			none	/procbus/usb	usbfs	devgid=<vboxusers GID>,devmod=0664	0 0
+
+

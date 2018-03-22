@@ -1,0 +1,5 @@
+- Edit Configure file.
+	"linux-armv7","gcc:-march=armv7-a -mtune=cortex-a9 -I\$(ANDROID_DEV)/include -B\$(ANDROID_DEV)/lib -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${armv4_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+
+- build command
+	CC=arm-hisiv100nptl-linux-gcc ./Configure linux-armv7 --prefix=/home/jyhuh/work/openssl-1.0.1f/_install shared

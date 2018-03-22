@@ -1,0 +1,61 @@
+﻿
+	- Scheduling Policy( Preemption, Round-robin )
+	- Time Slice/Priority 할당 방법
+	- Memory 관리 기법
+
+	- Inter-Process Communication: PIPE, Message Queue, Event
+	- Thread(POSIX, Linux) Programming
+	- Parent/Child task management 
+	- timer in application
+
+1. Linux Scheduling policy: 이해/개선
+	- task 별 priority 할당/수정 가능여부
+	- task 별 time-slice 조정 가능여부
+	- Preemption 정책: priority 관리는 어떻게??
+	- Time Slice 가변 정책, 범위
+	- Thread management 정책: Thread라 하더라도 하나의 process로 실행됨(2.4)
+
+2. Linux Memory Management
+	- memory allocation in kernel(kmalloc(), vmalloc())
+	- memory allocation in User space(malloc())
+	- memory leakage 유발 원인/발생시 조치 방법(반환)
+	- gabage collection 정책
+	- application 에서 물리 주소로 접근할 수 있는 방법
+		- device driver에서 ioremap()으로 physical area => virtual area로 mapping시켜 놓고 application에서는
+			해당 device file을 이용해 접근하는 방법.
+
+3. Timer
+	- System Tick: HZ( 보통 100 )
+	- kernel
+		- jiffies: counting HZ
+		- TSC: counting CPU clk
+		- Time Slice 범위
+	- User space Timer resolution
+
+4. S/W Design
+	- task: 7개 이하, idle task, CPU Usage under 70%
+	- sub-shell: timer event 기능, task 관리/감시 -> super daemon
+	- Shell based UI: as Chanux
+		- status: task state, stack, memory address, CPU usage %(only used by applications)
+		- memory: display, modify, compare, fill, clear ( byte/word/dword )
+		- task create/remove
+	- task/thread assignment
+
+# Nested Interrupt
+	- System call or ISR 수행 중에 Interrupt 요청이 있을 때,
+	  panding 했다가 처리하거나, 즉시 처리하는(nested) 방법이 있다.
+
+# Scheduling in Linux Kernel
+
+# Process/Thread Management in Linux
+
+# Memory Allocation/Deallocation in Kernel/User Space
+	- Kernel
+		- kmalloc(), kfree(): continuous virtual address, continuous physical address
+		- vmalloc(), vfree(): continuous virtual address, discrete physical address
+	- User space
+		- malloc(), free()
+
+# Inter-Process / Inter-Thread Communication
+
+

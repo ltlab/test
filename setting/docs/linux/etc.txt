@@ -1,0 +1,56 @@
+- date, hwclock
+	# date [MMDDhhmm[[CC]YY][.ss]
+		- date 101917262009.30 : 2009. 10. 19. 17:26.30
+	# hwclock --systohc : system clock to hwclock
+	# rdate -p time.bora.net
+	# rdate -s time.bora.net
+
+- reference lib. 확인
+    ldd <execute file>
+
+- 파일 비교
+    - cmp -b -l <binary file1> < binary file2>
+
+- redirection
+	- 0, 1, 2: stdin, stdout, stderr
+	- <cmd> > stdout.txt 2> stderr.txt
+	- <cmd> 2>&1	: stderr => stdout 출력으로 보내기
+	- <cmd> 2>&1 | tee log.txt => stdout, stderr 출력을 log.txt로 저장하기
+	- '|'는 특정 프로그램의 stdout 과 다른 프로그램의 stdin 을 연결하는 파이프 
+
+- Ubuntu 8.10
+	- /etc/inittab => /etc/event.d/* in Ubuntu
+	- Network info => /etc/NetworkManager/system-connections/Wired.....
+
+- single user login
+	boot parameter에 single 추가
+
+- elf Header 확인하기
+	readelf -h <elf_file>
+	readelf -enA <elf_file>
+
+- man -a <???>
+	여러 man 페이지가 있을 때 모든 페이지를 볼 수 있음
+	# man 2 <???>
+
+- ftp 관련
+	hash / bin : transfer mode
+	verbose : 업/다운 진행 표시
+	prompt : interactive mode on/off
+
+- UUID 확인하기
+	sudo vol_id -u /dev/sda3
+
+- cron log file
+	/var/log/cron.log => /etc/syslog.conf
+
+- .svn 지우기
+	# find ./ -name .svn -print0 | xargs -0 rm -rf
+- ^M 지우기
+	# find ./ -name '*.c' -o -name '*.h' -exec perl -pi -e 's/^M//g' {} \;
+	^M = ctrl + v + m
+
+# mount added disk to /home
+echo "`sudo blkid | grep $DEV_PART | awk '{print $2}' | sed 's/"//g'` /home ext4 defaults 0 2" | sudo tee -a /etc/fstab
+echo "`sudo blkid | grep $SWAP_PART | awk '{print $2}' | sed 's/"//g'` none swap sw 0 0" | sudo tee -a /etc/fstab
+

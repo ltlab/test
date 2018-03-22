@@ -1,0 +1,270 @@
+kernel module building
+--------------------------------------------
+[root@localhost 2.6_kernel]# make modules
+[root@localhost 2.6_kernel]# make INSTALL_MOD_PATH=/home/user/target-rootfs modules_install
+
+[root@localhost user]# cd /home/user/target-rootfs/lib/modules
+[root@localhost modules]# arm-none-linux-gnueabi-strip `find . -name “*.ko”`
+
+FLASH
+--------------------------------------------
+[root@localhost util]# mkfs.jffs2 -lqnp -e 128 -r target-rootfs -o /tftpboot/rd-jffs2.bin
+
+- u-boot
+	onenand unlock 0x0 0x8000000
+	mw.b 0x81600000 0xff 0x1400000
+	onenand erase block 60-1023
+	tftpboot 0x81600000 rd-jffs2.bin
+	onenand write 0x81600000 0x780000 0x1400000
+	setenv bootargs mem=88M noinitrd ip=dhcp console=ttyS0,115200n8  root=/dev/mtdblock4 rootfstype=jffs2
+	saveenv
+=============================================
+
+Ramdisk
+--------------------------------------------
+# cd /home/user
+[root@localhost user]# dd if=/dev/zero of=rd-ext2.bin bs=1k count=16384
+[root@localhost user]# mke2fs -F -m0 rd-ext2.bin
+[root@localhost user]# mount -t ext2 rd-ext2.bin /mnt -o loop
+[root@localhost user]# tar -C target-rootfs -cf - . | tar -C /mnt -xf -
+[root@localhost user]# umount /mnt
+[root@localhost user]# cp rd-ext2.bin /tftpboot
+	//	for write to flash in U-boot by tftp
+
+- u-boot
+	tftp 0x81600000 rd-ext2.bin
+	setenv bootargs mem=88M ip=dhcp console=ttyS0,115200n8 root=/dev/ram0 rw initrd=0x81600000,16M ramdisk_size=16384
+	saveenv
+
+- ramdisk 파일 생성
+	$ dd if=/dev/zero of=ramdisk-image bs=1024 count=8192
+		//	8MB ramdisk image file
+
+- ramdisk filesystem 만들기
+	$ mkfs.ext2 ramdisk-image
+	$ file ramdisk-image
+
+- Mount ramdisk
+	$sudo mount -t ext2 -o loop ramdisk-image ramdisk
+========================================================================================
+- root filesystem directory 생성
+	ramdisk$ mkdir -p bin dev etc home opt proc root sbin usr var lib/modules usr/include usr/share/man/man1 usr/share/man/man5 usr/share/man/man8 sys var/log var/run/utmp var/run/wtmp dev/pts var/lock/ var/lock/subsys /usr/bin
+
+- /dev 구성
+	#!/bin/sh
+		mknod apm_bios c 10 134
+		mknod console c 5 1
+		mknod fb0 c 29 0
+		mknod hda b 3 0
+		for i in 1 2 3 4 5 6 7 8 9;do mknod hda$i b 3 $i;done
+		mknod kmem c 1 2
+		mknod mem c 1 1
+		for i in 0 1 2 3 4 5 6 7 8 9;do mknod mtd$i c 90 $((i * 2));done
+		for i in 0 1 2 3 4 5 6 7 8 9;do mknod mtdblock$i c 31 $i;done
+		mknod null c 1 3
+		mknod ptmx c 5 2
+		for i in 0 1 2 3;do mknod ram$i c 31 $i;done
+		mknod random c 1 8
+		mknod tty c 5 0
+		for i in 0 1 2 3 4 5 6 7 8;do mknod tty$i c 4 $i;done
+		mknod ttySAC0 c 204 64
+		mknod urandom c 1 9
+		mknod zero c 1 5
+
+- toolchain의 lib을 /lib으로 복사
+	/opt/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/libc/lib => /lib
+
+- toolchain의 include, share를 /usr로 복사
+	/opt/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/libc/usr/include => /usr/include
+	/opt/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/libc/usr/share => /usr/share
+- Root FS Lib(/lib) dir: /opt/arm-2007q1/arm-none-linux-gnueabi/libc/lib/
+  Root FS usr(/usr) dir: /opt/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/libc/usr
+
+- busybox
+	$ wget http://busybox.net/downloads/busybox-1.10.2.tar.bz2
+	$ tar xjvf busybox-1.10.2.tar.bz2
+	$ cd busybox-1.10.2
+	busybox-1.10.2$ make menuconfig
+		- build option에서 cross compile prefix 설정
+		세팅 대충하고..
+		# make V=1 && make install
+	busybox-1.10.2$ ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi- make
+	busybox-1.10.2$ make install
+		하면 _install이라는 디렉토리에 필요한 파일이 만들어진다.
+	$cp _install/* /home/hulryung/emdk2440s/rootfs/rootfs-base/ -a
+
+- tinylogin 설치
+	- Makefile 수정
+		CROSS := arm-none-linux-gnueabi
+	$ make
+	$ sudo make install
+		login과 tinylogin만 루트파일시스템으로 복사한다.
+	$ sudo chown root:root /home/hulryung/emdk2440s/rootfs/rootfs-base/bin/tinylogin
+		tinylogin에 setuid로 권한이 세팅되어 있다.. 그래서 root권한으로 사용되도록 해야 한다.
+		그래서 바꿔준다.
+
+- bash shell 설치
+	$ ./configure --build=i686-linux --host=arm-none-linux-gnueabi --prefix=[install path]
+	- Makefile에서 prefix 수정 한다.
+	$ make
+	$ make install
+	$ cd /home/hulryung/emdk2440s/rootfs/rootfs-base/bin
+	$ ln -s bash sh
+
+- sysvinit 설치
+	$ wget ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.86.tar.gz
+		or $ wget http://downloads.openmoko.org/sources/sysvinit-2.86.tar.gz
+	$ tar xzvf sysvinit-2.86.tar.gz
+	$ cd sysvinit/src
+	$ Makefile 수정
+		CC=arm-linux-gcc
+		BIN_OWNER = hulryung
+		BIN_GROUP = hulryung
+	$ ROOT=$ROOTFS make
+	$ ROOT=$ROOTFS make install
+	$ vi $ROOTFS/etc/inittab
+
+- initscript 구성
+	$ cd $ROOTFS/etc/
+	$ mkdir init.d rc0.d rc1.d rc2.d rc3.d rc4.d rc5.d rc6.d rcS.d
+	$ cp banner bootmisc.sh checkfs.sh checkroot.sh devices devpts.sh finish functions halt hostname.sh mountall.sh mountnfs.sh populate-volatile.sh ramdisk reboot rmnologin save-rtc.sh sendsigs single umountfs umountnfs.sh urandom sysfs.sh /home/hulryung/emdk2440s/rootfs/rootfs-base2/etc/init.d/
+	$ cp devpts $ROOTFS/etc/default
+	$ cp volatiles $ROOTFS/etc/default/volatile/00_core
+
+- 팁으로 자동 로그인 되게 만들자
+	$ vi /home/hulryung/emdk2440s/rootfs/rootfs-base/bin/autologin
+		#!/bin/sh
+		/bin/tinylogin login -f root
+	$ chmod 777 /home/hulryung/emdk2440s/rootfs/rootfs-base/bin/autologin
+	$ vi /home/hulryung/emdk2440s/rootfs/rootfs-base/etc/inittab
+		T0:12345:respawn:/sbin/getty -L -n -l /bin/autologin ttySAC0 115200 vt100
+
+- etc디렉토리 passwd 파일 수정
+	root 계정에 패스워드를 없애버리자
+
+- 패키징
+	$ sudo umount ramdisk
+	$ gzip -9 ramdisk-image
+	$ mkimage -n Ramdisk -A arm -O linux -T ramdisk -C gzip -a 0x30800000 -e 0x30800000 -d ramdisk-image.gz ramdisk-emdk2440s.img
+
+- 다운로드 후 테스트
+	root=/dev/ram0 rw rootfstype=ext2 console=ttySAC0,115200n81 initrd=0x30800000 ramdisk_size=8192
+=====================================================
+- VAR := $(shell pwd)
+	위와 같이 = 앞에 ':'를 넣어주면 한번 내린 명령을 항상 저장하도록 한다.
+	즉, 매번 명령을 내리지 않고, 한번 얻은 결과값을 항상 가지고 처리하여 속도의 문제가 없다. 
+
+- &&와 ;의 차이점 --> &&로 명령어를 묶을경우 에러가 나면 실행을 중지하지만, ;로 묶을경우 무시하고 설치한다. 
+
+autoconf 매뉴얼에 다음과 같이 정의 되어 있습니다.
+--build=build-type
+    the type of system on which the package is being configured and compiled (rarely needed); 
+--host=host-type
+    the type of system on which the package will run; 
+--target=target-type
+    the type of system for which any compiler tools in the package will produce code.
+쉽게 이야기 해서..
+build는 현재 플랫폼, host는 설치될 플랫폼, target은 실행될 플랫폼으로 설정하시면 됩니다.
+툴체인 같은 경우에는 build와 host가 같은 값이고,
+크로스컴파일은 host와 target이 같은 값이면 됩니다.
+
+${arch}-${vendor}-${kernel}-${platform}
+686-pc-linux-gnu
+
+CBUILD = CHOST = CTARGET    - native build/install
+CBUILD != (CHOST = CTARGET) - cross-compile a native build
+(CBUILD = CHOST) != CTARGET - libc for cross-compiler
+CBUILD != CHOST != CTARGET  - cross-compile a libc for a cross-compiler
+
+e2fsprogs cross compile
+--------------------------------------------
+	$ mkdir build; cd build
+	$ ../configure --host=arm-linux --enable-elf-shlibs --with-cc=arm-none-linux-gnueabi-gcc --with-linker=arm-none-linux-gnueabi-ld --prefix=$PWD/_install
+	$ make; make install
+		//	/build/_install에 e2fsprogs 관련 라이브러리 및 파일 설치
+	$ make install-libs
+		//	libuuid 등의 라이브러리 설치..(mtd-tools에서 libuuid 필요로 함..)
+	## e2fsprogs는 host 에서도 필요하다..
+
+sysvinit 설치
+---------------------------------------------
+	$ wget ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.86.tar.gz
+		or
+	$ wget http://downloads.openmoko.org/sources/sysvinit-2.86.tar.gz
+
+	$ tar xzvf sysvinit-2.86.tar.gz
+	$ cd sysvinit/src
+
+	$ Makefile 수정
+		CC=arm-linux-gcc
+		BIN_OWNER = hulryung
+		BIN_GROUP = hulryung
+	$ ROOT=$ROOTFS make
+	$ ROOT=$ROOTFS make install
+$ vi $ROOTFS/etc/inittab
+적절하게..
+
+mtd-utils: host 및 target에서 모두 필요...
+-----------------------------------------------------
+The MTD utilities require the liblzo package to be installed on you Linux development host in order to compile. This package is usually installed in the /usr/local/lib directory as liblzo2.la and liblzo2.a
+
+	# wget http://www.gzip.org/zlib/zlib-1.2.3.tar.gz
+	# tar xvzf zlib-1.2.3.tar.gz
+	# cd zlib-1.2.3
+
+	$CC=arm-none-linux-gnueabi-gcc AR="arm-none-linux-gnueabi-ar rc" RANLIB=arm-none-linux-gnueabi-ranlib ./configure --shared --prefix=$PWD/../../mtd_install
+		//	zlib-1.2.3 # CC=arm-linux-gcc AR="arm-linux-ar rc" RANLIB=arm-linux-ranlib ./configure --shared --prefix=$PWD/../mtd_install
+	zlib-1.2.3 # make && make install
+
+If you do not have liblzo installed you can download the sources from http://www.oberhumer.com/opensource/lzo/download/ and perform the following actions to build it for your Linux development host.
+
+   host$ tar xzf lzo-#.##.tar.gz
+   host$ cd lzo-#.##
+   host$ mkdir build; cd build
+   host$ ../configure --host=arm-none-linux-gnueabi --enable-shared --prefix=$PWD/../../../mtd_install
+   host$ make
+   host$ make install
+   
+NOTE: In the above command replace #.## with the version downloaded from http://www.oberhumer.com/opensource/lzo/download/
+	
+#### elechole@colinux:~/work/dbh-rootfs/build/e2fsprogs-1.41.9/build$ cp  _install/lib/libuuid.* ../../../mtd_install/lib/
+
+Compilation
+
+###	common.mk
+	PREFIX  :=      /work/build_rootfs/mtd_install
+	DESTDIR :=      $(PREFIX)
+		//	org: /usr/local
+	ZLIBCPPFLAGS    =       -I$(PREFIX)/include
+	LZOCPPFLAGS     =       -I$(PREFIX)/include/lzo
+
+	E2FSCPPFLAGS    =       -I/work/build_rootfs/e2fsprogs-1.41.9/lib
+
+	ZLIBLDFLAGS     =       -L$(PREFIX)/lib
+	LZOLDFLAGS      =       -L$(PREFIX)/lib
+
+	CROSS   :=      arm-none-linux-gnueabi-
+
+	CFLAGS ?= -O2 -g $(ZLIBCPPFLAGS) $(LZOCPPFLAGS) $(E2FSCPPFLAGS)
+
+	#DESTDIR ?= /usr/local
+	#PREFIX=/usr
+	#EXEC_PREFIX=$(PREFIX)
+	SBINDIR=$(EXEC_PREFIX)/sbin
+	#MANDIR=$(PREFIX)/share/man
+	MANDIR=$(EXEC_PREFIX)/share/man
+	INCLUDEDIR=$(PREFIX)/include
+
+   1. Obtain the MTD utils tree from http://git.infradead.org/ and extract them into a working directory.
+   2. Compile the MTD utilities with 'make'
+          * host$ make clean
+          * host$ WITHOUT_XATTR=1 make 
+
+Installing the MTD Utilities
+
+After the MTD utilities have been compiled they can be installed with the command:
+
+   host$ make install
+
+This will place the utilities in you /usr/sbin directory. If you do not have /usr/sbin in your PATH variable you can add it by editing your ~/.bash_profile file and adding /usr/sbin to your PATH variable. 
+

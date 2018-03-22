@@ -1,0 +1,12 @@
+TARGET =	sample
+OBJS = main.o tcp.o rs232.o
+SRCS = $(OBJS:.o=.c)
+CC = -I/home/jwjw/prjs/include	-g	-c
+$(TARGET): $(OBJS)
+    gcc -lm -o $@ $^
+
+.c.o:
+    gcc $(CC) $<
+
+dep : 
+    gccmakedep $(SRCS)

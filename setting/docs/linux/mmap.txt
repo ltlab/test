@@ -1,0 +1,462 @@
+================================================
+#include <unistd.h>
+#include <sys/mman.h>
+
+#ifdef _POSIX_MAPPED_FILES
+
+void * mmap(void *start, size_t length, int prot , int flags, int fd, off_t offset);
+
+int munmap(void *start, size_t length);
+
+#endif
+================================================
+/dev/mem과 /dev/kmem의 차이를 간단 명료하게 설명해 놓은것이 보이길래 올려봅니다.
+
+----------------------------
+[질문]
+Hello
+    What exactly is the difference between /dev/mem and /dev/kmem. While
+looking at the source code in char/mem.c I noticed that the mmap function
+for both are the same.  I believe that /dev/mem is the actual physical
+memory mapping. What is /dev/kmem used for?
+
+Thanks
+
+[답변]
+/dev/mem represents the phyical memory, /dev/kmem represents
+the kernel virtual address space.
+----------------------------
+
+즉, /dev/mem은 실제 물리 메모리, /dev/kmem은 커널 가상 메모리 공간에 접근할 수 있는 디바이스 파일입니다.
+================================================
+
+리눅스 그래픽 - mmap() 사용법
+http://forum.falinux.com/zbxe/?document_srl=406124&mid=graphic&sort_index=readed_count&order_type=desc
+================================================
+이전 강좌에서는 프레임버퍼를 사용하면서 칼라 값을 write() 와 lseek() 함수를 사용하여 쓰기를 함으로써 화면에 점을 찍었습니다. 그러나 이렇게 사용해서 코딩하는 것은 불편하죠. 또한 write() 와 lseek() 함수는 처리 속도가 느립니다.
+
+여기서 포인터 변수 특징을 먼저 짚고 넘어 가겠습니다.
+
+포인터 변수의 주소 변가량
+
+참~ 제목이 마음에 안듭니다. 여하튼 제가 말씀드리고 싶은 것은 결국 포인터 변수 사용의 편리성입니다.
+
+    char    *ptr
+
+C 에서의 변수 타입은 문자, 또는 숫자라는 개념 보다는 이 변수가 메모리에 차지하는 크기를 의미합니다. 지금 위의 ptr 은 char 포인터로 선언 되어 있고, char 의 변수 크기는 1 byte이기 때문에 ptr 의 주소를 증가 시키면 1 씩 증가됩니다.
+
+즉,
+
+    ptr = 0x2000;      ptr 의 주소값을 0x2000으로 설정
+
+    ptr += 1;          ptr의 주소값은 0x2001 로 됨
+    Ptr += 1;          ptr의 주소값은 0x2002 로 됨
+    Ptr += 1;          ptr의 주소값은 0x2003 으로 됨
+
+다시 short 로 설정했을 때를 보겠습니다. short 는 2 바이트 크기의 변수입니다.
+
+    ptr = 0x2000;      ptr 의 주소값을 0x2000으로 설정
+
+    ptr += 1;          ptr의 주소값은 0x2002 로 됨
+    Ptr += 1;          ptr의 주소값은 0x2004 로 됨
+    Ptr += 1;          ptr의 주소값은 0x2006 으로 됨
+
+즉, 포인터 변수의 선언 형태에 따라 주소 계산이 이렇게 다르다는 것을 아실 수 있습니다.
+
+포인터 변수를 이용한 프레임 버퍼 쓰기
+
+이 말씀을 드리는 이유는 픽셀 하나가 1 바이트일 때, 또는 2바이트일 때, 위의 방법에 따라 포인터 변수를 선언하고 바로 칼라 값을 넣어 준다면 매우 편리합니다.
+
+예로 8 비트 칼라에서는 픽섹당 1 바이트이므로 아래와 같이 사용하면 옆으로 수평선을 그을 수 있습니다.
+
+    char *ptr
+
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 0
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 1
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 2
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 3
+
+16비트 칼라라면 픽셀당 2 바이트 입니다.
+
+    short *ptr
+
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 0
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 2
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 4
+    *ptr++ = 0xff;    // 프레임 버퍼 주소 8
+
+이렇게 C 에서 자동으로 픽셀당 바이트 크기 만큼 자동으로 주소를 계산해 주기 때문에 write()나 lseek()함수를 사용하는 것 보다 매우 편리합니다. 또한 (x, y) 좌료 계산도 편리하죠.
+
+메모리 매핑 mmap()
+
+그러면 파일로 처리되는 프레임 버퍼를 어떻게 포인터로 이용할 수 있는 메모리로 변환할 수 있을까요? 이런 필요에 의해 나온 것이 메모리 매핑(memory mapping) 입니다.
+
+우리는 느끼지 못하지만 리눅스에서는 매우 다양하고 고급스러운 메모리 기술을 가지고 있습니다. 물리적으로는 하나의 메모리를 가지고 있지만 실행되는 여러 개의 에플리케이션은 마치 모든 메모리를 혼자 독차지한듯 작동하는 것도 바로 리눅스의 메모리 관리 때문이며, 또한 이를 위해 리눅스는 따로 메모리 관리자를 운영합니다.
+
+메모리 매핑은 물리적으로는 메모리 장치가 아니지만 메모리(memorry) 처럼 구성(maaping)해서 마치 메모리에 접근하듯이, 일반 메모리처럼 사용할 수 있도록 해줍니다.
+
+이 때 사용하는 것이 mmap() 함수입니다. 이 메모리 매핑은 리눅스에만 있는 것이 아닙니다. Microsoft Windows에서도 제공되는 데요, 리눅스 보다 훨씬 복잡합니다. 왜 이렇게 복잡한지는 이해가 안되지만 다 이유가 있겠죠. ^^
+
+void * mmap(void    *start,        // 물리적 장치에 대해 메모리로 시작할 위치, 보통 0
+            size_t   length,       // 물리적 장치의 크기, 즉 확보될 메모리의 크기
+            int      prot ,        // 읽기/쓰기와 같은 메모리의 특성
+            int      flags,        // 다른 프로세스와 공유할지 여부
+            int      fd,           // 물리적 장치의 디스크립터
+            off_t    offset        // 보통 0  
+            );
+
+주석으로 간단히 말씀을 드렸습니다만 몇 가지를 다시 보겠습니다.
+
+    start
+
+인수값은 특별한 경우를 제외하고 0 을 입력합니다. 저도 아직 경험이 적어서 0 이외의 값은 사용해 본적이 없습니다.
+
+    prot
+
+prot에는 아래의 4가지 상수를 사용할 수 있습니다.
+
+    * PROT_EXEC  페이지는 실행될 수 있다.
+    * PROT_READ  읽기 가능
+    * PRTO_WRITE 쓰기 가능
+    * PROT_NONE  접근 불가
+
+메모리 매핑된 메모리는 아래의 flags의 설정에 따라 다른 프로세스와 공유할 수 있으므로 프로세스의 기능에 따라 읽기/쓰기를 설정하시면 되겠습니다. 역시 나머지 PROT_EXEC와 PROT_NONE의 쓰임세는 저도 잘 모르겠네요....^^;;
+
+    flags
+
+이 인수를 이용하여 다른 프로세스와 공유할 지의 여부를 결정할 수 있습니다.
+
+    * MAP_FIXED   아직 무슨 옵션인지....--;
+    * MAP_SHARED  다른 프로세스와 공유하며, 사용하는 모든 프로세스는 동등한 권한을 갖습니다.
+                  동등한 권한을 갖는 만큼 충돌이 되지 않도록 조심해야 겠지요.
+    * MAP_PRIVATE 나만 쓰겠다는 것이죠.
+
+메모리 메핑을 이용한 프레임 버퍼 사용
+
+void	           *fb_mapped;       // 매핑된 메모리의 시작 위치를 담을 포인터
+unsigned short *ptr;            // 매핑 메모리에서 칼라를 넣는 포인터
+
+fb_mapped      = ( void *)mmap( 0,
+                                line_length * screen_height,
+                                PROT_READ|PROT_WRITE,
+                                MAP_SHARED,
+                                fb_fd,
+                                0);
+
+for ( ndx = 0; ndx < 100; ndx++)
+{
+   ptr   = ( unsigned short*)fb_mapped + screen_width * ndx + ndx;
+  *ptr  = 0xffff;
+}
+
+이전 강좌에 올려 드린 소스와는 달리 write()와 lseek()를 사용하지 않고 바로 포인터를 사용함으로써 코딩하기도 훨씬 깔끔하고 간편해 졌죠.
+
+주소 계산하는 것도,
+
+lseek( fb_fd, 0, SEEK_SET);
+lseek( fb_fd, ndx * line_length +ndx *(bits_per_pixel / 8), SEEK_SET);
+write( fb_fd, &color, 2);
+
+이랬던 것이 메모리 매핑을 이용해서 포인터 변수를 사용하기 때문에 아래와 같이 간단해 졌습니다.
+
+ ptr   = ( unsigned short*)fb_mapped + screen_width * ndx + ndx;
+*ptr  = 0xffff;
+
+전체 예제 소스
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <unistd.h>        // open/close
+#include <fcntl.h>         // O_RDWR
+#include <sys/ioctl.h>     // ioctl
+#include <sys/mman.h>      // mmap PROT_
+#include <linux/fb.h>
+
+int   main( int argc, char **argv)
+{
+   int      screen_width;
+   int      screen_height;
+   int      bits_per_pixel;
+   int      line_length;
+
+   int      fb_fd;
+   struct   fb_var_screeninfo  fbvar;
+   struct   fb_fix_screeninfo  fbfix;
+   void     *fb_mapped;
+   int      mem_size;
+   unsigned short *ptr;
+
+   int      ndx;
+
+   if ( access( "/dev/fb", F_OK))
+   {
+      printf( "프레임 버퍼 장치가 없습니다.n");
+      return 0;
+   }
+
+   if ( 0 > ( fb_fd = open( "/dev/fb", O_RDWR)))
+   {
+      printf( "프레임 버퍼에 접근할 수 없습니다.n");
+      return 0;
+
+   }
+
+   if ( ioctl( fb_fd, FBIOGET_VSCREENINFO, &fbvar))
+   {
+      printf( "FBIOGET_VSCREENINFO를 실행하지 못했습니다.n");
+      return 0;
+   }
+   if ( ioctl( fb_fd, FBIOGET_FSCREENINFO, &fbfix))
+   {
+      printf( "FBIOGET_FSCREENINFO 실행하지 못했습니다.n");
+      return 0;
+   }
+
+   screen_width   = fbvar.xres;                    // 스크린의 픽셀 폭
+   screen_height  = fbvar.yres;                    // 스크린의 픽셀 높이
+   bits_per_pixel = fbvar.bits_per_pixel;          // 픽셀 당 비트 개수
+   line_length    = fbfix.line_length;             // 한개 라인 당 바이트 개수
+
+   mem_size       = line_length * screen_height;
+
+   fb_mapped      = ( void *)mmap( 0,
+                                   mem_size,
+                                   PROT_READ|PROT_WRITE,
+                                   MAP_SHARED,
+                                   fb_fd,
+                                   0);
+
+   printf( "screen width   = %dn", screen_width  );
+   printf( "screen height  = %dn", screen_height );
+   printf( "bits per pixel = %dn", bits_per_pixel);
+   printf( "line length    = %dn", line_length   );
+
+   for ( ndx = 0; ndx < 100; ndx++)
+   {
+      ptr   = ( unsigned short*)fb_mapped + screen_width * ndx + ndx;
+     *ptr  = 0xffff;
+   }
+
+   for ( ndx = 0; ndx < 500; ndx++)
+   {
+     *ptr++  = 0xffff;
+   }
+
+   munmap( fb_mapped, mem_size);
+   close( fb_fd);
+
+   return 0;
+}
+
+실행해 보시면 이전 강좌와 같은 그림이 출력됩니다.
+
+많이 프레임 버퍼에 접근할 수 없다는 메시지가 나온다면 root 계정으로 변경하시거나 /dev/fb0 의 권한을 777 로 변경하십시오.
+
+]$ su -
+Password: ******
+]# chmod 777 /dev/fb0
+]# exit
+logout
+]$ 
+====================================================================
+
+응용프로그램에서 하드웨어 레지스터 접근하기
+===========================================
+1. 개요
+
+이 문서는 응용프로그램에서 mmap 를 이용하여 하드웨어를제어하는
+방법에 대한 문서이다.
+
+이 문서에 설명한 것은 EZ-X5를 이용하여 시험하였다.
+
+2. 설명
+
+임베디드용 하드웨어를 리눅스 커널에서 시험할때 보통 디바이스 드라이버를 제작하여
+시험하게 된다.
+
+그런데 이 과정은 솔찍히 무척 불편하고 디바이스 드라이버를 작성할만한 능력이
+없는 사람들에게는 무척 곤란해 하는 부분이다.
+
+그렇다면 방법이 없을까?
+
+리눅스를 만든 사람들은 이런것을 그냥 두지 않는다.
+
+대부분의 리눅스에서는 두가지 장치파일이 있다.
+
+/dev/mem - 메모리 장치파일
+/dev/ioport - IO 장치파일
+
+이 두 장치파일중 /dev/mem 은 거의 필수적으로 갖추어져 있다.
+
+/dev/mem은 시스템의 메모리 공간에 접근할수 있는 장치파일이다.
+이 장치파일을 이용하면 EZ-X5에 사용되는 ARM 계열의 프로세서는
+IO 레지스터에 접근할수 있다.
+
+물론 같은 방법으로 PC 에서는 PCI 장치에 접근할 수 있다.
+
+/dev/ioport 는 PC에서 사용하는 장치파일로 PC의 in,out 명령으로접근하는
+메모리 공간에 접근할 수 있다.
+
+여기서는 /dev/mem에 대해서만 이야기 하겠다.
+
+또 한가지 /dev/mem 장치파일을 이용해서 특정 물리적인 메모리 공간에 접근하는
+방법은 두가지 인데
+
+하나는 lseek 를 이용하여 주소를 지정하고 read 또는 write 를 이용하여 접근하는
+방법이다.
+또다른 방법은 mmap 함수를 이용하여 접근하는 방법이다.
+
+초보 리눅스 프로그래머에게는 lseek,read,write 함수를 이용하는 방법이 더 편하겠지만
+버스폭에 대한 처리를 요구하는 경우에는 이 함수들은 제한이 있다.
+
+그래서 하드웨어를 시험하기 위해서는 mmap 함수를 사용하는 것이다.
+
+다음 예제는 mmap 함수를 이용하여 EZ-X5에 있는 D10 번 LED를 점멸하는 예제이다.
+
+D10 LED는 GPIO2 에 연결되어 있다.
+
+GPIO 의 레지스터에 대한 것은
+
+http://www.falinux.com/win/01_hw/030_xscale/gpio.htm
+
+를 참조하거나 PXA255 레퍼런스를 참조 하기 바란다.
+
+3. 예제 소스
+
+#include
+#include
+#include
+
+#include
+#include
+#include
+
+#include
+
+#define IO_BASE_ADDR 0x40000000
+#define IO_SIZE 0x0C000000
+
+#define IO_GPDR0_ADDR 0x40E0000C
+#define IO_GPSR0_ADDR 0x40E00018
+#define IO_GPCR0_ADDR 0x40E00024
+
+#define IO_GPDR0_OFFSET ( IO_GPDR0_ADDR - IO_BASE_ADDR )
+#define IO_GPSR0_OFFSET ( IO_GPSR0_ADDR - IO_BASE_ADDR )
+#define IO_GPCR0_OFFSET ( IO_GPCR0_ADDR - IO_BASE_ADDR )
+
+#define IO_GPIO2_LED (1<<2)
+
+int main( int argc, char **argv )
+{
+int fd;
+
+void *baseaddr;
+unsigned long *gpdr0;
+unsigned long *gpsr0;
+unsigned long *gpcr0;
+
+fd = open( "/dev/mem", O_RDWR|O_SYNC );
+if( fd < 0 )
+{
+perror( "/dev/mem open error" );
+exit(1);
+}
+
+// IO 메모리를 얻는다.
+baseaddr = mmap( 0, // 커널에서 알아서 할당요청
+IO_SIZE, // 할당 크기
+PROT_READ|PROT_WRITE, MAP_SHARED, // 할당 속성
+fd, // 파일 핸들
+IO_BASE_ADDR ); // 매핑 대상의 물리주소
+
+printf( "IO ADDR %p
+", baseaddr );
+
+if( baseaddr != NULL )
+{
+// GPIO 어드레스
+gpdr0 = (unsigned long *) ( (unsigned char *)baseaddr + IO_GPDR0_OFFSET );
+gpsr0 = (unsigned long *) ( (unsigned char *)baseaddr + IO_GPSR0_OFFSET );
+gpcr0 = (unsigned long *) ( (unsigned char *)baseaddr + IO_GPCR0_OFFSET );
+
+printf( "GPDR0 STATE %08X
+", *gpdr0 );
+
+// LED 껌복거리기
+while(1)
+{
+*gpsr0 = IO_GPIO2_LED; printf( "LED ON
+" );
+sleep(1);
+*gpcr0 = IO_GPIO2_LED; printf( "LED OFF
+" );
+sleep(1);
+}
+
+if( baseaddr != NULL ) munmap( baseaddr, IO_SIZE ); // 매핑된것 해제
+}
+
+close( fd );
+
+return 0;
+}
+==========================================================
+#include <asm/io.h>
+void *ioremap(unsigned long addr, unsigned long size);
+void *iounmap(unsigned long addr, unsigned long size);
+
+- ioremap()
+	- 물리 주소 공간을 커널 주소 공간으로 mapping한다.
+	- 동적으로 물리주소와 가상주소를 매핑(mapping)시켜 주는 함수
+- iounmap()
+	- mapping한 커널 주소 공간을 해제한다.
+===========================================================
+
+http://k3rnel.egloos.com/1120522
+http://kldp.org/node/73455
+
+Linux에서 커널주소공간 (3G~4G)의 사용은 메인메모리 크기가 896MB 이상이냐 이하냐에 따라 살짝 달라집니다.
+일단 80x86이고 PAE가 설정되지 않았다고 가정을 하겠습니다.
+다음은 부팅 후 초기에 커널이 페이지테이블을 초기화하여 메인메모리를 가상주소에 매핑하는 방식입니다.
+
+1. 메인메모리가 896MB 이상 일 때,
+
+가. 가상주소 896MB 까지는 물리메모리 896MB를 말씀하신 대로 다이렉트(?) 매핑하고 있습니다.
+다이렉트라는 용어가 좀 마음에 걸리는데 일단 제쳐두고, 예를 들어 설명하자면
+물리메모리주소 0x100000(1M)는 가상주소 0xc00100000 (3G+1M)로 매핑됩니다.
+즉 물리메모리 896MB 까지는 3G만 더해주면 가상주소를 얻을 수 있고 그 역도 가능합니다.
+이렇게 페이지테이블을 설정을 해놓으면 커널은 특정 물리메모리주소를 쉽게 접근할 수 있죠.
+
+나. 896M+3G에서 1016M+3G까지의 120M의 가상주소는 noncontiguous memory area 입니다.
+0M+3G에서 896M+3G 사이에서 할당된 하나의 메모리 블록은 그 크기에 상관없이 물리적으로 연속되었음을 보장받을 수 있습니다.
+하지만 noncontiguous memory area의 이름이 나타내듯이 이 공간에서 할당된 메모리 블록은 물리적으로 연속이 아닐 수 있습니다.
+시스템이 부팅되어 오랜동안 동작하면 메모리 단편화가 심해져서 물리적으로 연속된 페이지 프레임들을 찾기 어려울 수 있습니다.
+이 경우 페이지테이블을 적절하게 설정을 하면 연속적인 가상주소에 물리적으로 비연속적인 페이지 프레임들을 매핑할 수 있습니다.
+vmalloc() 루틴이 이런 일을 하고, 이렇게 할당된 페이지 프레임이 물리주소 896MB 이하라면 그 페이지 프레임은 두개 이상의 가상주소를 가지겠죠. 단, DMA 동작에는 연속적인 물리공간을 필요로 하므로 이렇게 할당된 메모리는 부적절합니다.
+또한 ioremap() 루틴을 통해 hardware device 내의 버퍼가 이 영역에 매핑할 수 있습니다.
+
+다. 나머지 4M 공간은 persistent kernel mapping을, 나머지 4M 공간은 fix-mapped linear address에 쓰입니다.
+Persistent kernel mapping 공간은 high memory--즉 896MB 이상의 물리메모리에 접근하기 필요한 가상 주소들 입니다.
+High memory는 평상시에 가상주소가 없으므로 접근할 일이 있으면 임시적으로 가상주소를 할당하여 접근하게 됩니다.
+Fix-mapped linear address는 특정 가상주소에 물리메모리를 번갈아가며 매핑해서 쓸 때 사용할 수 있습니다.
+
+라. 만약 PAE가 설정되었다면 persistent kernel mapping 공간은 2M가 되고 fix-mapped linear address 공간은 "아마도(확인을 안해봐서)" 2M가 될 것입니다. 여기서 줄어든 만큼 noncontiguous memory area가 증가하겠죠.
+
+2. 메인메모리가 896MB 이하 일 때,
+
+질문하신 대로 메인메모리가 512MB이다고 가정하겠습니다.
+
+가. 물리메모리는 0M ~ 512M 은 가상주소 0M+3G ~ 512M+3G에 매핑됩니다.
+
+나. 512M+3G에서 1016M+3G까지의 가상주소가 noncontiguous memory area 입니다.
+
+다. 앞선 말한 내용과 동일합니다.
+
+3. 결론
+
+메인메모리가 512MB인 상황이라면 가상주소 600M+3G 부분은 vmalloc()을 통해 메인메모리로 매핑되거나 ioremap() 함수를 통해 device 내의 메모리로 매핑될 수 있습니다.
+
+사족: 잘못 알고 있던 부분이 많아 수정을 여러번 했습니다.
+

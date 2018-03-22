@@ -1,0 +1,177 @@
+sudo apt-get install openssh-server
+
+# Samba
+sudo apt-get install samba
+sudo smbpasswd -a jyhuh
+sudo vi /etc/samba/smb.conf
+sudo /etc/init.d/smbd restart
+
+# FTP / TFTP
+sudo apt-get install vsftpd
+sudo apt-get install tftpd-hpa tftp-hpa
+# chown root.tftp <tftpboot dir>
+
+# NFS
+sudo apt-get install nfs-kernel-server
+
+# for Development
+sudo apt-get insatll ctags cscope
+sudo apt-get install build-essential -y && sudo dpkg --add-architecture i386 && sudo apt-get install gcc-multilib g++-multilib -y
+
+# APM
+sudo apt-get install apache2
+sudo apt-get install mysql-server mysql-client
+sudo apt-get install php libapache2-mod-php php-xml php-gd php-mysql
+
+# VCS
+sudo apt-get install subversion git
+
+# for compiling kernel( menuconfig )
+sudo apt-get install ncurses-dev libssl-dev
+
+# Remote Desktop
+sudo apt-get install xrdp
+sudo apt-get install mate-core mate-desktop-environment mate-notification-daemon
+
+echo mate-session>~/.xsession
+sudo /etc/init.d/xrdp restart
+
+# tmux and powerline
+sudo apt-get install tmux
+sudo apt-get install powerline
+
+# /usr/lib/beyondcompare/BCompare
+
+# JAVA
+$ sudo apt-get install default-jre default-jdk
+
+=============================================================================
+# Android
+=============================================================================
+GNU/Linux
+	Android 6.0 (Marshmallow) - AOSP master: Ubuntu 14.04 (Trusty)
+	Android 2.3.x (Gingerbread) - Android 5.x (Lollipop): Ubuntu 12.04 (Precise)
+	Android 1.5 (Cupcake) - Android 2.2.x (Froyo): Ubuntu 10.04 (Lucid)
+Mac OS (Intel/x86)
+	Android 6.0 (Marshmallow) - AOSP master: Mac OS v10.10 (Yosemite) or later with Xcode 4.5.2 and Command Line Tools
+	Android 5.x (Lollipop): Mac OS v10.8 (Mountain Lion) with Xcode 4.5.2 and Command Line Tools
+	Android 4.1.x-4.3.x (Jelly Bean) - Android 4.4.x (KitKat): Mac OS v10.6 (Snow Leopard) or Mac OS X v10.7 (Lion) and Xcode 4.2 (Apple's Developer Tools)
+	Android 1.5 (Cupcake) - Android 4.0.x (Ice Cream Sandwich): Mac OS v10.5 (Leopard) or Mac OS X v10.6 (Snow Leopard) and the Mac OS X v10.5 SDK
+
+Java Development Kit (JDK)
+- Please note, the master branch of Android in AOSP comes with a prebuilt version of OpenJDK, so no additional installation is required. Older versions require a separate install. See Installing the JDK for the prebuilt path and installation instructions for older versions.
+
+	Android 7.0 (Nougat) - Android 8.0 (O release): Ubuntu - OpenJDK 8, Mac OS - jdk 8u45 or newer
+	Android 5.x (Lollipop) - Android 6.0 (Marshmallow): Ubuntu - OpenJDK 7, Mac OS - jdk-7u71-macosx-x64.dmg
+	Android 2.3.x (Gingerbread) - Android 4.4.x (KitKat): Ubuntu - Java JDK 6, Mac OS - Java JDK 6
+	Android 1.5 (Cupcake) - Android 2.2.x (Froyo): Ubuntu - Java JDK 5
+
+Key packages
+	Python 2.6 -- 2.7 from python.org
+	GNU Make 3.81 -- 3.82 from gnu.org; Android 3.2.x (Honeycomb) and earlier will need to revert from make 3.82 to avoid build errors
+	Git 1.7 or newer from git-scm.com
+=============================================================================
+# Install packages
+$ sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip
+
+# Access USB: /etc/udev/rules.d/51-android.rules
+$ wget -S -O - http://source.android.com/source/51-android.txt | sed "s/<username>/$USER/" | sudo tee >/dev/null /etc/udev/rules.d/51-android.rules; sudo udevadm control --reload-rules
+-----
+# adb protocol on passion (Nexus One)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e12", MODE="0600", OWNER="<username>"
+# fastboot protocol on passion (Nexus One)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", ATTR{idProduct}=="0fff", MODE="0600", OWNER="<username>"
+# adb protocol on crespo/crespo4g (Nexus S)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e22", MODE="0600", OWNER="<username>"
+# fastboot protocol on crespo/crespo4g (Nexus S)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e20", MODE="0600", OWNER="<username>"
+# adb protocol on stingray/wingray (Xoom)
+SUBSYSTEM=="usb", ATTR{idVendor}=="22b8", ATTR{idProduct}=="70a9", MODE="0600", OWNER="<username>"
+# fastboot protocol on stingray/wingray (Xoom)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="708c", MODE="0600", OWNER="<username>"
+# adb protocol on maguro/toro (Galaxy Nexus)
+SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0600", OWNER="<username>"
+# fastboot protocol on maguro/toro (Galaxy Nexus)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e30", MODE="0600", OWNER="<username>"
+# adb protocol on panda (PandaBoard)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d101", MODE="0600", OWNER="<username>"
+# adb protocol on panda (PandaBoard ES)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="d002", MODE="0600", OWNER="<username>"
+# fastboot protocol on panda (PandaBoard)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d022", MODE="0600", OWNER="<username>"
+# usbboot protocol on panda (PandaBoard)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d00f", MODE="0600", OWNER="<username>"
+# usbboot protocol on panda (PandaBoard ES)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d010", MODE="0600", OWNER="<username>"
+# adb protocol on grouper/tilapia (Nexus 7)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e42", MODE="0600", OWNER="<username>"
+# fastboot protocol on grouper/tilapia (Nexus 7)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e40", MODE="0600", OWNER="<username>"
+# adb protocol on manta (Nexus 10)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee2", MODE="0600", OWNER="<username>"
+# fastboot protocol on manta (Nexus 10)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee0", MODE="0600", OWNER="<username>"
+# adb protocol on hammerhead (Nexus 5)
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee1", MODE="0600", OWNER="<username>"
+-----
+
+# JDK 1.8
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+
+$ sudo update-alternatives --config java
+$ sudo update-alternatives --config javac
+
+(X)$ sudo apt-get install oracle-java8-set-default
+
+$ java -versionsudo add-apt-repository ppa:webupd8team/java && sudo apt-get update
+sudo apt-get install oracle-java8-installer
+
+# Android Studio: /opt/에 ide zip file만 다운된다.
+sudo add-apt-repository ppa:paolorotolo/android-studio
+sudo apt-get update
+sudo apt-get install android-studio
+
+export PATH=$PATH:/opt/android-studio/bin
+
+=============================================================================
+Downloading the Source
+https://source.android.com/source/downloading
+=============================================================================
+
+To install Repo:
+	Make sure you have a bin/ directory in your home directory and that it is included in your path:
+	$ mkdir ~/bin
+	$ PATH=~/bin:$PATH
+	Download the Repo tool and ensure that it is executable:
+	$ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+	$ chmod a+x ~/bin/repo
+
+Initializing a Repo client
+	After installing Repo, set up your client to access the Android source repository:
+
+	Create an empty directory to hold your working files. If you're using MacOS, this has to be on a case-sensitive filesystem. Give it any name you like:
+	$ mkdir WORKING_DIRECTORY
+	$ cd WORKING_DIRECTORY
+		To use the Gerrit code-review tool, you will need an email address that is connected with a registered Google account.
+		Make sure this is a live address at which you can receive messages.
+		The name that you provide here will show up in attributions for your code submissions.
+	$ git config --global user.name "Your Name"
+	$ git config --global user.email "you@example.com"
+
+		Run repo init to bring down the latest version of Repo with all its most recent bug fixes. You must specify a URL for the manifest, which specifies where the various repositories included in the Android source will be placed within your working directory.
+	$ repo init -u https://android.googlesource.com/platform/manifest
+			OR
+	$ repo init -u https://android.googlesource.com/platform/manifest -b android-4.0.1_r1
+		Using Authentication
+	$ repo init -u https://android.googlesource.com/a/platform/manifest
+
+Using a local mirror
+	$ repo init -u https://android.googlesource.com/mirror/manifest --mirror
+
+	$ repo sync -j4
+
+# Output directory
+export OUT_DIR_COMMON_BASE=<path-to-your-out-directory>
+

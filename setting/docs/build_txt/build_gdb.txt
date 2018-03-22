@@ -1,0 +1,1 @@
+./configure --build=i686-linux --host=arm-hisiv100nptl-linux --prefix=$PWD/_install

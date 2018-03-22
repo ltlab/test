@@ -1,0 +1,14 @@
+
+
+/arch/arm/include/asm/unistd.h
+	- __NR_xxx : user App에서 접근시 참조된다.
+/arch/arm/kernel/calls.S
+	- CALL( sys_xxx ) : system call number
+		- CALL(x) : entry-common.S
+			- 1st include: NR_syscalls에 sys call 갯수 limit 설정
+				- line 104
+					#define CALL(x) .equ NR_syscalls,NR_syscalls+1
+			- 2nd include: system call dispatch table
+				- sys_call_table or sys_oabi_call_table 
+					#define CALL(x) .long x
+

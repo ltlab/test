@@ -1,0 +1,70 @@
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+if [ "$PS1" ]; then
+  if [ "$BASH" ] && [ "$BASH" != "/bin/sh" ]; then
+    # The file bash.bashrc already sets the default PS1.
+    # PS1='\h:\w\$ '
+    if [ -f /etc/bash.bashrc ]; then
+      . /etc/bash.bashrc
+    fi
+  else
+    if [ "`id -u`" -eq 0 ]; then
+      PS1='# '
+    else
+      PS1='$ '
+    fi
+  fi
+fi
+
+# The default umask is now handled by pam_umask.
+# See pam_umask(8) and /etc/login.defs.
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+tty_tmp=`tty 2>/dev/null|/bin/sed -r '/^[^\/]/d;s/^\/dev\/([^\/]+)\/?([0-9]+)$/\1 \2/g'`
+ttytype="${tty_tmp% *}"
+
+if [ "$ttytype" = "tty" ]; then
+	echo "You are in Console."
+	ttyno=${tty_tmp##* }
+
+	LANG="en_US.UTF-8"
+	LANGUAGE="en_US:en"
+	LC_ALL=$LANG
+	export LANG LANGUAGE LC_ALL
+else
+	if [ "$USER" = "jenkins" ] ; then
+		echo "You are jenkins"
+		LANG="en_US.UTF-8"
+		LANGUAGE="en_US:en"
+		LC_ALL=$LANG
+	else
+		echo "Maybe you are in X-Window."
+		LANG="ko_KR.UTF-8"
+		LANGUAGE="ko_KR:ko:en_US:en"
+		LC_ALL=$LANG
+	fi
+	export LANG LANGUAGE LC_ALL
+fi
+
+# 2014. 01. 12. (일) 14:30:23 KST
+# Hisilicon Linux, Cross-Toolchain PATH
+export PATH="/opt/hisi-linux-nptl/arm-hisiv100-linux/target/bin:$PATH" 
+# 
+
+
+# 2014. 01. 14. (화) 16:27:15 KST
+# Hisilicon Linux, Cross-Toolchain PATH
+export PATH="/opt/hisi-linux/x86-arm/gcc-3.4.3-csl-uClibc-0.9.30-soft/bin/:$PATH" 
+# 
+
+# Broadcom Cross Toolchain by jyhuh 2014-08-07 16:06:13
+export PATH="/opt/bcom/stbgcc-4.8-0.4/bin:$PATH" 

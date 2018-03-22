@@ -1,0 +1,144 @@
+
+- Make repository
+	svnadmin create --fs-type fsfs <repo>
+	ex) svnadmin create --fs-type fsfs /data/svnroot/test
+
+- checkout
+	svn checkout svn+ssh://<user>@<server><path of repository> <work_path>
+	ex) svn checkout svn+ssh://elechole@211.238.159.105/data/svnroot/test svn_test
+
+- Make directories
+	svn mkdir svn+ssh://<user>@<server><path of repository>/<dir>
+	ex) svn mkdir svn+ssh://elechole@211.238.159.105/data/svnroot/test/trunk
+		svn update
+- import
+	mkdir <test_dir>
+	copy files for importing into <test_dir>
+
+	svn import <test_dir> svn+ssh://<user>@<server><path of repository>
+	ex) svn import svn_test svn+ssh://elechole@211.238.159.105/data/svnroot/test/trunk
+
+- list
+	svn list svn+ssh://elechole@211.238.159.105/data/svnroot/test
+
+- Add files
+	svn add <files>
+
+- Commit
+	svn commit
+
+- Export: use for Release sources
+	svn export svn+ssh://<user>@<server><path of repository> <release_path>
+	ex) svn export svn+ssh://elechole@211.238.159.105/data/svnroot/test/trunk release_test
+
+- Dump and Load: Backup
+	svnadmin dump <repo_dir> > <backup.dump>
+    svnadmin create <new_repo_dir>
+	svnadmin load <repo_dir> < <backup.dump>
+
+- Ignore
+	svn propset -R svn:ignore -F ~/ignore.lst ./
+	ignore.lst
+		*.o
+		*.elf
+		.dep
+
+- Info
+	svn info
+		=> working dir의 정보(repo URL, Rev 등)
+- Diff
+	svn diff -r 343:344 http://svn.example.com/repos/trunk/calc
+		=> revision 343과 344의 비교하여 차이를 출력
+
+- Nerge
+	svn merge -r 343:344 http://svn.example.com/repos/trunk/calc
+		=> rev. 343, 344의 차이를 현재 working dir에 적용
+	svn status
+	svn commit -m "integer.c: ported r344 (spelling fixes) from trunk."
+	
+	svn merge --dry-run -r 343:344 http://svn.example.com/repos/calc/trunk
+		=> merge시 뿌려질 status code 출력 == merge simulation
+
+	svn merge --dry-run ^/trunk
+	svn merge --dry-run ^/branches/br-name
+
+	svn merge --dry-run --reintegrate ^/branches/br-name
+
+
+- Switch: 존재하고 있는 작업 카피를 다른 브랜치(branch)로 변환합니다
+	$ cd calc
+	$ svn info | grep URL
+		URL: http://svn.example.com/trunk/calc
+	$ svn switch http://svn.example.com/branches/calc/my-calc-branch
+		U   integer.c
+		U   button.c
+		U   Makefile
+		Updated to revision 341.
+	$ svn info | grep URL
+		URL: http://svn.example.com/branches/calc/my-calc-branch
+
+- Delete
+	$ svn delete http://svn.example.com/repos/branches/calc/my-calc-branch \
+             -m "Removing obsolete branch of calc project. "
+		Committed revision 375.
+
+- Branches
+	cd <working_dir>
+		=> working dir로 이동
+	svn copy <trunk> branches/<branch_working_dir>
+		=> trunk 내용을 branch로 복사
+	svn status
+		=> branch 확인
+	svn commit -m "Creating a private brancd of <repo_dir/trunk> "
+		=> branch에 대한 commit
+	------------- OR --------------------
+	 copy http://svn.example.com/repos/trunk/calc \
+           http://svn.example.com/repos/branches/calc/my-calc-branch \
+      -m "Creating a private branch of /trunk/calc"
+      	=> commit 까지 수행한다.
+
+	## branch 전체의 merge
+	cd trunk/calc
+		=> project의 trunk dir로 이동, 최종의 trunk revision으로 update or checkout
+	svn merge -r 341:HEAD http://svn.example.com/repos/branches/calc/my-calc-branch
+		=> 341: branch 생성시의 revisionm HEAD: branch의 최종 revision
+		=> 현재 working_dir(trunk)에 branch(my-calc-branch)의 변경내용만을 merge한다.
+- Conflict(충돌)
+    - merge시 충돌 발생하면 해결하고 나서
+        svn resolved < file >
+        => svn status => 충돌난 파일은 C 로 표시됨 
+- 충돌 해결 방안
+    - postpone: 즉시 반영없이, 소스 코드를 계속 수정. 수정이 완료된 시점에 다시 시도(충돌 해결 안함)
+    - diff: 충돌된 상황을 비교. 로컬과 저장소의 소스의 차이를 비교
+    - edit: 로컬의 파일을 다시 열어 수정
+    - mine-full: 저장소의 리비전 내용을 무시하고, 로컬의 내용으로 커밋.
+    - theirs-full: 로컬의 수정 내역을 무시하고, 저장소의 리비전으로 대체하여 업데이트
+
+- 빠뜨린 파일 추가
+	svn st | grep '^?' | sed 's/^? *//' | xargs svn add
+	svn st | grep '^?' | awk '{print $2}' | xargs svn add
+	svn st | grep '^?' | awk '{print "svn add", $2}' | sh
+
+-------------------------------------------------
+SVN 저장소 설정
+
+    #mkdir /var/lib/svn
+    #mkdir /var/lib/svn/YourProjectNameHere
+    #mkdir /tmp/YourProjectNameHere
+    #mkdir /tmp/YourProjectNameHere/branches
+    #mkdir /tmp/YourProjectNameHere/tags
+    #mkdir /tmp/YourProjectNameHere/trunk
+    #svnadmin create /var/lib/svn/YourProjectNameHere
+    #svn import /tmp/YourProjectNameHere file:///var/lib/svn/YourProjectNameHere -m "initial import"
+    #rm -rf /tmp/YourProjectNameHere
+## Trac을 위한 설정 
+    #chown -R www-data /var/lib/svn/YourProjectNameHere
+
+--------------------------------------------------
+TortoiseSVN
+    setting=>network=>SSH Client
+    	C:\Program Files\TortoiseSVN\bin\TortoisePlink.exe -ssh -l <user_id> -i <*.ppk file>
+		or
+    	C:\Program Files\TortoiseSVN\bin\TortoisePlink.exe -pw <passwod>
+    Repo.
+    	<userid>@<server>/<repo path>

@@ -1,0 +1,45 @@
+$(subst a,b,text) : text에서 a를 b로 교체할 수 있어요.
+
+$(patsubst pattern,rep,text) : text에서 pattern을 찾아서 rep로 replace해요.
+
+$(strip string) : string안에서 공백문자들을 제거해요.
+
+$(addsuffix suffix,name) : name에다가 suffix를 뒤에 더 붙여 줘요.
+
+$(addprefix prefix,name) : name 앞에다가 prefix를 붙여주지요.
+
+$(findstring find,text) : text에서 find라는 string을 찾아요.
+
+$(dir name) : name에서 directory부분을 빼내주어요.
+
+$(notdir name) : name에서 directory가 아닌 부분을 빼내주어요. 보통 file name 뽑아낼 때 쓰죠.
+
+$(suffix name) : name에서 확장자를 추출해 내요.
+
+$(basename name) : name에서 확장자를 뺀 file이름을 빼내주지요.
+
+$(word n,text) : text중에서 n 번째 단어를 추출해 주어요.
+
+$(words text) : text가 몇 개 단어로 이루어져 있는지 봐주지요.
+
+$(wildcard pattern) : 지정된 Directory에서 pattern과 일치하는 file들을 가져오지요. 디렉토리를 지정하지 않으면 현재 dir이에요.
+
+$(shell command) : Shell 명령어를 실행해 주고 그 결과를 가져오지요.
+
+$(origin variable) : Macro가 어떻게 정의되었는지를 알려줘요. 이걸로 debugging을 하기도 해요.
+
+$(foreach var,words...,text) : var에 각각의 word를 넣고서 text에 적용하는 거에요.
+
+보통 addprefix 같은 경우는 어디에 쓰이는가 보겠사옵니다.
+'
+OBJS :=  $(addprefix $(TARGETDIR)/, $(SOURCES:%.c= %.o))
+ 
+이렇게 하면 SOURCES로 등록된 모든 c file의 확장자를 ,o로 바꾸고, 그 앞에다가는 특정 directory를 붙여 주겠죠. 그러면 일관된 directory에 ,o file들을 모아놓을 수 있답니다.
+ 
+또, foreach를 해볼까요.
+ 
+SOURCES = $(foreach dir, recipes, spaghetti, ramen, $(wildcard $(dir)/*.c))
+라고 해보시죠.그러면 어떻게 될까요?
+결과는
+recipes/recipes.c spaghetti/spaghetti.c ramen/ramen.c
+요렇게 된답니다.

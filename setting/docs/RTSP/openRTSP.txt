@@ -1,0 +1,16 @@
+openRTSP in Live555
+===========================================================
+1. LOCAL_LIBS
+	/liveMedia/libliveMedia.$(LIB_SUFFIX)
+	/groupsock/libgroupsock.$(LIB_SUFFIX)
+	/BasicUsageEnvironment/libBasicUsageEnvironment.$(LIB_SUFFIX)
+	/UsageEnvironment/libUsageEnvironment.$(LIB_SUFFIX)
+
+2. OPEN_RTSP_OBJS
+	/testProgs/openRTSP.$(OBJ)
+	/testProgs/playCommon.$(OBJ)
+
+	Header file: /testProgs/playCommon.hh
+
+
+

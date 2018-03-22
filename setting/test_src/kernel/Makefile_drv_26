@@ -1,0 +1,37 @@
+
+MODULE_NAME	:=	test_module
+
+OBJS		:= test1.o test2.o test3.o
+
+# If KERNELRELEASE is defined, we've been invoked from the
+# kernel build system and can use its language.
+ifneq ($(KERNELRELEASE),)
+	obj-$(CONFIG_TEST_DRV) := $(MODULE_NAME).o
+	$(MODULE_NAME)-objs	:=	$(OBJS)
+
+# Otherwise we were called directly from the command
+# line; invoke the kernel build system.
+else
+
+KDIR	?=	/lib/modules/$(shell uname -r)/build
+
+EXTRA_CFLAGS	+=	-DDEBUG=1
+
+obj-m	:=	$(MODULE_NAME).o
+$(MODULE_NAME)-objs	:=	$(OBJS)
+
+#PWD		:=	$(shell pwd)
+
+default: all
+
+all: modules
+
+modules:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules CONFIG_TEST_DRV=m
+	#$(MAKE) -C $(KDIR) M=$(PWD) modules CONFIG_TEST_DRV=m
+
+clean:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+endif
+
+

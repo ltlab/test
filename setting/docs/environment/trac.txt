@@ -1,0 +1,297 @@
+Trac Install
+==============================
+
+1. 필요한 패키지 설치
+	sudo apt-get install apache2 libapache2-mod-python \
+			libapache2-svn python-setuptools subversion python-subversion
+	sudo easy_install Trac or sudo apt-get install trac
+	
+	$ sudo apt-get install apache2
+	$ sudo apt-get install subversion libapache2-svn
+	$ sudo apt-get install trac libapache2-mod-python python-setuptools
+
+	## SSL 설정
+	sudo apt-get install openssl
+	# /etc/apache2/ssl-cert에 키 생성
+	sudo mkdir /etc/apache2/ssl-cert
+	cd /etc/apache2/ssl-cert
+	sudo openssl req -new -x509 -nodes -out public_key.crt -keyout private_key.key
+	
+	sudo vi /etc/apache2/ports.conf
+		Listen 443 추가
+	sudo a2enmod ssl
+------------------------------------------
+If you want to install Bitten for trac
+
+# Needed for bitten's trac 10.4 compatiblity.
+sudo apt-get install python-clearsilver
+# Needed for bitten unitest.
+sudo easy_install http://darcs.idyll.org/~t/projects/figleaf-latest.tar.gz 
+----------------------------------------------
+2. Permission 설정
+	www-data: apache에 의해 웹으로 액세스되는 것은 www-data라는 유저권한으로 액세스함.
+	## /etc/apache2/envvars APACHE_RUN_USER/GROUP 변경 가능
+	==> trac 그룹 추가할 것.
+		sudo addgroup trac
+		sudo adduser www-data trac
+		sudo adduser <exist_user> trac
+
+		sudo mkdir <trac_dir>
+		sudo chown -R elechole:trac <trac_dir>
+		sudo chmod g+w -R <trac_dir>
+-----------------------------------------------
+3. apache, trac 설정
+	sudo vi /etc/apache2/sites-available/<new_site>
+	sudo vi /etc/apache2/sites-available/trac
+
+<VirtualHost *>
+        ServerAdmin webmaster@localhost
+        ServerName trac.example.com
+        DocumentRoot /var/www
+        ErrorLog /var/log/apache2/error.trac.log
+        CustomLog /var/log/apache2/access.trac.log combined
+
+        <Location /projects>
+                SetHandler mod_python
+                PythonInterpreter main_interpreter
+                PythonHandler trac.web.modpython_frontend
+                PythonOption TracEnvParentDir <trac_dir>
+                PythonOption TracUriRoot /projects
+                PythonOption PYTHON_EGG_CACHE /tmp
+        </Location>
+
+        # use the following for one authorization for all projects 
+        # (names containing "-" are not detected):
+        <LocationMatch "/projects/[[:alnum:]]+/login">
+            AuthType Basic
+            AuthName "Trac_login"
+            AuthUserFile /etc/apache2/dav_svn.passwd
+            Require valid-user
+        </LocationMatch>
+
+</VirtualHost>
+
+	위와 같이 생성하면 웹브로우저에서 http://211.238.159.105/projects로 접속가능
+
+sudo gedit /etc/apache2/mods-available/dav_svn.conf
+
+<Location /svn>
+    # Uncomment this to enable the repository,
+    DAV svn
+
+    # Set this to the path to your repository
+    SVNParentPath /var/lib/svn
+    # add for all repository by SVNParentPath by elechole
+    SVNListParentPath on
+</Location>
+
+-------------------------------------------------
+3. subversion 저장소 생성, trac 프로젝트 생성 및 apache 로드
+	svn.txt 참조..==> svn 저장소 생성
+
+	trac-admin <trac_dir>/<project_name> initenv
+
+	trac-admin <trac_prj_dir> permission add <id> <권한> [<권한>]
+	ex)#trac-admin /data/trac/sample permission add admin TRAC_ADMIN
+
+	- 사용자 등록
+		htpasswd -cm <htpasswd_filename> <id>
+		-c 옵션은 최초에 파일을 생성할 때 필요한 옵션입니다.
+		-m 옵션은 비밀번호를 md5 형태로 저장하라는 것이구요,
+		ex)#htpasswd -cm /data/trac/.htpasswd admin
+
+	- 추가 사용자를 등록한다.
+		htpasswd -m /data/trac/.htpasswd elechole
+
+	- 접근 권한을 설정합니다.
+		trac-admin /data/trac/sample permission add elechole WIKI_VIEW WIKI_MODIFY WIKI_CREATE
+		trac-admin spd_x36/ permission list
+
+	sudo chown -R elechole:trac <trac_dir>
+	sudo chmod -R g+w <trac_dir>
+
+	sudo a2dissite default
+	sudo a2ensite trac
+	sudo  /etc/init.d/apache2 reload
+
+	## trac logo....	
+	[header_logo]
+	alt =
+	height = -1
+	link = http://211.238.159.105/projects
+	src = common/trac_banner.png
+	width = -1
+
+=================================================
+4. 유용한 plugins
+	- web-admin
+		easy_install http://svn.edgewall.com/repos/trac/sandbox/webadmin
+
+		trac.ini에서 다음과 같은 내용을 추가하자.
+		[components]
+		webadmin.* = enabled
+
+	- account manager
+		sudo easy_install http://trac-hacks.org/svn/accountmanagerplugin/trunk
+
+		trac.ini
+		[components]
+		acct_mgr.admin.accountmanageradminpage = enabled
+		acct_mgr.db.sessionstore = disabled
+		acct_mgr.htfile.htpasswdstore = enabled
+		acct_mgr.web_ui.accountmodule = enabled
+		acct_mgr.web_ui.loginmodule = enabled
+		acct_mgr.web_ui.registrationmodule = enabled
+		
+		[account-manager]
+		; configure the plugin to store passwords in the htpasswd format:
+		password_format = htpasswd
+		; with Trac 0.10 use this instead:
+		password_store = HtPasswdStore
+
+		; the file where user accounts are stored
+		; the webserver will need write permissions to this file
+		; and its parent folder
+		; password_file = /data/trac/trac.htpasswd
+		password_file = /data/trac/dav_svn.passwd
+
+		Disable HTTP authentication ==> 로그인 화면 사용
+		==> <trac_prj_dir>/conf/trac.ini 
+		To use the AccountManager’s form-based login system instead, add this to the [components] section of your trac.ini:
+		trac.web.auth.LoginModule = disabled 
+
+		Deleting or commenting the Require valid-user line should be sufficient to  disable HTTP authentication. 
+		==> /etc/apache2/sites-available/<site_name>
+		    /etc/apache2/mods-available/dav_svn.conf
+			Require valid-user	주석 처리
+
+-------------------------------------------------
+### trac plugins
+sudo apt-get install build-essential graphviz
+sudo apt-get install htmldoc
+sudo apt-get install enscript
+
+sudo easy_install http://svn.edgewall.org/repos/genshi/trunk/
+sudo easy_install http://trac-hacks.org/svn/accountmanagerplugin/trunk
+sudo easy_install http://trac-hacks.org/svn/customfieldadminplugin/0.11
+sudo easy_install http://trac-hacks.org/svn/eclipsetracplugin/tracrpcext/0.10
+sudo easy_install http://trac-hacks.org/svn/iniadminplugin/0.11
+sudo easy_install http://trac-hacks.org/svn/masterticketsplugin/0.11
+sudo easy_install http://trac-hacks.org/svn/pagetopdfplugin/0.10/
+sudo easy_install http://trac-hacks.org/svn/progressmetermacro/0.11
+sudo easy_install http://trac-hacks.org/svn/ticketdeleteplugin/0.11
+sudo easy_install http://trac-hacks.org/svn/tracwysiwygplugin/0.11
+sudo easy_install http://wikinotification.ufsoft.org/svn/trunk
+
+sudo chown www-data /etc/apache2/dav_svn.passwd 
+-------------------------------------------------
+1. apache + svn 의 권한 설정.
+	이전에 [INSTALL] 나도 Trac을 써보자! Apache-2.2.2/SVN-1.3.1/Trac-0.9.5/FastCGI (4) 에서 설정했던 파일을 엽니다. 권한 부분이 주석처리 되어있을 것입니다. 주석을 해제하고 다음과 같이 고친 후 저장. 아파치를 재 기동합니다.
+
+            <Location /svn/newface>
+                DAV svn
+                SVNPath /data/svn/newface
+                AddDefaultCharset utf-8
+                AuthType Basic
+                AuthName "Subversion repository"
+                AuthUserFile /data/www/localhost/trac/newface/apache-auth-file
+                Require valid-user
+            </Location>
+
+- 테스트.
+	http://localhost/svn/newface 로 접속해서 ID/PASSWORD 를 물어보는지 확인해 봅니다. 커밋도 한번 해보시죠. ^^
+
+(2) 조금 복잡한 방법
+        이 방법은 (1)의 방법을 확장하여 디렉터리 별로 권한을 부여할 수 있는 방법입니다. 물론 역시 비밀번호는 일반 텍스트로 인터넷 공간을 날아다닙니다.
+	- 저와 같은 방법으로 apache 와 subversion 을 설치하신 분들은 이미 아래와 같은 내용이 47_mod_dav_svn.conf 파일에 들어있을 것입니다. 없다면 적용될 수 있는 파일(httpd.conf 같은)에추가해 주세요.
+
+            <IfDefine SVN_AUTHZ>
+                <IfModule !mod_authz_svn.c>
+                    LoadModule authz_svn_module     modules/mod_authz_svn.so
+                </IfModule>
+            </IfDefine>
+
+        - 다음의 라인을 추가합니다.
+ 
+            <Location /svn/newface>
+                ....
+                AuthzSVNAccessFile /data/www/localhost/trac/newface/apache-auth-access-file
+            </Location>
+
+            * 물론 해당 파일에 대한 디렉터리 및 파일명은 특별한 제한이 없습니다.
+ 
+        - 해당 파일의 내용은 다음과 같습니다.
+                [newface:/]
+                * = r
+                [newface:/new_repos]
+                test = rw
+                admin =  
+                [newface:/repos]
+                * = rw
+                [newface:/repos/under_svn]
+                admin = rw
+                * =
+
+                [repos_name:path] 형태로 각 섹션이 구성됩니다. 차례대로 설명해 보자면 newface 저장소의  / 디렉터리는 모두 읽기만 가능합니다. /new_repos 디렉터리는 test 계정은 읽고 쓰기가, admin  계정은 권한이 없습니다. /repos/under_svn 은 admin 만 읽고 쓰기 권한이 있고, 다른 계정은 접근 불가입니다.
+
+          아파치를 재기동하고 접속하여 봅니다.
+
+2. apache + trac 의 권한 설정.
+    httpd.conf 파일의  trac 관련 ScriptAlias 이후에 다음을 추가하시고요
+
+    <Location /newface/login>
+        AuthType Basic
+        AuthName "newface"
+        AuthUserFile /data/www/localhost/trac/javalangspec/apache-auth-file
+        Require valid-user
+    </Location>
+
+    참고로 저렇게 해두면 trac 환경의 anonymous 계정에 부여한 작업은 로그인 없이도 할 수 있습니다.
+    만약 아예 anonymous 접근을 못하게 하려면 위의 경로를 /newface/login 에서 /newface 로 변경하시면 됩니다.
+
+   아파치 재기동 후 접속/로그인 테스트 해보세요. ^^ 
+-------------------------------------------------------------
+아파치 환경 설정에 다음 내용 추가
+Multiple Projects 관리시 Url의 중복사용을 방지 하기 위해 아래의 소스중에
+PythonOption TracEnvParentDir /var/lib/trac 부분을 주석처리 후 대신에
+PythonOption TracEnv /var/lib/trac/YourProjectNameHere 추가 해준다.
+이렇게 되면 프로젝트 명 뒤에 또 다시 프로그램 명을 입력하지 않아도 되게 된다.
+ex>
+TracEnvParentDir 사용시 http://localhost/project/project 를 입력해야지만 trac 에 접근
+TracEnv 사용시 http://localhost/project 만 입력하면 trac 에 접근
+
+    <Location /YourProjectNameHere> #set up Trac handling
+
+    SetHandler mod_python
+    PythonHandler trac.web.modpython_frontend
+    #PythonOption TracEnvParentDir /var/lib/trac // 주석처리 후 아래 라인을 추가
+    PythonOption TracEnv /var/lib/trac/YourProjectNameHere
+    PythonOption TracUriRoot /YourProjectNameHere
+
+    #authentication scheme
+    # AuthType Basic
+    # AuthName "Descriptive Title Here"
+    # AuthUserFile /var/lib/trac/YourProjectNameHere/.htpasswd
+    # Require valid-user
+
+    </Location>
+
+    <Location /svn/YourProjectNameHere>
+    DAV svn
+    SVNPath /var/lib/svn/YourProjectNameHere
+    AuthType Basic
+    AuthName "myproject subversion repository"
+    AuthUserFile /etc/subversion/passwd
+    <LimitExcept GET PROPFIND OPTIONS REPORT>
+    Require valid-user
+    </LimitExcept>
+    </Location>
+
+    <Location "/YourProjectNameHere/login">
+    AuthType Basic
+    AuthName "Trac"
+    AuthUserFile /var/lib/trac/YourProjectNameHere/.htpasswd
+    Require valid-user
+    </Location>
+------------------------------------------------
+

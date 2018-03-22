@@ -1,0 +1,104 @@
+Network Administration
+=======================================
+0. Newwork configuration for Ubuntu
+    # vi /etc/network/interfaces
+        auto lo
+        iface lo inet loopback
+
+        iface eth0 inet static
+        address 203.240.202.112
+        netmask 255.255.255.0    
+        network 203.240.202.0
+        broadcast 203.240.202.255
+        gateway 203.240.202.1
+
+        auto eth0
+
+    networking (/etc/network/interfaces) 데몬 이용은
+    sudo /etc/init.d/networking stop (정지)
+    sudo /etc/init.d/networking start (시작)
+
+    Network Manager 데몬 이용은
+    sudo /etc/init.d/NetworkManager start (시작)
+    sudo /etc/init.d/NetworkManager stop (정지)
+    그놈서 애플릿 기동은 nm-applet --sm-disable
+
+    서버는 Network Manager를 이용 하지 않죠 고정 아이피에선 역시 networking 데몬이 좋습니다.
+
+    데몬 서비스 조정 sudo sysv-rc-conf
+
+1. Services
+	/etc/services
+	Opened port: nmap -sT -o localhost
+	netstat -anp | grep [unknown port]
+		or
+	List open files: lsof | grep [unknown port]
+
+2. Virtual ethernet control and Masquerading
+	sudo apt-get install uml-utilities
+
+	- test on terminal
+		sudo tunctl -u elechole -t tap0
+		sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+		sudo iptables -L -t nat
+		su -
+		echo "1" > /proc/sys/net/ipv4/ip_forward
+		ifconfig tap0 192.168.10.1 netmask 255.255.255.0
+	- Auto-configuration on Boot process
+		sudo vi /etc/network/interfaces
+			auto tap0
+			iface tap0 inet static
+			address 192.168.10.1
+			netmask 255.255.255.0
+			tunctl_user elechole
+		sudo vi /etc/rc.local or /etc/rc.d/rc.local
+			echo "1" > /proc/sys/net/ipv4/ip_forward
+			iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+3. VPN 연결
+	sudo apt-get network-manager-pptp pptp-linux
+	sudo /etc/init.d/dbus restart
+	sudo nm-applet --sm-disable or Session에서 활성화
+
+	** Network Manager VPN 설정
+		Gateway: elechole.dyndns.org
+		username: elechole
+		Password: 비울 것
+		Advanced -> Use Point-to-Potint encryption 체크
+	
+	** pptpconfig 사용
+		/etc/apt/sources.list
+		deb http://quozl.netrek.org/pptp/pptpconfig ./
+		sudo apt-get update
+		sudo apt-get install pptpconfig 
+		sudo pptpconfig
+
+	- Mount:
+		smbmount //[IP or Host]/[Share name] [/mountpoint] -o username=xxx,pssword=xxx,iocharset=utf8,file_mode=0664,dir_mode=0775
+		ex) sudo smbmount //192.168.14.200/ISO_temp /mnt -o username=elechole,password=026rese,iocharset=utf8,file_mode=0664,dir_mode=0775
+
+4. Network Analysis
+	- ngrep, tcpdump(windump, winpcap), snort 
+		# sudo tcpdump -i eth0 arp -eXXvv
+			-i: interfacesi
+			-e: Print link-level header(MAC address)
+			-XX: Print the data of each packet
+			-vv: 
+		# sudo tcpdump -i eth0 net 10.64.4.0 mask 255.255.255.0
+			- source or destination address => 10.64.4.0/24
+		# sudo ngrep -q -tW byline -wi "login" port 23 -l ./telnet.dump
+			-q: quiet
+			-t: timestamp
+			-W: set the dump format (normal, byline, single, none) 
+			-w: word-regex
+			-i: ignore case
+			port 23: telnet port
+			-l ./telnet.dump: output to file
+		# sudo snort -vde arp or port 69 and host 192.168.22.100
+			-v: verbose
+			-d: hex/ASCII
+			-e: MAC address
+			port 69: tftp
+	
+	
+

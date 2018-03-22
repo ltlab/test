@@ -1,0 +1,270 @@
+FFmpeg compile
+	http://minimonk.tistory.com/1219
+------------------------------------------------------------------
+
+* 설치
+출처: http://blog.daum.net/basetechnology/6997871?srchid=BR1http%3A%2F%2Fblog.daum.net%2Fbasetechnology%2F6997871
+
+
+1. Fedora6 에 GStreamer 설치시 flex 와 glib, liboil 이 요구될 수 있다. 아래 사이트에서 받아서 설치하면 된다.
+
+    http://flex.sourceforge.net
+
+    ftp://ftp.gtk.org/pub/glib또는  http://www.gtk.org
+    http://liboil.freedesktop.org/wiki/
+
+2. GStreamer 는 http://gstreamer.freedesktop.org에서 받는다.
+    2.1 가장먼저    gstreamer-0.10.20.tar.gz 를 설치하고 (설치하면 /usr/local/lib 에 설치된다)
+    2.2 그다음       gst-plugins-base-0.10.20.tar.gz
+    2.3 그다음엔    gst-plugins-good-0.10.8.tar.gz
+    2.4 그그다음엔 gst-ffmpeg-0.10.4.tar.gz
+    * 주의 : 이들을 설치할 때는 아래와 같이 환경변수를 잡고서 configure, make, make install 을 실행한다.
+        export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+        ./configure; make; make install
+
+
+3. GStreamer를 이용한 MP3 음악화일 재생
+    3.1 시험용 sine 파 재생
+
+        gst-launch audiotestsrc ! audioconvert ! audioresample ! osssink
+
+    3.2 MP3 화일 재생
+
+        gst-launch -v filesrc location="/music/MCMONG-SoFresh.mp3" ! ffdemux_mp3 ! ffdec_mp3 ! osssink
+
+4. GStreamer를 이용한 영상화일 재생
+    4.1 시험용 영상 출력
+        gst-launch -v videotestsrc ! ximagesink
+    4.2 영상화일 재생
+
+    * Video only
+    gst-launch -v filesrc location="/mnt/hgfs/share/TS.italy/Harold.&.Kumar.Go.To.White.Castle.avi" ! avidemux ! ffdec_mpeg4 ! ffmpegcolorspace ! ximagesink
+
+    * Audio only
+    gst-launch -v filesrc location="/mnt/hgfs/share/TS.italy/Harold.&.Kumar.Go.To.White.Castle.avi" ! avidemux name=demux demux. ! queue ! ffdec_ac3 ! osssink
+    * both Audio and Video
+    gst-launch -v filesrc location="/mnt/hgfs/share/TS.italy/Harold.&.Kumar.Go.To.White.Castle.avi" ! avidemux name=demux demux. ! queue ! ffdec_mpeg4 ! ffmpegcolorspace ! ximagesink demux. ! queue ! ffdec_ac3 ! osssink
+
+ 
+
+5. GStreamer를 이용한 X-Window 화면 캡춰 
+    5.1 실시간 캡춰
+    화면의 0,0,320,240 영역을 캡춰하여 보여주기 (거울효과) :
+    gst-launch ximagesrc startx=0 starty=0 endx=320 endy=240 ! ximagesink
+
+ 
+    5.2 캡춰 파일로 저장하기
+    ...
+
+
+* 나의 설치
+
+gstreamer-0.10.21
+
+    libglib-2.0
+
+    libxml2
+
+gst-plugins-base-0.10.21
+
+    libogg-1.1.3
+
+    libvorbis-1.2.0
+
+    liboil-0.3
+
+gst-plugins-good-0.10.11
+
+gst-ffmpeg-0.10.5
+
+ 
+
+* 환경설정
+Qpe.sh 참고
+export GST_PLUGIN_PATH="/usr/lib/gstreamer-0.10"
+
+export GST_REGISTRY="/tmp/.gstreamer-0.10"
+
+ 
+
+* Debugging
+export GST_DEBUG=”5”
+
+
+* Testing
+
+mp3
+
+gst-launch -v filesrc location="/mmc/avi_mpeg4_mp3/mp3.mp3" ! ffdemux_mp3 ! ffdec_mp3 ! osssink
+
+
+* 설치 configure
+gstreamer-0.10.21
+PKG_CONFIG_PATH=/usr/local/arm/4.2.2-eabi/usr/arm-unknown-linux-gnueabi/lib/pkgconfig CC=arm-linux-gcc CXX=arm-linux-g++ ./configure --build=i686-pc-linux-gnu --host=arm-unknown-linux-gnueabi --prefix=/usr
+
+
+gst-plugins-base-0.10.21
+PKG_CONFIG_PATH=/usr/local/arm/4.2.2-eabi/usr/arm-unknown-linux-gnueabi/lib/pkgconfig CC=arm-linux-gcc CXX=arm-linux-g++ ./configure --build=i686-pc-linux-gnu --host=arm-unknown-linux-gnueabi --prefix=/usr --disable-x --disable-pango --disable-gnome_vfs
+
+
+gst-plugins-good-0.10.11
+PKG_CONFIG_PATH=/usr/local/arm/4.2.2-eabi/usr/arm-unknown-linux-gnueabi/lib/pkgconfig CC=arm-linux-gcc CXX=arm-linux-g++ ./configure --build=i686-pc-linux-gnu --host=arm-unknown-linux-gnueabi --prefix=/usr --disable-x --disable-cairo --disable-esd --disable-gconf --disable-gdk_pixbuf --disable-hal --disable-libpng --disable-shout2 --disable-examples --disable-libpng
+Examples를 계속 compile 하려고 한다.
+=> test/example/Makefile을 강제로 변경
+
+
+gst-ffmpeg-0.10.5
+2번의 configure가 필요하다.
+PKG_CONFIG_PATH=/usr/local/arm/4.2.2-eabi/usr/arm-unknown-linux-gnueabi/lib/pkgconfig CC=arm-linux-gcc CXX=arm-linux-g++ ./configure --build=i686-pc-linux-gnu --host=arm-unknown-linux-gnueabi --prefix=/usr
+configure파일을 수정하여
+아래 ffmpeg의 configure를 arm에 맞게 되게 해야 한다.
+--enable-cross-compile --cross_prefix=arm-linux- --arch=arm --enable-shared --prefix=/usr/local/arm/4.2.2-eabi/usr/arm-unknown-linux-gnueabi --enable-postproc -?enable-gpl
+=================================================================================
+
+< 소스 버전 >
+
+glib-2.12.13
+
+gstreamer-0.10.22
+
+gst-plugin-base-0.10.22
+
+gst-plugin-good-0.10.14
+
+< gstreamer 컴파일 관련 환경변수 설정 >
+
+export CFLAGS="-I/home/kimdh/filesys_pmc/include -I/home/kimdh/filesys_pmc/usr/local/include -I/home/kimdh/filesys_pmc/lib/include"
+export GST_CHECK_CFLAGS="-I/home/kimdh/filesys_pmc/usr/local/include"
+export PATH="/home/kimdh/nvr_bsp/crosstool/gcc-3.3.6-glibc-2.3.5/mips-unknown-linux-gnu/bin:/usr/lib/qt-3.3/bin:/usr/kerberos/bin:/usr/lib/ccache:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/kimdh/bin"
+export PKG_CONFIG="/usr/bin/pkg-config"
+export PKG_CONFIG_PATH="/home/kimdh/filesys_pmc/lib/pkgconfig/:/home/kimdh/filesys_pmc/usr/lib/pkgconfig/:/home/kimdh/filesys_pmc/usr/local/lib/pkgconfig/"
+
+< gst-plugin-base-0.10.22 >
+./configure --build=i686 --host=mips-linux --prefix=/home/kimdh/filesys_pmc/usr/local --disable-valgrind --disable-speexresample --disable-x --disable-x-video --disable-alsa --disable-cdparanoia --disable-gnome_vfs --disable-gio --disable-libvisual --disable-ogg --disable-oggtest --disable-pango --disable-theora --disable-vorbis --disable-vorbistest --disable-freetypetest --disable-examples
+
+< gst-plugin-good-0.10.14 >
+./configure --build=i686 --host=mips-linux --prefix=/home/kimdh/filesys_pmc/usr/local --disable-valgrind --disable-gconftool --disable-equalizer --disable-flx --disable-goom --disable-goom2k1 --disable-matroska --disable-monoscope --disable-qtdemux --disable-oss --disable-x --disable-xvideo --disable-cairo --disable-esd --disable-esdtest --disable-gconf --disable-gdk_pixbuf --disable-hal --disable-shout2 --disable-shout2test --disable-soup --disable-speex --disable-libpng
+===============================================================================
+
+ 	
+{"subject":"[FFmpeg] \ub9ac\ub205\uc2a4\uc5d0\uc11c \ucef4\ud30c\uc77c \ubc29\ubc95","link":"http:\/\/mindol.egloos.com\/1997643"}
+[FFmpeg] 리눅스에서 컴파일 방법
+	
+
+1. 우선 디렉토리를 생성한다. 아무 곳이나 해도 무방함. 
+(주의할 것은 마운트 되는 곳에 하지 말 것: Permission denied 라는 메시지가 뜰 수 있음)
+mkdir ~/ffmpeg
+cd ~/ffmpeg
+
+ 
+
+2.소스 가져오기..
+wget http://www3.mplayerhq.hu/MPlayer/releases/codecs/ essential-20061022.tar.bz2
+wget http://rubyforge.org/frs/download.php/9225/ flvtool2_1.0.5_rc6.tgz
+wget http://easynews.dl.sourceforge.net/sourceforge/ lame/lame-3.97.tar.gz
+wget http://superb-west.dl.sourceforge.net/sourceforge/ ffmpeg-php/ffmpeg-php-0.5.0.tbz2
+wget http://downloads.xiph.org/releases/ ogg/libogg-1.1.3.tar.gz
+wget http://downloads.xiph.org/releases/ vorbis/libvorbis-1.1.2.tar.gz 
+ 
+
+3. 소스 압축풀기
+bunzip2 essential-20061022.tar.bz2
+tar xvf essential-20061022.tar
+tar zxvf flvtool2_1.0.5_rc6.tgz
+tar zxvf lame-3.97.tar.gz
+bunzip2 ffmpeg-php-0.5.0.tbz2
+tar xvf ffmpeg-php-0.5.0.tar
+tar zxvf libogg-1.1.3.tar.gz
+tar zxvf libvorbis-1.1.2.tar.gz 
+ 
+
+4. 코덱디렉토리 만들고 가져오기
+mkdir /usr/local/lib/codecs/
+mv /essential-20061022/* /usr/local/lib/codecs/
+chmod -R 755 /usr/local/lib/codecs/
+ 
+
+5. 최신버젼으로 가져오기위해.. SVN 설치...
+yum install subversion
+yum install ruby
+yum install ncurses-devel
+ 
+
+6. SVN을 이용해 최신버젼가져오기
+svn checkout svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
+svn checkout svn://svn.mplayerhq.hu/mplayer/trunk mplayer
+ 
+
+7. LAME 컴파일
+cd ~/ffmpeg/lame-3.97
+./configure
+make
+make install
+ 
+
+8. libOGG 컴파일
+cd ~/ffmpeg/libogg-1.1.3
+./configure
+make
+make install
+
+9. libVorbis 컴파일
+cd ~/ffmpeg/libvorbis-1.1.2
+./configure
+make
+make install 
+ 
+
+10. flvtool2 컴파일
+cd ~/ffmpeg/flvtool2_1.0.5_rc6
+ruby setup.rb config
+ruby setup.rb setup
+ruby setup.rb install
+ 
+
+11. MPlayer 컴파일
+cd ~/ffmpeg/mplayer
+./configure
+make
+make install 
+ 
+
+12. FFMPEG 컴파일..
+cd ~/ffmpeg/ffmpeg
+./configure --enable-mp3lame --enable-libogg --enable-vorbis --disable-mmx --enable-shared
+echo '#define HAVE_LRINTF 1' >> config.h
+make
+make install 
+ 
+
+13. 코덱 셋업해주기..
+ln -s /usr/local/lib/libavformat.so.50 /usr/lib/libavformat.so.50
+ln -s /usr/local/lib/libavcodec.so.51 /usr/lib/libavcodec.so.51
+ln -s /usr/local/lib/libavutil.so.49 /usr/lib/libavutil.so.49
+ln -s /usr/local/lib/libmp3lame.so.0 /usr/lib/libmp3lame.so.0
+ln -s /usr/local/lib/libavformat.so.51 /usr/lib/libavformat.so.51
+
+14. FFMPEG-PHP 컴파일 ..
+cd ~/ffmpeg/ ffmpeg-php-0.5.0
+phpize
+./configure
+make
+make install
+ 
+
+15. FFMPEG-PHP 확장모듈..ㅋ(php.ini 경로 정확해야함..ㅋ.)
+echo 'extension=/usr/local/lib/php/extensions/ no-debug-non-zts-20020429/ffmpeg.so' >> /usr/local/Zend/etc/php.ini
+ 
+
+16. 아파치 재시작하기.
+service httpd restart
+
+
+17. 올라왓는지 확인하기..ㅋㅋㅋ
+php -r 'phpinfo();' | grep ffmpeg
+If you get a few lines such as
+ffmpeg
+ffmpeg support (ffmpeg-php) => enabled
+ffmpeg-php version => 0.5.0
+ffmpeg.allow_persistent => 0 => 0
+

@@ -1,0 +1,16 @@
+
+(data_type) *(Func)(....)
+	function pointer
+	ex)	int *fptr(int, char);
+		void (*fptr)( void );
+
+(void (*)( void ))
+	casting for void function
+	return값: void
+	인자: void
+	ex)	특정 주소값의 캐스팅
+			(void (*)(void))(0xA0000000)
+		실행
+			( ( void (*)( void ) )(0xA0000000) )();
+		( void (*)( void ) )( func[10] )();
+			=> 함수 포인터 배열 요소를 캐스팅하여 실행

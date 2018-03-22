@@ -1,0 +1,46 @@
+
+LTIB Install and Build
+---------------------------------------------------------
+# LTIB: L2.6.31_10.07.11_ER_source.tar.gz
+	# ./install
+		=> install LTIB to <LTIB install path>
+	# <LTIB install path>/ltib -m config
+		=> platform and ltib configuration
+		=> at the first execution: copy packages to /opt/frescale/
+
+	# <LTIB install path>/ltib
+		=> configuration and buuld by LTIB
+		=> <LTIB install path>/rootfs is default directory
+
+Currently, the Gcc build flags for different SoCs are:
+
+	i.MX51 Gcc build flags: -O2 -fsigned-char -mfloat-abi=softfp -mfpu=neon -march=armv7-a
+	i.MX31/35/37 Gcc build flags: -O2 -fsigned-char -mfloat-abi=softfp -mfpu=vfp -march=armv6
+	i.MX25/233 Gcc build flags: -O2 -fsigned-char -msoft-float -mfpu=vfp -march=armv5t
+
+For the older toolchains, we mean the FSL built toolchain gcc4.1.2, the compile flags are:
+
+	i.MX51 Gcc build flags: -O2 -fsigned-char -mfloat-abi=softfp -mfpu=vfp
+	i.MX31/35/37 Gcc build flags: -O2 -fsigned-char -mfloat-abi=softfp -mfpu=vfp
+	i.MX25/233 Gcc build flags: -O2 -fsigned-char -msoft-float
+
+LTIB Command
+------------------------------------------------
+# config
+	# ./ltib -m config
+		=> configure selected platform (no build)
+	# ./ltib -m selectype
+		=> sub-platform selection (no build)
+
+# Getting Source
+	# ./ltib -m prep -p kernel
+	# ./ltib -m prep -p u-boot
+	# ./ltib -m prep -p imx-test
+
+# Build image
+	# ./ltib -m scbuild -p u-boot
+	# ./ltib -m scdeploy -p u-boot
+		=> <LTIB install path>/rootfs/boot/u-boot.bin
+
+LTIB How to Release
+-------------------------------------------------

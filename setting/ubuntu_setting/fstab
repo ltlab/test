@@ -1,0 +1,32 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+proc            /proc           proc    nodev,noexec,nosuid 0       0
+# / was on /dev/sda3 during installation
+UUID=1e47c1f3-b99f-4a90-8ff9-e5af9524874f /               ext4    errors=remount-ro 0       1
+# /boot was on /dev/sda5 during installation
+UUID=71d11472-ea26-445b-93c2-80989576d69a /boot           ext4    defaults        0       2
+# /home was on /dev/sda10 during installation
+UUID=49554c2b-ce28-484d-8c14-ee7b2278f1e8 /home           ext4    defaults        0       2
+# /opt was on /dev/sda9 during installation
+UUID=ccb7f676-d65b-4385-bfbc-2fdd8d6b86fb /opt            ext4    defaults        0       2
+# /tmp was on /dev/sda7 during installation
+UUID=af5d4923-3d78-4acb-9c27-488a574de590 /tmp            ext4    defaults        0       2
+# /var was on /dev/sda8 during installation
+UUID=bb38901a-f8e3-4bd4-abe1-f8418799e69b /var            ext4    defaults        0       2
+# swap was on /dev/sda6 during installation
+UUID=5dfe86d0-0b99-4fde-b7a5-2a91179df4f5 none            swap    sw              0       0
+
+/dev/sda1			/winXP-vm					ext4	defaults	0	2
+/dev/sda2			/share/data					ext4	defaults	0	2
+
+tiger:/storage/Documents		/share/tiger/Documents		cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0
+tiger:/storage/FTP				/share/tiger/FTP			cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0
+tiger:/storage/Share			/share/tiger/Share			cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0
+tiger:/storage/TEAM				/share/tiger/TEAM			cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0
+tiger:/storage/VisualData		/share/tiger/VisualData		cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0
+tiger:/storage/VisualData2		/share/tiger/VisualData2	cifs	iocharset=utf8,file_mode=0664,dir_mode=0775,uid=jyhuh,gid=jyhuh,username=jyhuh,password=026rese	0	0

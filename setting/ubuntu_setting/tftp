@@ -1,0 +1,16 @@
+service tftp
+{
+	socket_type		=	dgram
+	protocol		=	udp
+	port			=	69
+	wait			=	yes
+	user			=	root
+#	group			=	ktnc
+#   umask           =   0022
+	server			=	/usr/sbin/in.tftpd
+	server_args		=	-s /tftpboot
+	disable			=	no
+	per_source		=	11
+	cps				=	100 2
+	flags			=	IPv4
+}

@@ -1,0 +1,11 @@
+# screen
+	- 256 color: putty => 접속->데이터->터미널타입문자열: xterm-256color
+	- ncurses-term 설치
+	- .bashrc에서 TERMCAP Co#8 => Co#256 으로...
+# screen -ls
+# screen -S [SessionName]
+# screen -r
+# screen -x
+
+byobu attach-session -t 2
+byobu-tmux list-sessions

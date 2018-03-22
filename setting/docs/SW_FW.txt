@@ -1,0 +1,81 @@
+
+- Memory Map
+	- System Map : HLD document
+	- Flash Memory Map
+	- mDDR/DDR2 Memory Map
+	- Boot Sequence
+		- POR : PC = 0x0000_0000( U-boot start address on flash memory )
+		- U-boot loading into RAM
+		- Branching to U-boot start address on RAM( UBOOT_START_ADDR )
+		- Execute U-boot
+		- Copy kernel image into RAM
+		- decompressing kernel into RAM
+		- Branching to kernel start address on RAM
+		- start kernel
+
+- U-boot
+	- UART
+	- Ethernet
+	- Memory: NOR Flash, mDDR/DDR2
+
+- linux kernel
+	- ARM Cortex-A8 with NEON
+		- TI OMAP3 / Samsung S5C100
+	- Device Drivers
+		- UART
+		- Ethernet
+		- Memory: NOR Flash, mDDR/DDR2
+		- I2C( Master/Slave )
+		- SPI( Master/Slave )
+		- Timer( PWM )
+		- GPIO
+		- ADC( General purpose, thermal sensor )
+		- DAC( Composite output )
+		- I2S( Bypass )
+		- Video Codec( H.264 / MPEG4 )
+		- USB Client( Control )
+		- ISP Engine
+		- Sensor( MIPI / Parallel output )
+	- Multimedia Framework
+		- Video4Linux2
+		- middle ware??? : ffmpeg / framebuffer / openmax
+		- jpeg library for video capture
+	- Network Service
+		- http
+		- Real-time Streamming : RTSP / RTCP / RTP
+	- Application
+		- player: mplayer( HDMI/Composite output )
+
+- Linux Seminar
+	- embedded linux
+		- bootloader, kernel, root file-system
+		- boot sequence
+	- images: zImage, bzImage, uImage
+	- system call
+	- device driver
+		- skeleton
+		- ioctl
+		- interrupt
+		- timer
+	- interrupt( top half/bottom half )
+		- tasklet
+		- work queue
+	- video sub-system( TI OMAP / samsung s5c100 )
+		- video for linux
+		- framebuffer
+		- camera interface
+	- application
+		- mmap
+		- posix thread, NPTL
+		- video for linux API
+
+- others
+	- USB device driver for UVC output
+	- ethernet protocols
+		- RTP / RTSP
+	- audio / video synchronization
+	- SDIO for WIFI
+	- library porting
+		- ffmpeg 외 필요한 것들..
+	- root file-system: ramdisk image
+
