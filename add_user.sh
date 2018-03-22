@@ -18,7 +18,9 @@ ITEMS="config \
 	tmux.conf \
 	screenrc \
 	ctags \
-	gitconfig"
+	gitconfig \
+	dircolors-solarized \
+	dircolors"
 
 update()
 {

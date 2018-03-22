@@ -63,5 +63,6 @@ if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 	sudo cp -a ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
 	sudo ln -s $PWD/config/home-bin/ ~/bin
-	sudo chown $USER:$USER ~/bin
+	#sudo chown $USER:$USER ~/bin
+	sudo ln -s $PWD/setting ~/setting
 fi
