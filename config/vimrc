@@ -422,6 +422,8 @@ let c_no_curly_error=1
 "syn match       cMacro           display "\<\u[[:upper:][:digit:]_]*\s*("me=e-1
 "hi def link cMacro		Macro
 
+"	Comment Highlighting"
+"syn keyword cTodo		contained NOTE INFO DEBUG ERROR FATAL
 "hi def link cppSTLnamespace		cppStatement
 "hi def link cppSTLtype			cppType
 hi cppAccess					guifg=Red ctermfg=Red
