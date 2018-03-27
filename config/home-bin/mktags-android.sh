@@ -40,7 +40,6 @@ export EXCLUDE_DIR=".repo \
 	developers \
 	docs \
 	external \
-	kernel \
 	ndk \
 	platform_testing \
 	prebuilts \
@@ -75,7 +74,7 @@ fi
 
 if [ "$ANDROID_REF" = "Nexell" ] ; then
 	SRC_DIR=$SRC_DIR" ./vendor"
-	EXCLUDE_DIR=$EXCLUDE_DIR" kernel u-boot 2ndboot bootloader"
+	EXCLUDE_DIR=$EXCLUDE_DIR" ./kernel ./linux/kernel/kernel-3.4.39 u-boot 2ndboot bootloader"
 fi
 
 export CSCOPE_OPTION="-q -k"

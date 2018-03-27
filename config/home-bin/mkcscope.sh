@@ -19,11 +19,12 @@ if [ -z $1 ] || [ "$1" = "-h" ] ; then
 	exit 0;
 fi
 
-EXCLUDE_DIR=".svn .git"$EXCLUDE_DIR
+EXCLUDE_DIR=".svn .git "$EXCLUDE_DIR
 
 for dir in $EXCLUDE_DIR
 do
-	CSCOPE_EXCLUDE_OPT="! ( -type d -name "$dir" -prune ) "$CSCOPE_EXCLUDE_OPT
+	#CSCOPE_EXCLUDE_OPT="! ( -type d -name "$dir" -prune ) "$CSCOPE_EXCLUDE_OPT
+	CSCOPE_EXCLUDE_OPT="! ( -path "$dir" -prune ) "$CSCOPE_EXCLUDE_OPT
 done
 
 if [ "$1" = "-r" ] ; then

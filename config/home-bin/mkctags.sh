@@ -13,6 +13,7 @@ CTAGS_OPT=$CTAGS_OPT" --links=no"
 CTAGS_OPT=$CTAGS_OPT" --c++-kinds=+p --fields=+iaS --extra=+q"
 CTAGS_OPT=$CTAGS_OPT" --exclude=CVS \
 	--exclude=.svn \
+	--exclude=.git \
 	--exclude=*.o \
 	--exclude=*.d \
 	--exclude=*.bak"
