@@ -74,8 +74,16 @@ fi
 
 if [ "$ANDROID_REF" = "Nexell" ] ; then
 	SRC_DIR=$SRC_DIR" ./vendor"
-	EXCLUDE_DIR=$EXCLUDE_DIR" ./kernel ./linux/kernel/kernel-3.4.39 u-boot 2ndboot bootloader"
+	EXCLUDE_DIR=$EXCLUDE_DIR" ./kernel \
+		./linux/kernel/kernel-3.4.39 \
+		u-boot \
+		2ndboot \
+		bootloader \
+		./hardware/dogtra/adf7021/kernel"
 fi
+
+echo $EXCLUDE_DIR
+exit 0
 
 export CSCOPE_OPTION="-q -k"
 

@@ -1,0 +1,98 @@
+
+https://calvin.me/reset-esxi-evaluation-license/
+
+Turn on SSH and log in to the host.
+
+Remove the current license
+$ rm -r /etc/vmware/license.cfg
+
+Copy over the new evaluation license, which is already on the host
+$ cp /etc/vmware/.#license.cfg /etc/vmware/license.cfg
+
+Restart ESXi services
+$ /etc/init.d/vpxa restart
+
+Confirm the new license
+
+Automatic Script
+===========================================================
+First create the script (reset-eval.sh) somewhere accessible to ESXi.
+I chose to put in my ZFS0 datastore (/vmfs/volumes/ZFS0/reset.eval)
+
+#!/bin/sh
+## remove license
+echo 'Removing License'
+rm -r /etc/vmware/license.cfg
+## get a new trial license
+echo 'Copying new license'
+cp /etc/vmware/.#license.cfg /etc/vmware/license.cfg
+## restart services
+echo 'Restarting VPXA'
+/etc/init.d/vpxa restart
+
+
+This alternative script shuts down any VM called ‘ups-agent’. You may edit that line to your VM’s name
+
+#!/bin/sh
+
+# This script shuts down the UPS-Agent and resets the license
+echo 'Getting VMID of UPS-Agent'
+vmid=$(vim-cmd vmsvc/getallvms | grep ups-agent | awk '{print $1}')
+echo 'VMID is' $vmid
+
+echo 'Getting UPS-Agent Power state'
+state=$(vim-cmd vmsvc/power.getstate $vmid | grep Powered)
+echo 'VM is currently' $state
+x=1
+
+while [[ "$state" == "Powered on" && $x -lt 3 ]]
+do
+        echo 'Powering off...'
+        vim-cmd vmsvc/power.shutdown "$vmid"
+        echo 'Waiting for VM to power off...'
+        i=30;while [ $i -gt 0 ];do if [ $i -gt 9 ];then printf "bb$i";else  printf "bb $i";fi;sleep 1;i=`expr $i - 1`;done
+        state=$(vim-cmd vmsvc/power.getstate $vmid | grep Powered)
+        x=`expr $x + 1`
+done
+
+if [ "$state" == "Powered off" ]
+        then
+        ## remove license
+        echo 'Removing License'
+        rm -r /etc/vmware/license.cfg
+        ## get a new trial license
+        echo 'Copying new license'
+        cp /etc/vmware/.#license.cfg /etc/vmware/license.cfg
+        ## restart services
+        echo 'Restarting VPXA'
+        /etc/init.d/vpxa restart
+        #echo 'Restarting Services'
+        #services.sh restart
+        ## power on
+        echo 'Powering on USP-Agent'
+        vim-cmd vmsvc/power.on "$vmid"
+else
+        echo 'Could not turn off UPS-Agent'
+fi
+
+echo 'Finished'
+
+
+
+Test the script and make sure it works (remember to chmod +x)
+$ chmod +x reset-eval.sh
+$ ./reset-eval.sh
+
+Add the script to the crontab to make it run on a set schedule (mine is set at 6:05am each day).
+For each 59 days do ‘* * 59 * *’
+
+/bin/echo "5 6 * * * /vmfs/volumes/ZFS0/reset-eval.sh" >> /var/spool/cron/crontabs/root
+kill $(cat /var/run/crond.pid)
+crond
+
+Finally add the following to the end of ‘/etc/rc.local.d/local.sh’
+to regenerate the job as ESXi clears the crontab on reboot
+
+$ /bin/kill $(cat /var/run/crond.pid)
+$ /bin/echo "5 6 * * * /vmfs/volumes/ZFS0/reset-eval.sh" >> /var/spool/cron/crontabs/root
+$ crond

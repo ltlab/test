@@ -218,6 +218,22 @@ se cursorline
 set tags+=tags
 set tags+=/usr/include/tags
 
+let cwd=fnamemodify(getcwd(), ":p" )
+let g:adf_path=fnamemodify("~/work/gitlab/aosp-test/hardware/dogtra/adf7021", ":p")
+
+if isdirectory( g:adf_path )
+	"	if $ANDROID_BUILD_TOP !=""
+	let g:adf_tags = fnamemodify( findfile( "tags", g:adf_path ), ":p" )
+	let g:adf_cscope = fnamemodify( findfile( "cscope.out", g:adf_path ), ":p" )
+
+	if filereadable( g:adf_tags )
+		set tags+=~/work/gitlab/aosp-test/hardware/dogtra/adf7021/tags
+	endif
+	if filereadable( g:adf_cscope )
+		execute "cscope add" fnameescape( g:adf_cscope )
+	endif
+endif
+
 "if has("autocmd")
 	" When editing a file, always jump to the last cursor position
 	"autocmd BufReadPost *
@@ -424,6 +440,16 @@ let c_no_curly_error=1
 
 "	Comment Highlighting"
 "syn keyword cTodo		contained NOTE INFO DEBUG ERROR FATAL
+"
+"	Comment Highlighting"	Do Not Use This...
+"if has("autocmd")
+"    if v:version > 701
+"        autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\)')
+"        autocmd Syntax * call matchadd('Search', '\W\zs\(HELP\|DEBUG\)')
+"        autocmd Syntax * call matchadd('ErrorMsg', '\W\zs\(ERROR\|FATAL\)')
+"    endif
+"endif
+
 "hi def link cppSTLnamespace		cppStatement
 "hi def link cppSTLtype			cppType
 hi cppAccess					guifg=Red ctermfg=Red
