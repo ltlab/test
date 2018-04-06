@@ -218,6 +218,10 @@ se cursorline
 set tags+=tags
 set tags+=/usr/include/tags
 
+if filereadable( "/usr/include/cscope.out" )
+	cs add /usr/include/cscope.out
+endif
+
 let cwd=fnamemodify(getcwd(), ":p" )
 let g:adf_path=fnamemodify("~/work/gitlab/aosp-test/hardware/dogtra/adf7021", ":p")
 
