@@ -55,3 +55,8 @@ echo "`sudo blkid | grep $DEV_PART | awk '{print $2}' | sed 's/"//g'` /home ext4
 echo "`sudo blkid | grep $SWAP_PART | awk '{print $2}' | sed 's/"//g'` none swap sw 0 0" | sudo tee -a /etc/fstab
 echo "tmpfs /tmp tmpfs mode=1777,size=2g 0 0" | sudo tee -a /etc/fstab
 
+$ sudo mkdir /dev/shm/tmp
+$ sudo chmod 1777 /dev/shm/tmp
+### mount --bind [directory] [mount point]
+$ echo "/dev/shm/tmp /tmp none bind 0 0" | sudo tee -a /etc/fstab
+
