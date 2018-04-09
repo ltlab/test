@@ -53,4 +53,5 @@
 # mount added disk to /home
 echo "`sudo blkid | grep $DEV_PART | awk '{print $2}' | sed 's/"//g'` /home ext4 defaults 0 2" | sudo tee -a /etc/fstab
 echo "`sudo blkid | grep $SWAP_PART | awk '{print $2}' | sed 's/"//g'` none swap sw 0 0" | sudo tee -a /etc/fstab
+echo "tmpfs /tmp tmpfs mode=1777,size=2g 0 0" | sudo tee -a /etc/fstab
 
