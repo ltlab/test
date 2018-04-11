@@ -21,10 +21,24 @@
 		For Windows:
 			VBoxManage internalcommands createrawvmdk -filename "C:\Users\<user_name>\VirtualBox VMs\<VM_folder_name>\<file_name>.vmdk" -rawdisk \\.\PhysicalDrive#
 			VBoxManage internalcommands createrawvmdk -filename C:\mydrive.vmdk -rawdisk \\.\PhysicalDrive1 -partitions 1, 3
+			ex) Disk 3 / partition 4
+				CMD > VBoxManage.exe internalcommands listpartitions -rawdisk \\.\PhysicalDrive3
+					Number  Type   StartCHS       EndCHS      Size (MiB)  Start (Sect)
+					1       0x00  0   /0  /0   0   /0  /0            128           34
+					2       0x00  0   /0  /0   0   /0  /0           1024       264192
+					3       0x00  0   /0  /0   0   /0  /0           4096      2361344
+					4       0x00  0   /0  /0   0   /0  /0          61440     10749952
+					5       0x00  0   /0  /0   0   /0  /0         410250    136579072
+				CMD > VBoxManage.exe internalcommands createrawvmdk \
+					-filename f:\VirtualBox_VM\Ubuntu_x64\home-nvme.vmdk \
+					-rawdisk \\.\PhysicalDrive3 -partitions 5
+				CMD > VBoxManage.exe internalcommands createrawvmdk -filename f:\VirtualBox_VM\Ubuntu_x64\home-nvme.vmdk -rawdisk \\.\PhysicalDrive3 -partitions 5
+
 		For Linux:
 			VBoxManage internalcommands createrawvmdk -filename "</path/to/file>.vmdk" -rawdisk /dev/sda
 		For Mac OS X:
 			VBoxManage internalcommands createrawvmdk -filename "</path/to/file>.vmdk" -rawdisk /dev/disk#
+
 
 # Linux with Physical disk partitions.
 - /boot, /, /opt => virtual images
