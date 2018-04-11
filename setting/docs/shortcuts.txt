@@ -1,0 +1,35 @@
+Ubuntu-Desktop
+========================================================
+C + A + <- ->.. : Change Workspace
+C + Wind + <- ->..: Left / Right. Max. / Min.
+C + S + A + <- ->..: Move into Workspace
+
+gnome terminal( C + A + t )
+========================================================
+C + S : prefix
+ + N: New Window
+ + T: New Tab
+ + W: Close Tab
+ + Q: Quit
+ + C / V : Copy / Paste
+ + F: Find
+========================================================
+◇ 첫 줄로 커서 이동 : Ctrl + A
+◇ 마지막 줄로 커서 이동 : Ctrl + E
+◇ 현재 프로세서 끝내기 : Ctrl + C
+◇ 현재 프로세서를 백그라운드로 실행 : Ctrl + Z
+◇ 끝내기 : Ctrl + D
+◇ 명령어 찾기 : Ctrl + R
+◇ 현재 줄 지우기 : Ctrl + U
+◇ 커서가 위치한 곳 지우기 : Ctrl + K
+◇ 커서 앞 지우기 : Ctrl + W
+◇ 터미널 청소 : Ctrl + L
+◇ 선택된 명령 클립보드로 복사 : Shift + Ctrl + C
+◇ 클립보드 명령 붙여넣기 : Shift + Ctrl + V (or Shift + Insert)
+◇ 한 글자 앞 이동 : Alt + F
+◇ 한 글자 뒤 이동 : Alt + B
+◇ 사명한 명령어 검색 : Arrow Up/Down
+◇ 터미널 스크롤 하기 : Shift + PageUp / PageDown
+출처: http://onceaday.tistory.com/67 [좋은 날씨와 햇살]
+
+
