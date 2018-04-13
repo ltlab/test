@@ -35,7 +35,7 @@ fi
 sudo apt-get install -y vim ctags cscope
 sudo apt-get install -y gitk
 sudo apt-get install -y make
-sudo apt-get install -y ack-grep tmux
+sudo apt-get install -y ack-grep tmux sysstat
 
 # APM
 sudo apt-get install -y apache2

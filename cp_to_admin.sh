@@ -56,6 +56,15 @@ if [ -z "`ifconfig -a | grep eth`" ] ; then
 	fi
 fi
 
+#	/tmp setting
+echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+sudo mount -a
+sudo rm -rf /var/tmp
+sudo ln -s /tmp /var/tmp
+
+# SSD mount...
+#UUID=b012b0fd-f5cc-4675-89db-3375d9a3f0bc /home ext4  defaults,discard 0 2
+
 if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 	sudo mkdir -p $LOCAL_ADMIN_PATH
 	sudo cp -a ./config $LOCAL_CONF_PATH

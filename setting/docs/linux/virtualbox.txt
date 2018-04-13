@@ -89,7 +89,7 @@
 			-filename ./Windows7-RawDisk.vmdk \
 			-rawdisk /dev/sda \
 			-partitions 1,2 \
-			-mbr ./fakembr.mbr -relative 
+			-mbr ./fakembr.mbr -relative
 
 3. 생성한 가상 디스크를 가상머신의 Storage에 등록합니다.
 
