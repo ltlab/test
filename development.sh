@@ -132,7 +132,7 @@ if [ ! -z "$WSL" ] ; then
 	#	start daemon for WSL
 	sudo cp -a --backup=numbered /etc/ssh/sshd_config $CONF_BACKUP
 	sudo cp -a $CONF_PATH/sshd_config-wsl /etc/ssh/sshd_config
-	echo "$USER ALL=(root) NOPASSWD: /usr/sbin/sshd -D" | sudo tee -a /etc/sudoers
+	echo "$USER ALL=(root) NOPASSWD: /usr/sbin/sshd" | sudo tee -a /etc/sudoers
 	echo "$USER ALL=(root) NOPASSWD: /usr/sbin/vsftpd" | sudo tee -a /etc/sudoers
 
 	sudo systemd-machine-id-setup
