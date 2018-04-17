@@ -120,6 +120,21 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 #sudo /etc/init.d/xrdp restart
 
 if [ ! -z "$WSL" ] ; then
+
+	# FTP
+	sudo apt-get install -q -y vsftpd
+	# config for vsftpd
+	sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP
+	sudo cp -a $CONF_PATH/vsftpd.conf /etc/vsftpd.conf
+	sudo touch /etc/vsftpd.chroot_list
+	sudo /etc/init.d/vsftpd restart
+
+	#	start daemon for WSL
+	sudo cp -a --backup=numbered /etc/ssh/sshd_config $CONF_BACKUP
+	sudo cp -a $CONF_PATH/sshd_config-wsl /etc/ssh/sshd_config
+	echo "$USER ALL=(root) NOPASSWD: /usr/sbin/sshd -D" | sudo tee -a /etc/sudoers
+	echo "$USER ALL=(root) NOPASSWD: /usr/sbin/vsftpd" | sudo tee -a /etc/sudoers
+
 	sudo systemd-machine-id-setup
 	sudo dbus-uuidgen --ensure
 	cat /etc/machine-id

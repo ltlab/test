@@ -3,10 +3,16 @@
 set -e
 #set -x	#	debug
 
+WSL=`uname -v | grep Microsoft`
+
 USER_ID=$1
 USER_HOME=/home/$USER_ID
 
-CONF_PATH=/root/config
+LOCAL_ADMIN_PATH=~/.bin-admin
+LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
+
+#CONF_PATH=/root/config
+CONF_PATH=$LOCAL_CONF_PATH
 CONF_BACKUP=$USER_HOME/.config-backup
 
 ITEMS="config \
@@ -67,26 +73,32 @@ do
 	update $item
 done
 
-if [ -z "`grep $USER_ID /etc/exports`" ] ; then
-	sudo mkdir -p $USER_HOME/nfs
-	sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
-	sudo chmod g+w $USER_HOME/nfs
-	sudo ln -s $USER_HOME/nfs /nfs/$USER_ID
-	echo "/nfs/$USER_ID	192.168.10.0/255.255.255.0(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
-	sudo /etc/init.d/nfs-kernel-server restart
-fi
+if [ -z "$WSL" ] ; then
 
-if [ ! -e "$USER_HOME/tftpboot" ] ; then
-	sudo ln -s /tftpboot $USER_HOME/tftpboot
-fi
+	if [ -z "`grep $USER_ID /etc/exports`" ] ; then
+		sudo mkdir -p $USER_HOME/nfs
+		sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
+		sudo chmod g+w $USER_HOME/nfs
+		sudo ln -s $USER_HOME/nfs /nfs/$USER_ID
+		echo "/nfs/$USER_ID	192.168.10.0/255.255.255.0(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
+		sudo /etc/init.d/nfs-kernel-server restart
+	fi
 
-sudo usermod -G ftp -a $USER_ID
-sudo usermod -G tftp -a $USER_ID
-sudo usermod -G docker -a $USER_ID
-sudo usermod -G sambashare -a $USER_ID
-sudo usermod -G nfs -a $USER_ID
+	if [ ! -e "$USER_HOME/tftpboot" ] ; then
+		sudo ln -s /tftpboot $USER_HOME/tftpboot
+	fi
 
-(echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
+	sudo usermod -G ftp -a $USER_ID
+	sudo usermod -G tftp -a $USER_ID
+	sudo usermod -G docker -a $USER_ID
+	sudo usermod -G sambashare -a $USER_ID
+	sudo usermod -G nfs -a $USER_ID
+
+	(echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
+else	#	WSL
+	sudo usermod -G ftp -a $USER_ID
+	echo "$USER_ID" | sudo tee -a /etc/vsftpd.chroot_list
+fi	#	WSL
 
 #sudo usermod -G sudo -a $USER_ID
 
