@@ -111,6 +111,21 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 #echo mate-session>~/.xsession
 #sudo /etc/init.d/xrdp restart
 
+WSL=`uname -v | grep Microsoft`
+
+if [ ! -z "$WSL" ] ; then
+	sudo systemd-machine-id-setup
+	sudo dbus-uuidgen --ensure
+	cat /etc/machine-id
+
+	sudo apt-get -y install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
+
+	sudo apt-get -y install language-pack-ko
+	sudo locale-gen ko_KR.UTF-8
+	sudo apt-get -y install fonts-unifonts-core fonts-unifonts-extra
+	sudo apt-get -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
+fi
+
 #sudo smbpasswd -a $USER
 
 sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

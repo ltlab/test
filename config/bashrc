@@ -197,4 +197,11 @@ if [ -f "`which powerline-daemon`" ] ; then
 	#POWERLINE_SHELL_SELECT=1
 	#. /usr/share/powerline/bindings/shell/powerline.sh
 fi
+
+WSL=`uname -v | grep Microsoft`
+echo "WSL: $WSL"
+if [ ! -z "$WSL" ] ; then
+	export DISPLAY=:0
+fi
+
 echo "END .bashrc"
