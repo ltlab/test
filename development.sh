@@ -3,6 +3,8 @@
 #set -e
 #set -x	#	debug
 
+WSL=`uname -v | grep Microsoft`
+
 CONF_PATH=/root/config
 CONF_BACKUP=/root/.config-backup
 LOCAL_ADMIN_PATH=~/.bin-admin
@@ -37,58 +39,64 @@ sudo apt-get install -y gitk
 sudo apt-get install -y make
 sudo apt-get install -y ack-grep tmux sysstat
 
+# VCS
+sudo apt-get install -q -y subversion git-core
+
 # APM
-sudo apt-get install -y apache2
-sudo apt-get install -y mysql-server mysql-client
-sudo apt-get install -y php libapache2-mod-php php-xml php-gd php-mysql
+if [ -z "$WSL" ] ; then
+	sudo apt-get install -y apache2
+	sudo apt-get install -y mysql-server mysql-client
+	sudo apt-get install -y php libapache2-mod-php php-xml php-gd php-mysql
+fi
 
 # SSH
 sudo apt-get install -q -y openssh-server
 
 # Samba
-sudo apt-get install -q -y samba
-#sudo smbpasswd -a jyhuh
-#sudo vi /etc/samba/smb.conf
-sudo cp -a --backup=numbered /etc/samba/smb.conf $CONF_BACKUP
-sudo cp -a $CONF_PATH/smb.conf /etc/samba/smb.conf
-sudo /etc/init.d/smbd restart
-#(echo vagrant; echo vagrant) | sudo smbpasswd -s -a vagrant
+if [ -z "$WSL" ] ; then
+	sudo apt-get install -q -y samba
+	#sudo smbpasswd -a jyhuh
+	#sudo vi /etc/samba/smb.conf
+	sudo cp -a --backup=numbered /etc/samba/smb.conf $CONF_BACKUP
+	sudo cp -a $CONF_PATH/smb.conf /etc/samba/smb.conf
+	sudo /etc/init.d/smbd restart
+	#(echo vagrant; echo vagrant) | sudo smbpasswd -s -a vagrant
 
-# FTP / TFTP
-sudo apt-get install -q -y vsftpd
-sudo apt-get install -q -y tftpd-hpa tftp-hpa
+	# FTP / TFTP
+	sudo apt-get install -q -y vsftpd
+	sudo apt-get install -q -y tftpd-hpa tftp-hpa
 
-# NFS
-sudo apt-get install -q -y nfs-kernel-server
-sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
-#sudo cp -a $CONF_PATH/exports /etc/exports
-sudo mkdir -p /nfs
-#sudo groupadd nfs
-sudo useradd nfs -u 2000 -U
-sudo chown nfs:nfs /nfs
-sudo chmod g+w /nfs
-sudo /etc/init.d/nfs-kernel-server restart
+	# NFS
+	sudo apt-get install -q -y nfs-kernel-server
+	sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
+	#sudo cp -a $CONF_PATH/exports /etc/exports
+	sudo mkdir -p /nfs
+	#sudo groupadd nfs
+	sudo useradd nfs -u 2000 -U
+	sudo chown nfs:nfs /nfs
+	sudo chmod g+w /nfs
+	sudo /etc/init.d/nfs-kernel-server restart
 
-# VCS
-sudo apt-get install -q -y subversion git-core
+	# config for vsftpd
+	sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP
+	sudo cp -a $CONF_PATH/vsftpd.conf /etc/vsftpd.conf
+	sudo touch /etc/vsftpd.chroot_list
+	sudo /etc/init.d/vsftpd restart
 
-sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP
-sudo cp -a $CONF_PATH/vsftpd.conf /etc/vsftpd.conf
-sudo touch /etc/vsftpd.chroot_list
-sudo /etc/init.d/vsftpd restart
+	# Docker
+	sudo apt-get install -y docker.io
+	#sudo usermod -G docker -a $USER
 
-# Docker
-sudo apt-get install -y docker.io
-#sudo usermod -G docker -a $USER
+	# chown root.tftp <tftpboot dir>
+	#sudo usermod -G tftp -a $USER
+	sudo mkdir -p /tftpboot
+	sudo chown tftp:tftp /tftpboot
+	sudo chmod g+w /tftpboot
+	sudo cp -a --backup=numbered /etc/default/tftpd-hpa $CONF_BACKUP
+	sudo cp -a $CONF_PATH/tftpd-hpa /etc/default/tftpd-hpa
+	sudo /etc/init.d/tftpd-hpa restart
 
-# chown root.tftp <tftpboot dir>
-#sudo usermod -G tftp -a $USER
-sudo mkdir -p /tftpboot
-sudo chown tftp:tftp /tftpboot
-sudo chmod g+w /tftpboot
-sudo cp -a --backup=numbered /etc/default/tftpd-hpa $CONF_BACKUP
-sudo cp -a $CONF_PATH/tftpd-hpa /etc/default/tftpd-hpa
-sudo /etc/init.d/tftpd-hpa restart
+fi	#	WSL
 
 #exit 0
 
@@ -111,8 +119,6 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 #echo mate-session>~/.xsession
 #sudo /etc/init.d/xrdp restart
 
-WSL=`uname -v | grep Microsoft`
-
 if [ ! -z "$WSL" ] ; then
 	sudo systemd-machine-id-setup
 	sudo dbus-uuidgen --ensure
@@ -122,8 +128,9 @@ if [ ! -z "$WSL" ] ; then
 
 	sudo apt-get -y install language-pack-ko
 	sudo locale-gen ko_KR.UTF-8
-	sudo apt-get -y install fonts-unifonts-core fonts-unifonts-extra
+	sudo apt-get -y install fonts-unfonts-core fonts-unfonts-extra
 	sudo apt-get -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
+
 fi
 
 #sudo smbpasswd -a $USER
