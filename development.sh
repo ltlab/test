@@ -116,7 +116,7 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 # Remote Desktop
 #sudo apt-get install -y xrdp
 #sudo apt-get install -y mate-core mate-desktop-environment mate-notification-daemon
-#echo mate-session>~/.xsession
+#echo mate-session > ~/.xsession
 #sudo /etc/init.d/xrdp restart
 
 if [ ! -z "$WSL" ] ; then

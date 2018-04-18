@@ -82,8 +82,8 @@ if [ "$ANDROID_REF" = "Nexell" ] ; then
 		./hardware/dogtra/adf7021/kernel"
 fi
 
-echo $EXCLUDE_DIR
-exit 0
+#echo $EXCLUDE_DIR
+#exit 0
 
 export CSCOPE_OPTION="-q -k"
 
