@@ -201,7 +201,7 @@ fi
 WSL=`uname -v | grep Microsoft`
 echo "WSL: $WSL"
 if [ ! -z "$WSL" ] ; then
-	export DISPLAY=:0
+	export DISPLAY="localhost:0"
 fi
 
 echo "END .bashrc"
