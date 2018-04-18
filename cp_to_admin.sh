@@ -57,10 +57,16 @@ if [ -z "`ifconfig -a | grep eth`" ] ; then
 fi
 
 #	/tmp setting
-echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+if [ -z "`grep \/tmp /etc/fstab`" ] ; then
+	echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+	echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+else
+	echo "/tmp, /var/tmp is tmpfs..."
+fi
+
 sudo mount -a
-sudo rm -rf /var/tmp
-sudo ln -s /tmp /var/tmp
+#sudo rm -rf /var/tmp
+#sudo ln -s /tmp /var/tmp
 
 # SSD mount...
 #UUID=b012b0fd-f5cc-4675-89db-3375d9a3f0bc /home ext4  defaults,discard 0 2
@@ -71,11 +77,11 @@ if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
 	sudo cp -a ./system_conf/* $LOCAL_CONF_PATH
 	sudo cp -a ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
-	if [ ! -e "~/bin" ] ; then
+	if [ ! -e ~/bin ] ; then
 		sudo ln -s $PWD/config/home-bin/ ~/bin
 		#sudo chown $USER:$USER ~/bin
 	fi
-	if [ ! -e "~/setting" ] ; then
+	if [ ! -e ~/setting ] ; then
 		sudo ln -s $PWD/setting ~/setting
 	fi
 fi

@@ -1,9 +1,9 @@
 #!/bin/sh
 
+WSL=`uname -v | grep Microsoft`
+
 set -e
 #set -x	#	debug
-
-WSL=`uname -v | grep Microsoft`
 
 USER_ID=$1
 USER_HOME=/home/$USER_ID
@@ -111,6 +111,7 @@ fi
 
 # install Vundle
 sudo -u $USER_ID $USER_HOME/bin/vundle.sh $USER_HOME
+
 # install repo
 sudo -u $USER_ID curl https://storage.googleapis.com/git-repo-downloads/repo -o $USER_HOME/bin/repo
 sudo chmod a+x $USER_HOME/bin/repo
