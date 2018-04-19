@@ -15,8 +15,7 @@ LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 CONF_PATH=$LOCAL_CONF_PATH
 CONF_BACKUP=$USER_HOME/.config-backup
 
-ITEMS="config \
-	bashrc \
+ITEMS=" bashrc \
 	profile \
 	vimrc \
 	home-bin \
@@ -27,6 +26,7 @@ ITEMS="config \
 	gitconfig \
 	dircolors-solarized \
 	dircolors"
+#	config"
 
 update()
 {
