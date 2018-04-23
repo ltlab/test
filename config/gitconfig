@@ -14,7 +14,7 @@
 
 [diff]
 	rename = copy
-#	tool = bc
+	tool = bc
 
 [pager]
 	color = true
