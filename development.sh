@@ -96,6 +96,12 @@ if [ -z "$WSL" ] ; then
 	sudo cp -a $CONF_PATH/tftpd-hpa /etc/default/tftpd-hpa
 	sudo /etc/init.d/tftpd-hpa restart
 
+	# for ubuntu desktop...
+	#sudo apt-get install gparted
+	#sudo apt-get install mdadm
+	#sudo apt-get install gksu
+	#sudo apt-get install meld
+	#sudo apt-get install dconf-editor gconf-editor
 fi	#	WSL
 
 #exit 0
