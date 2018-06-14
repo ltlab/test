@@ -19,6 +19,8 @@ int generateString( char **ppStr )
 int main( void )
 {
 	char *pStr = NULL;
+	char n1, n2;
+	unsigned short s1;
 
 	generateString( & pStr );
 
@@ -28,5 +30,12 @@ int main( void )
 	{
 		free( pStr );
 	}
+
+	n1 = 33;
+	n2 = 104;
+	s1 = ( n1 << 8 ) | ( n2 & 0xFF );
+
+	printf( "n1: %d 0x%02x, n2: %d 0x%02x s1: %d 0x%04x\n", n1, n1, n2, n2, s1, s1 );
+
 	return 0;
 }
