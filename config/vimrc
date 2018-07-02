@@ -274,6 +274,7 @@ endif
 
 "set gfn=LucidaSansTypewriter\ 9
 set gfn=D2Coding\ 12
+"set gfn=Ubuntu\ Mono\ 12
 set fileencoding=utf-8
 set fileencodings=utf-8,cp949,euc-kr
 

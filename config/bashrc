@@ -191,6 +191,7 @@ alias cd-uboot="cd ~/work/gitlab/aosp-test/linux/bootloader/u-boot-2014.07/"
 alias cd-linux="cd ~/work/gitlab/aosp-test/linux/kernel/kernel-3.4.39/"
 alias cd-rookie="cd ~/work/gitlab/aosp-test/device/nexell/s5p6818_rookie/"
 alias cd-dogtra="cd ~/work/gitlab/aosp-test/hardware/dogtra/"
+alias cd-adf="cd ~/work/gitlab/aosp-test/hardware/dogtra/adf7021/"
 alias cd-kernel="cd ~/work/gitlab/aosp-test/hardware/dogtra/adf7021/kernel/"
 
 #	history for other terminals.
