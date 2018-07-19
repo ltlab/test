@@ -115,3 +115,7 @@ sudo -u $USER_ID $USER_HOME/bin/vundle.sh $USER_HOME
 # install repo
 sudo -u $USER_ID curl https://storage.googleapis.com/git-repo-downloads/repo -o $USER_HOME/bin/repo
 sudo chmod a+x $USER_HOME/bin/repo
+
+echo "[ NOTE!!!!!!!!! ]"
+echo "[ GIT ] excute git-conf.sh for e-mail registration."
+echo "[ VIM ] excute vim-plugin.sh for syntax highlighting."

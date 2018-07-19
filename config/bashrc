@@ -185,14 +185,23 @@ alias ack="ack --nogroup --column"
 alias ack-grep="ack-grep --nogroup --column"
 
 #	pettra
-alias cd-gitlab="cd ~/work/gitlab/"
-alias cd-aosp="cd ~/work/gitlab/aosp-test/"
-alias cd-uboot="cd ~/work/gitlab/aosp-test/linux/bootloader/u-boot-2014.07/"
-alias cd-linux="cd ~/work/gitlab/aosp-test/linux/kernel/kernel-3.4.39/"
-alias cd-rookie="cd ~/work/gitlab/aosp-test/device/nexell/s5p6818_rookie/"
-alias cd-dogtra="cd ~/work/gitlab/aosp-test/hardware/dogtra/"
-alias cd-adf="cd ~/work/gitlab/aosp-test/hardware/dogtra/adf7021/"
-alias cd-kernel="cd ~/work/gitlab/aosp-test/hardware/dogtra/adf7021/kernel/"
+AOSP_PATH="~/work/gitlab/aosp-test"
+GITLAB_PATH="~/work/gitlab"
+
+alias cd-gitlab="cd $GITLAB_PATH"
+alias cd-aosp="cd $AOSP_PATH"
+alias cd-frameworks="cd $AOSP_PATH/frameworks"
+alias cd-2ndboot="cd $AOSP_PATH/linux/2ndboot"
+alias cd-uboot="cd $AOSP_PATH/linux/bootloader/u-boot-2014.07"
+alias cd-kernel="cd $AOSP_PATH/linux/kernel/kernel-3.4.39"
+alias cd-rookie="cd $AOSP_PATH/device/nexell/s5p6818_rookie"
+alias cd-dogtra="cd $AOSP_PATH/hardware/dogtra"
+alias cd-adf="cd $AOSP_PATH/hardware/dogtra/adf7021"
+
+alias build-help="head -n 20 $AOSP_PATH/ReadMe"
+alias build="cd-aosp && ./device/nexell/tools/build.sh -b s5p6818_rookie"
+alias flash="cd-aosp && ./device/nexell/tools/update.sh -d sd0"
+alias mmm="cd-aosp && source build/envsetup.sh && lunch"
 
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
