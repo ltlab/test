@@ -187,6 +187,7 @@ alias ack-grep="ack-grep --nogroup --column"
 #	pettra
 AOSP_PATH="~/work/gitlab/aosp-test"
 GITLAB_PATH="~/work/gitlab"
+AOSP_TARGET="aosp_s5p6818_rookie-userdebug"
 
 alias cd-gitlab="cd $GITLAB_PATH"
 alias cd-aosp="cd $AOSP_PATH"
@@ -201,7 +202,7 @@ alias cd-adf="cd $AOSP_PATH/hardware/dogtra/adf7021"
 alias build-help="head -n 20 $AOSP_PATH/ReadMe"
 alias build="cd-aosp && ./device/nexell/tools/build.sh -b s5p6818_rookie"
 alias flash="cd-aosp && ./device/nexell/tools/update.sh -d sd0"
-alias mmm="cd-aosp && source build/envsetup.sh && lunch"
+alias mmm="cd-aosp && source build/envsetup.sh && lunch $AOSP_TARGET"
 
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
