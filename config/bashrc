@@ -200,9 +200,10 @@ alias cd-dogtra="cd $AOSP_PATH/hardware/dogtra"
 alias cd-adf="cd $AOSP_PATH/hardware/dogtra/adf7021"
 
 alias aosp-help="head -n 20 $AOSP_PATH/ReadMe"
-alias build="cd-aosp && ./device/nexell/tools/build.sh -b s5p6818_rookie"
-alias flash="cd-aosp && ./device/nexell/tools/update.sh -d sd0"
+alias build="cd-aosp && time ./device/nexell/tools/build.sh -b s5p6818_rookie"
+alias flash="cd-aosp && time ./device/nexell/tools/update.sh -d sd0"
 alias aosp="cd-aosp && source build/envsetup.sh && lunch $AOSP_TARGET"
+alias repo-sync="cd-aosp && time repo sync --force-sync"
 
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
