@@ -79,6 +79,10 @@ if [ -z "$GREP_OPTIONS" ]; then
 	do
 		GREP_OPTIONS+="--exclude-dir=$PATTERN "
 	done
+	for PATTERN in tags cscope*;
+	do
+		GREP_OPTIONS+="--exclude=$PATTERN "
+	done
 
 	GREP_OPTIONS+='--binary-files=without-match '
 	#export GREP_OPTIONS+='--binary-files=without-match'
@@ -87,9 +91,9 @@ else
 	echo "GREP_OPTIONS has been defined... $GREP_OPTIONS"
 fi
 
-alias grep='grep --color=auto $GREP_OPTIONS'
-alias fgrep='fgrep --color=auto $GREP_OPTIONS'
-alias egrep='egrep --color=auto $GREP_OPTIONS'
+alias grep="grep --color=auto $GREP_OPTIONS"
+alias fgrep="fgrep --color=auto $GREP_OPTIONS"
+alias egrep="egrep --color=auto $GREP_OPTIONS"
 echo "GREP_OPTIONS: $GREP_OPTIONS"
 unset GREP_OPTIONS
 
@@ -181,8 +185,9 @@ else
 fi
 
 #	ack
-alias ack="ack --nogroup --column"
-alias ack-grep="ack-grep --nogroup --column"
+#alias ack="ack --nogroup --column"
+alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
+alias ack-grep="ack-grep --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
 
 #	pettra
 AOSP_PATH="~/work/gitlab/aosp-test"
