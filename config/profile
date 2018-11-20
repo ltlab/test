@@ -20,16 +20,21 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
 	#echo "$HOME/bin .... ${PATH#$HOME/bin}"
-	PATH=${PATH#$HOME/bin:}
+	#PATH=${PATH#$HOME/bin:}
     PATH="$HOME/bin:$PATH"
 fi
 
 if [ -d "$HOME/usr/bin" ] ; then
 	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	PATH=${PATH#$HOME/usr/bin:}
+	#PATH=${PATH#$HOME/usr/bin:}
     PATH="$HOME/usr/bin:$PATH"
 fi
 
+if [ -d "/usr/lib/ccache" ] ; then
+	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
+	#PATH=${PATH#$HOME/usr/bin:}
+    PATH="/usr/lib/ccache:$PATH"
+fi
 #export LANG="ko_KR.UTF-8"
 #export LANGUAGE="ko_KR:ko:en_US:en"
 export LC_MESSAGES="ko_KR.UTF-8"

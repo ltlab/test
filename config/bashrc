@@ -144,14 +144,20 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
 	#echo "$HOME/bin .... ${PATH#$HOME/bin}"
-	PATH=${PATH#$HOME/bin:}
+	#PATH=${PATH#$HOME/bin:}
     PATH="$HOME/bin:$PATH"
 fi
 
 if [ -d "$HOME/usr/bin" ] ; then
 	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	PATH=${PATH#$HOME/usr/bin:}
+	#PATH=${PATH#$HOME/usr/bin:}
     PATH="$HOME/usr/bin:$PATH"
+fi
+
+if [ -d "/usr/lib/ccache" ] ; then
+	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
+	#PATH=${PATH#$HOME/usr/bin:}
+    PATH="/usr/lib/ccache:$PATH"
 fi
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[00m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[00;36m\]\w\[\033[00m\]\$ '
 
@@ -186,8 +192,9 @@ fi
 
 #	ack
 #alias ack="ack --nogroup --column"
-alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
+#alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
 alias ack-grep="ack-grep --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
+alias ack="ack-grep"
 
 #	pettra
 AOSP_PATH="~/work/gitlab/aosp-test"
