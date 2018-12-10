@@ -33,9 +33,9 @@ if [ ! -e "$CONF_PATH" ] ; then
 fi
 
 # for Development
-#sudo apt-get install -y powerline
+sudo apt-get install -y powerline
 sudo apt-get install -y vim ctags cscope
-sudo apt-get install -y gitk
+#sudo apt-get install -y gitk
 sudo apt-get install -y make
 sudo apt-get install -y ack-grep tmux sysstat
 
