@@ -83,6 +83,7 @@ if [ -z "`ifconfig -a | grep eth0`" ] ; then
 	else
 		rm ./interfaces
 	fi
+	# 예전방식 ( /etc/network/interface)  으로 설정하고 싶은 경우에는 ifupdown 패키지를 설치하고 설정
 	if [ -e "$NETPLAN_INIT_FILE" ] ; then
 		sudo mv --backup=numbered $NETPLAN_INIT_FILE $CONF_BACKUP
 		#sudo vi /etc/netplan/50-cloud-init.yaml
