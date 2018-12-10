@@ -6,6 +6,7 @@ CONF_BACKUP=/root/.config-backup
 
 UDEV_NET_FILE=/etc/udev/rules.d/70-persistent-net.rules
 NET_INTERFACE_FILE=/etc/network/interfaces
+NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
 if [ -z "`which sudo`" ] ; then
 	apt-get update
@@ -42,7 +43,35 @@ iface eth0 inet dhcp
 #post-down iptables-save > /etc/iptables.rules
 EOF
 
-if [ -z "`ifconfig -a | grep eth`" ] ; then
+cat << EOF > ./netplani_init
+# This file is generated from information provided by
+# the datasource.  Changes to it will not persist across an instance.
+# To disable cloud-init's network configuration capabilities, write a file
+# /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:
+# network: {config: disabled}
+network:
+    ethernets:
+        eth0:
+            addresses: []
+            dhcp4: true
+            #dhcp4: false
+            #addresses: [192.168.1.230/24]
+            #gateway4: 192.168.1.254
+            #nameservers:
+            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]
+        eth1:
+            addresses: []
+            dhcp4: true
+            #dhcp4: false
+            #addresses: [192.168.1.231/24]
+            #gateway4: 192.168.1.254
+            #nameservers:
+            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]
+    version: 2
+EOF
+
+if [ -z "`ifconfig -a | grep eth0`" ] ; then
+	echo "-----------------------"
 	sudo sed -i "s/CMDLINE_LINUX=\"\"/CMDLINE_LINUX=\"net.ifnames=0 biosdevname=0\"/" /etc/default/grub
 	sudo update-grub2
 	if [ -e "$UDEV_NET_FILE" ] ; then
@@ -53,6 +82,13 @@ if [ -z "`ifconfig -a | grep eth`" ] ; then
 		sudo mv ./interfaces $NET_INTERFACE_FILE
 	else
 		rm ./interfaces
+	fi
+	if [ -e "$NETPLAN_INIT_FILE" ] ; then
+		sudo mv --backup=numbered $NETPLAN_INIT_FILE $CONF_BACKUP
+		#sudo vi /etc/netplan/50-cloud-init.yaml
+		sudo mv ./netplan_init $NETPLAN_INIT_FILE
+		sudo netplan generate
+		sudo netplan apply
 	fi
 fi
 

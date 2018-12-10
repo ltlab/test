@@ -45,8 +45,10 @@ else
 		LC_ALL=$LANG
 	else
 		echo "Maybe you are in X-Window."
-		LANG="ko_KR.UTF-8"
-		LANGUAGE="ko_KR:ko:en_US:en"
+		#LANG="ko_KR.UTF-8"
+		#LANGUAGE="ko_KR:ko:en_US:en"
+		LANG="en_US.UTF-8"
+		LANGUAGE="en_US:en"
 		LC_ALL=$LANG
 	fi
 	export LANG LANGUAGE LC_ALL
