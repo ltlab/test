@@ -43,7 +43,7 @@ iface eth0 inet dhcp
 #post-down iptables-save > /etc/iptables.rules
 EOF
 
-cat << EOF > ./netplani_init
+cat << EOF > ./netplan_init
 # This file is generated from information provided by
 # the datasource.  Changes to it will not persist across an instance.
 # To disable cloud-init's network configuration capabilities, write a file

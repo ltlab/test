@@ -220,7 +220,10 @@ alias repo-sync="cd-aosp && time repo sync --force-sync"
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
 
-if [ -f "`which powerline-daemon`" ] ; then
+ENABLE_POWERLINE=0
+
+#if [ -f "`which powerline-daemon`" ] ; then
+if [ "$ENABLE_POWERLINE" != "0" ] ; then
 	echo "RUN powerline"
 	powerline-daemon -q
 	POWERLINE_BASH_CONTINUATION=1
