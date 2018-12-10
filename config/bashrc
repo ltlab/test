@@ -192,9 +192,9 @@ fi
 
 #	ack
 #alias ack="ack --nogroup --column"
-#alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
+alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
 alias ack-grep="ack-grep --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
-alias ack="ack-grep"
+#alias ack="ack-grep"
 
 #	pettra
 AOSP_PATH="~/work/gitlab/aosp-test"
