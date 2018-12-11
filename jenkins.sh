@@ -7,7 +7,12 @@ sudo apt-add-repository "deb https://pkg.jenkins.io/debian-stable binary/"
 # FOR LATEST JENKINS VERSION RUN:
 #sudo apt-add-repository "deb http://pkg.jenkins-ci.org/debian binary/"
 
+sudo apt-get update
 sudo apt-get install jenkins
 
 echo "Initial Password for Jenkins"
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# configuration: .etc.defaults/jenkins
+#HTTP_PORT=8080
+#JENKINS_HOME=/var/lib/$NAME

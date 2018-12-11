@@ -25,8 +25,8 @@ ITEMS=" bashrc \
 	ctags \
 	gitconfig \
 	dircolors-solarized \
-	dircolors"
-#	config"
+	dircolors \
+	config"
 
 update()
 {
