@@ -67,6 +67,8 @@ Plugin 'Syntastic'
 "Plugin 'cscope_plus.vim'
 "Plugin 'cscope-wrapper'
 
+Plugin 'ctrlp.vim'
+
 Plugin 'ack.vim'
 Plugin 'delimitMate.vim'
 
