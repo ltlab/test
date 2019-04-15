@@ -354,8 +354,8 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 
 " for vim-airline
 let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
-"let g:airline_theme='dark'
-let g:airline_theme='solarized'
+let g:airline_theme='dark'
+"let g:airline_theme='dracula'
 let g:airline_solarized_bg='dark'
 "set laststatus=2 " turn on bottom bar
 let g:airline_powerline_fonts = 1
