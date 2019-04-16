@@ -68,11 +68,13 @@ Plugin 'scrooloose/syntastic'
 "Plugin 'cscope-wrapper'
 
 Plugin 'ctrlp.vim'
+Plugin 'ervandew/supertab'
 
 Plugin 'ack.vim'
 Plugin 'delimitMate.vim'
 
-Plugin 'Yggdroot/indentLine'
+"Plugin 'Yggdroot/indentLine'
+"Plugin 'Indent-Guides'
 
 Plugin 'AutoComplPop'
 Plugin 'SirVer/ultisnips'
@@ -374,18 +376,6 @@ nnoremap <silent> ,H :SearchReset <CR>
 nnoremap <silent> ,h :SearchBuffers <C-R>=expand("<cword>")<CR><CR>
 vnoremap <silent> ,h y:SearchBuffers <C-R>"<CR>
 
-"Plugin Yggdroot/indentLine
-let g:indentLine_color_gui = '#385900'
-let g:indentLine_color_term = 100
-let g:indentLine_char = '|'
-let g:indentLine_first_char = ''
-let g:indentLine_showFirstIndentLevel = 0
-let g:indentLine_enabled = 0
-let g:indentLine_fileTypeExclude = ['help', 'nerdtree', 'text', 'sh']
-let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
-let g:indentLine_maxLines = 3000
-nnoremap \il :IndentLinesToggle<CR>
- 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax enable
 
@@ -474,3 +464,13 @@ let c_no_curly_error=1
 "hi def link cppSTLnamespace		cppStatement
 "hi def link cppSTLtype			cppType
 hi cppAccess					guifg=Red ctermfg=Red
+
+"	Indent line tab
+set listchars=tab:\|\ 
+set list
+hi SpecialKey ctermfg=234 ctermbg=black
+
+"Plugin Indent-Guides
+"let g:indent_guides_enable_on_vim_startup = 1
+"let g:indent_guides_start_level = 2
+"let g:indent_guides_guide_size = 1
