@@ -216,7 +216,7 @@ set ttyfast
 "set scs
 
 set cursorline
-set cursorcolumn
+"set cursorcolumn
 autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
 autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
 autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
@@ -356,7 +356,9 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 
 " for vim-airline
 let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
-let g:airline_theme='dark'
+"AirlineTheme dark
+"let g:airline_theme='dark'
+let g:airline_theme='base16_chalk'
 "let g:airline_theme='dracula'
 let g:airline_solarized_bg='dark'
 "set laststatus=2 " turn on bottom bar
