@@ -68,7 +68,7 @@ Plugin 'scrooloose/syntastic'
 "Plugin 'cscope-wrapper'
 
 Plugin 'ctrlp.vim'
-Plugin 'ervandew/supertab'
+"Plugin 'ervandew/supertab'
 
 Plugin 'ack.vim'
 Plugin 'delimitMate.vim'
