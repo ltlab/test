@@ -36,6 +36,7 @@
 
 		For Linux:
 			VBoxManage internalcommands createrawvmdk -filename "</path/to/file>.vmdk" -rawdisk /dev/sda
+			VBoxManage internalcommands createrawvmdk -filename sda.vmdk -rawdisk /dev/sda -partitions 1,4,5 -relative
 		For Mac OS X:
 			VBoxManage internalcommands createrawvmdk -filename "</path/to/file>.vmdk" -rawdisk /dev/disk#
 

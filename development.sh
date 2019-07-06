@@ -35,6 +35,7 @@ fi
 # for Development
 sudo apt-get install -y powerline fonts-powerline
 sudo apt-get install -y vim ctags cscope
+sudo apt-get install -y vim-gtk3
 #sudo apt-get install -y gitk
 sudo apt-get install -y make
 sudo apt-get install -y ack-grep tmux sysstat
@@ -109,6 +110,7 @@ fi	#	WSL
 echo "Installing Development Tools for gcc..."
 
 # for Development
+sudo dpkg --add-architecture i386
 sudo apt-get install -y build-essential
 
 sudo apt-get install -y gcc-multilib g++-multilib
