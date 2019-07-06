@@ -71,9 +71,9 @@ if [ -z "$WSL" ] ; then
 	sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
 	#sudo cp -a $CONF_PATH/exports /etc/exports
 	sudo mkdir -p /nfs
-	#sudo groupadd nfs
-	sudo useradd nfs -u 2000 -U
-	sudo chown nfs:nfs /nfs
+	sudo groupadd -g 2000 nfs
+	#sudo useradd nfs -u 2000 -U
+	sudo chown root:nfs /nfs
 	sudo chmod g+w /nfs
 	sudo /etc/init.d/nfs-kernel-server restart
 
