@@ -36,10 +36,12 @@ if [ -d "/usr/lib/ccache" ] ; then
     PATH="/usr/lib/ccache:$PATH"
 fi
 
-export LANG="ko_KR.UTF-8"
-export LANGUAGE="ko_KR:ko:en_US:en"
-export LC_ALL=$LANG
-#export LC_MESSAGES="ko_KR.UTF-8"
-#export LC_TIME="ko_KR.UTF-8"
+if [ -z "$TMUX" ] ; then
+	export LANG="ko_KR.UTF-8"
+	export LANGUAGE="ko_KR:ko:en_US:en"
+	export LC_ALL=$LANG
+	#export LC_MESSAGES="ko_KR.UTF-8"
+	#export LC_TIME="ko_KR.UTF-8"
+fi
 
 echo "END .profile"
