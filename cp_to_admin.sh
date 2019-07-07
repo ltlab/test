@@ -9,8 +9,8 @@ NET_INTERFACE_FILE=/etc/network/interfaces
 NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
 if [ -z "`which sudo`" ] ; then
-	apt-get update
-	apt-get install -y sudo
+	apt update
+	apt install -y sudo
 fi
 
 if [ ! -e "$CONF_BACKUP" ] ; then

@@ -13,10 +13,10 @@ LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 echo "Installing System Services..."
 
 if [ -z "`which sudo`" ] ; then
-	apt-get update
-	apt-get install -y sudo
+	apt update
+	apt install -y sudo
 else
-	sudo apt-get update
+	sudo apt update
 fi
 
 if [ ! -e "$CONF_BACKUP" ] ; then
@@ -33,29 +33,29 @@ if [ ! -e "$CONF_PATH" ] ; then
 fi
 
 # for Development
-sudo apt-get install -y powerline fonts-powerline
-sudo apt-get install -y vim ctags cscope
-sudo apt-get install -y vim-gtk3
-#sudo apt-get install -y gitk
-sudo apt-get install -y make
-sudo apt-get install -y ack-grep tmux sysstat
+sudo apt install -y powerline fonts-powerline
+sudo apt install -y vim ctags cscope
+sudo apt install -y vim-gtk3
+sudo apt install -y make
+sudo apt install -y ack-grep tmux sysstat
 
 # VCS
-sudo apt-get install -q -y subversion git-core
+sudo apt install -q -y subversion git git-review
+#sudo apt install -y gitk
 
 # APM
 if [ -z "$WSL" ] ; then
-	sudo apt-get install -y apache2
-	sudo apt-get install -y mysql-server mysql-client
-	sudo apt-get install -y php libapache2-mod-php php-xml php-gd php-mysql
+	sudo apt install -y apache2
+	sudo apt install -y mysql-server mysql-client
+	sudo apt install -y php libapache2-mod-php php-xml php-gd php-mysql
 fi
 
 # SSH
-sudo apt-get install -q -y openssh-server
+sudo apt install -q -y openssh-server
 
 # Samba
 if [ -z "$WSL" ] ; then
-	sudo apt-get install -q -y samba
+	sudo apt install -q -y samba
 	#sudo smbpasswd -a jyhuh
 	#sudo vi /etc/samba/smb.conf
 	sudo cp -a --backup=numbered /etc/samba/smb.conf $CONF_BACKUP
@@ -64,11 +64,11 @@ if [ -z "$WSL" ] ; then
 	#(echo vagrant; echo vagrant) | sudo smbpasswd -s -a vagrant
 
 	# FTP / TFTP
-	sudo apt-get install -q -y vsftpd
-	sudo apt-get install -q -y tftpd-hpa tftp-hpa
+	sudo apt install -q -y vsftpd
+	sudo apt install -q -y tftpd-hpa tftp-hpa
 
 	# NFS
-	sudo apt-get install -q -y nfs-kernel-server
+	sudo apt install -q -y nfs-kernel-server
 	sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
 	#sudo cp -a $CONF_PATH/exports /etc/exports
 	sudo mkdir -p /nfs
@@ -85,7 +85,7 @@ if [ -z "$WSL" ] ; then
 	sudo /etc/init.d/vsftpd restart
 
 	# Docker
-	sudo apt-get install -y docker.io
+	sudo apt install -y docker.io
 	#sudo usermod -G docker -a $USER
 
 	# chown root.tftp <tftpboot dir>
@@ -98,11 +98,11 @@ if [ -z "$WSL" ] ; then
 	sudo /etc/init.d/tftpd-hpa restart
 
 	# for ubuntu desktop...
-	#sudo apt-get install gparted
-	#sudo apt-get install mdadm
-	#sudo apt-get install gksu
-	#sudo apt-get install meld
-	#sudo apt-get install dconf-editor gconf-editor
+	#sudo apt install gparted
+	#sudo apt install mdadm
+	#sudo apt install gksu
+	#sudo apt install meld
+	#sudo apt install dconf-editor gconf-editor
 fi	#	WSL
 
 #exit 0
@@ -111,26 +111,26 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo apt-get install -y build-essential
+sudo apt install -y build-essential
 
-sudo apt-get install -y gcc-multilib g++-multilib
+sudo apt install -y gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
-sudo apt-get install -y ncurses-dev libssl-dev
+sudo apt install -y ncurses-dev libssl-dev
 
 sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile
 
 # Remote Desktop
-#sudo apt-get install -y xrdp
-#sudo apt-get install -y mate-core mate-desktop-environment mate-notification-daemon
+#sudo apt install -y xrdp
+#sudo apt install -y mate-core mate-desktop-environment mate-notification-daemon
 #echo mate-session > ~/.xsession
 #sudo /etc/init.d/xrdp restart
 
 if [ ! -z "$WSL" ] ; then
 
 	# FTP
-	sudo apt-get install -q -y vsftpd
+	sudo apt install -q -y vsftpd
 	# config for vsftpd
 	sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP
 	sudo cp -a $CONF_PATH/vsftpd.conf /etc/vsftpd.conf
@@ -147,18 +147,18 @@ if [ ! -z "$WSL" ] ; then
 	sudo dbus-uuidgen --ensure
 	cat /etc/machine-id
 
-	sudo apt-get -y install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
+	sudo apt -y install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
 
-	sudo apt-get -y install language-pack-ko
+	sudo apt -y install language-pack-ko
 	sudo locale-gen ko_KR.UTF-8
-	sudo apt-get -y install fonts-unfonts-core fonts-unfonts-extra
-	sudo apt-get -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
+	sudo apt -y install fonts-unfonts-core fonts-unfonts-extra
+	sudo apt -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
 
 fi
 
 #sudo smbpasswd -a $USER
 
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+sudo apt clean && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#sudo apt-get install libpython2.7-dev
+#sudo apt install libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
