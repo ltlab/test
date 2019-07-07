@@ -169,6 +169,7 @@ alias svn-mod-files="svn status | grep -v ^\? | awk '{ print \$2 }' "
 alias svn-merge-trunk="svn merge svn://192.168.10.180/ctrqt/trunk ./"
 
 alias gitdiff="git difftool --dir-diff"
+#alias gitdiff="git difftool --dir-diff --no-symlinks"
 
 #alias diff='colordiff -u'
 alias diff='colordiff'
