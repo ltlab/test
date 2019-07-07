@@ -40,6 +40,26 @@
 		For Mac OS X:
 			VBoxManage internalcommands createrawvmdk -filename "</path/to/file>.vmdk" -rawdisk /dev/disk#
 
+===================================================================
+	EFI Problems in VirtualBox 5.x~
+- EFI Setting 변경사항 유지 되지 않는 문제
+=> 물리 하드에서 Windows 부팅 후  다음 번 부팅시 grub 2.02 화면으로 들어담
+   VM의 EFI  Boot Option이 초기화 되는 것이 원인!!
+=> EFI 초기화 상태에서 Windows bootting 가능 하도록 함.
+===================================================================
+# EFI for Virtualbox using Physical Sorage
+by jyyhuh 
+
+## Rename /EFI/Boot to /EFI/Boot-org
+   - Backup Original files
+
+## Copy /EFI/Microsoftt/Boot to /EFI/Boot
+   - There is Window Boot files by EFI
+
+## Rename /EFI/Boot/bootmgfw.efi tto /EFI/Boot/bootx64.efi
+   - /EFI/Boot/bootx64.efi is Default boot image by EFI.
+===================================================================
+
 
 # Linux with Physical disk partitions.
 - /boot, /, /opt => virtual images
