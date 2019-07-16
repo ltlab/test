@@ -37,6 +37,8 @@ if [ "$ttytype" = "tty" ]; then
 	LANGUAGE="en_US:en"
 	LC_ALL=$LANG
 	export LANG LANGUAGE LC_ALL
+	TTY_TYPE="tty"
+	export TTY_TYPE
 else
 	if [ "$USER" = "jenkins" ] ; then
 		echo "You are jenkins"

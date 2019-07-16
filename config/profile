@@ -36,7 +36,7 @@ if [ -d "/usr/lib/ccache" ] ; then
     PATH="/usr/lib/ccache:$PATH"
 fi
 
-if [ -z "$TMUX" ] ; then
+if [ -z "$TMUX" ] && [ -z "$TTY_TYPE" ]; then
 	export LANG="ko_KR.UTF-8"
 	export LANGUAGE="ko_KR:ko:en_US:en"
 	export LC_ALL=$LANG

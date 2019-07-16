@@ -95,8 +95,10 @@ fi
 
 #	/tmp setting
 if [ -z "`grep \/tmp /etc/fstab`" ] ; then
-	echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
-	echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+	#echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+	#echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
+	echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777,size=2G  0 0" | sudo tee -a /etc/fstab
+	echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777,size=512M  0 0" | sudo tee -a /etc/fstab
 else
 	echo "/tmp, /var/tmp is tmpfs..."
 fi
