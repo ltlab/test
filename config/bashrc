@@ -225,13 +225,16 @@ alias repo-branch="repo forall -c \"git remote -v && git branch -avv\""
 #alias repo-sync="cd-aosp && time repo sync --force-sync"
 
 #	mBrain
-alias m3-docker="docker run -it --rm --init -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) -v $HOME:/home/mbrain --name m3-docker m3"
+#alias m3-docker="docker run -it --rm --init -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) -v $HOME:/home/mbrain -h m3-docker --name m3-docker m3"
+alias docker-m3="docker run -it --rm --init -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) -v $HOME:/home/mbrain -v /tmp:/tmp -h m3-docker --name m3-docker m3"
+
+alias docker-exec="docker exec -it"
 
 #	history for other terminals.
 export PROMPT_COMMAND="history -n;history -w;history -c;history -r;"
 
 ENABLE_POWERLINE=0
-if [ "$TTY_TYPE" == "tty" ] ; then
+if [ "$TTY_TYPE" == "tty" ] || [ ! -z "$IS_DOCKER" ] ; then
 	ENABLE_POWERLINE=0
 fi
 
