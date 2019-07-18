@@ -10,6 +10,7 @@ by jyhuh
 ## Steps for development
 - `./development.sh` : Install packages for development and Server Setup.( FTP / SAMBA / NFS / TFTTP... )
 - `./add_user.sh jyhuh` : Add user tto Server and set-up permissions.
+- powerline prompt: Append `\n` to `__powerline_set_prompt` in `/usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh`
 
 ---
 
