@@ -8,6 +8,10 @@ UDEV_NET_FILE=/etc/udev/rules.d/70-persistent-net.rules
 NET_INTERFACE_FILE=/etc/network/interfaces
 NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
+NET_INTERFACE_LIST=`ls /sys/class/net`
+
+echo "NET_INTERFACE_FILE: $NET_INTERFACE_LIST"
+
 if [ -z "`which sudo`" ] ; then
 	apt update
 	apt install -y sudo
@@ -16,6 +20,9 @@ fi
 if [ ! -e "$CONF_BACKUP" ] ; then
 	sudo mkdir -p $CONF_BACKUP
 fi
+
+###############################################
+: << "DISABLE_ETH0_COMMENTS"
 
 cat << EOF > ./interfaces
 # interfaces(5) file used by ifup(8) and ifdown(8)
@@ -92,6 +99,8 @@ if [ -z "`ifconfig -a | grep eth0`" ] ; then
 		sudo netplan apply
 	fi
 fi
+DISABLE_ETH0_COMMENTS
+###############################################
 
 #	/tmp setting
 if [ -z "`grep \/tmp /etc/fstab`" ] ; then
