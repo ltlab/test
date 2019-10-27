@@ -1,5 +1,5 @@
 # Development Server Environment
-by jyhuh
+by jay.jyhuh@gmail.com
 
 ## Ubuntu 16.04 / Mint 19
 
