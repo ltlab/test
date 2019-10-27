@@ -14,7 +14,7 @@ by jyhuh
 
 ---
 
-## ISSUE: EFI Boot using Virtualbox for Windows in Pjysical Disk.
+## ISSUE: EFI Boot using Virtualbox for Windows in Physical Disk.
 
 1. EFI for Virtualbox using Physical Sorage
 2. Rename /EFI/Boot to /EFI/Boot-org
