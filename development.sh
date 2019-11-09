@@ -37,7 +37,7 @@ sudo apt install -y powerline fonts-powerline
 sudo apt install -y vim ctags cscope
 sudo apt install -y vim-gtk3
 sudo apt install -y make
-sudo apt install -y ack-grep tmux sysstat
+sudo apt install -y silversearch-ag ack-grep tmux sysstat
 
 # VCS
 sudo apt install -q -y subversion git git-review
