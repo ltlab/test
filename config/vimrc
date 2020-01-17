@@ -33,7 +33,8 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+"Plugin 'VundleVim/Vundle.vim'
+Plugin 'gmarik/vundle.vim'	"Link to VunbleVim project
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -393,8 +394,10 @@ let g:solarized_termcolors=256
 set background=dark
 
 colorscheme solarized
-hi Normal ctermbg=none
-hi LineNr ctermfg=235 ctermbg=black
+"hi Normal ctermbg=none
+"hi LineNr ctermfg=235 ctermbg=black
+hi Normal ctermbg=none guibg=black
+hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
 
 "colorscheme torte
@@ -470,7 +473,8 @@ hi cppAccess					guifg=Red ctermfg=Red
 "	Indent line tab
 set listchars=tab:\|\ 
 set list
-hi SpecialKey ctermfg=234 ctermbg=black
+"hi SpecialKey ctermfg=234 ctermbg=black
+hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
 
 "Plugin Indent-Guides
 "let g:indent_guides_enable_on_vim_startup = 1

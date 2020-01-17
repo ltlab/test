@@ -112,7 +112,7 @@ else
 	echo "/tmp, /var/tmp is tmpfs..."
 fi
 
-sudo mount -a
+#sudo mount -a
 #sudo rm -rf /var/tmp
 #sudo ln -s /tmp /var/tmp
 

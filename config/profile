@@ -24,15 +24,17 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+#### Added by jay.huh 
 if [ -d "$HOME/usr/bin" ] ; then
-	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	#PATH=${PATH#$HOME/usr/bin:}
     PATH="$HOME/usr/bin:$PATH"
 fi
 
 if [ -d "/usr/lib/ccache" ] ; then
-	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	#PATH=${PATH#$HOME/usr/bin:}
     PATH="/usr/lib/ccache:$PATH"
 fi
 
