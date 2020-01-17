@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #set -e
 #set -x	#	debug
@@ -15,19 +15,19 @@ export LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 
 echo "Installing System Services..."
 
-if [ -z "`which sudo`" ] ; then
+if [[ -z "`which sudo`" ]] ; then
 	apt update
 	apt install -y sudo
 else
 	sudo apt update
 fi
 
-if [ ! -e "$CONF_BACKUP" ] ; then
+if [[ ! -e "$CONF_BACKUP" ]] ; then
 	sudo mkdir -p $CONF_BACKUP
 fi
 
-if [ ! -e "$CONF_PATH" ] ; then
-	if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
+if [[ ! -e "$CONF_PATH" ]] ; then
+	if [[ ! -d "$LOCAL_ADMIN_PATH" ]] ; then
 		echo "WARN: $LOCAL_CONF_PATH and $CONF_PATH NOT exist..."
 		./cp_to_admin.sh
 		#exit 1
@@ -42,7 +42,7 @@ fi
 #sudo apt install -y gitk
 #sudo apt install -q -y subversion
 
-if [ -z "$WSL" ] ; then
+if [[ -z "$WSL" ]] ; then
 	# APM
 	./script/apm.sh
 
@@ -57,12 +57,12 @@ if [ -z "$WSL" ] ; then
 	./script/nfs.sh
 
 	# for ubuntu desktop...
-	if [ "$SERVER" != "Y" ] ; then
+	if [[ "$SERVER" != "Y" ]] ; then
 		./script/desktop.sh
 	fi
 
 	# Docker
-	if [ "$DOCKER" == "Y" ] ; then
+	if [[ "$DOCKER" = "Y" ]] ; then
 		./script/docker.sh
 	fi
 else
@@ -105,13 +105,13 @@ sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile
 
 # Remote Desktop
-if [ "$SERVER" == "Y" ] ; then
+if [[ "$SERVER" = "Y" ]] ; then
 	./script/xrdp.sh
 fi
 
 # Clean apt packages and cache
-sudo apt clean && sudo apt autoremove
-sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#sudo apt clean && sudo apt autoremove
+#sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #sudo apt install libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer

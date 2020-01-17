@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 LOCAL_ADMIN_PATH=~/.bin-admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
@@ -12,12 +12,12 @@ NET_INTERFACE_LIST=`ls /sys/class/net`
 
 echo "NET_INTERFACE_FILE: $NET_INTERFACE_LIST"
 
-if [ -z "`which sudo`" ] ; then
+if [[ -z "`which sudo`" ]] ; then
 	apt update
 	apt install -y sudo
 fi
 
-if [ ! -e "$CONF_BACKUP" ] ; then
+if [[ ! -e "$CONF_BACKUP" ]] ; then
 	sudo mkdir -p $CONF_BACKUP
 fi
 
@@ -77,21 +77,21 @@ network:
     version: 2
 EOF
 
-if [ -z "`ifconfig -a | grep eth0`" ] ; then
+if [[ -z "`ifconfig -a | grep eth0`" ]] ; then
 	echo "-----------------------"
 	sudo sed -i "s/CMDLINE_LINUX=\"\"/CMDLINE_LINUX=\"net.ifnames=0 biosdevname=0\"/" /etc/default/grub
 	sudo update-grub2
-	if [ -e "$UDEV_NET_FILE" ] ; then
+	if [[ -e "$UDEV_NET_FILE" ]] ; then
 		sudo mv --backup=numbered $UDEV_NET_FILE $CONF_BACKUP
 	fi
-	if [ -e "$NET_INTERFACE_FILE" ] ; then
+	if [[ -e "$NET_INTERFACE_FILE" ]] ; then
 		sudo mv --backup=numbered $NET_INTERFACE_FILE $CONF_BACKUP
 		sudo mv ./interfaces $NET_INTERFACE_FILE
 	else
 		rm ./interfaces
 	fi
 	# 예전방식 ( /etc/network/interface)  으로 설정하고 싶은 경우에는 ifupdown 패키지를 설치하고 설정
-	if [ -e "$NETPLAN_INIT_FILE" ] ; then
+	if [[ -e "$NETPLAN_INIT_FILE" ]] ; then
 		sudo mv --backup=numbered $NETPLAN_INIT_FILE $CONF_BACKUP
 		#sudo vi /etc/netplan/50-cloud-init.yaml
 		sudo mv ./netplan_init $NETPLAN_INIT_FILE
@@ -103,7 +103,7 @@ DISABLE_ETH0_COMMENTS
 ###############################################
 
 #	/tmp setting
-if [ -z "`grep \/tmp /etc/fstab`" ] ; then
+if [[ -z "`grep \/tmp /etc/fstab`" ]] ; then
 	#echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
 	#echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
 	echo "#tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777,size=2G  0 0" | sudo tee -a /etc/fstab
@@ -119,17 +119,17 @@ fi
 # SSD mount...
 #UUID=b012b0fd-f5cc-4675-89db-3375d9a3f0bc /home ext4  defaults,discard 0 2
 
-if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
+if [[ ! -d "$LOCAL_ADMIN_PATH" ]] ; then
 	sudo mkdir -p $LOCAL_ADMIN_PATH
 	sudo cp -a ./config $LOCAL_CONF_PATH
 	sudo cp -a ./system_conf/* $LOCAL_CONF_PATH
 	sudo cp -a ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
-	if [ ! -e ~/bin ] ; then
+	if [[ ! -e ~/bin ]] ; then
 		sudo ln -s $PWD/config/home-bin/ ~/bin
 		#sudo chown $USER:$USER ~/bin
 	fi
-	if [ ! -e ~/setting ] ; then
+	if [[ ! -e ~/setting ]] ; then
 		sudo ln -s $PWD/setting ~/setting
 	fi
 fi

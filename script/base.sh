@@ -12,7 +12,7 @@ sudo apt install -q -y make
 sudo apt install -q -y git git-review
 
 sudo apt install -q -y vim ctags cscope
-sudo apt install -q -y silversearch-ag ack-grep
+sudo apt install -q -y silversearcher-ag ack-grep
 
 # Resource Monitoring
 sudo apt install -q -y tmux sysstat

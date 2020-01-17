@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WSL=`uname -v | grep Microsoft`
 
@@ -34,13 +34,13 @@ update()
 	src=$CONF_PATH/$item
 	dst=$USER_HOME/.$item
 
-	#if [ ! -e $src ] ; then
-	if [ -z "`sudo ls $src 2>&1`" ] ; then
+	#if [[ ! -e $src ]] ; then
+	if [[ -z "`sudo ls $src 2>&1`" ]] ; then
 		echo "WARN: $src NOT exists..."
 		return 1
 	fi
 
-	if [ -e $dst ] ; then
+	if [[ -e $dst ]] ; then
 		echo "Backup $item to $CONF_BACKUP..."
 		sudo mv --backup=numbered $dst $CONF_BACKUP
 	fi
@@ -52,18 +52,18 @@ update()
 	return 0
 }
 
-if [ -z "$1" ]; then
+if [[ -z "$1" ]] ; then
 	echo "Usage: $0 [user]"
 	exit 0
 fi
 
-if [ -z "`id -u $USER_ID`" ] ; then
+if [[ -z "`id -u $USER_ID`" ]] ; then
 	echo "Add User $USER_ID"
 	sudo adduser $USER_ID
 fi
 
 # configuration
-if [ ! -e "$CONF_BACKUP" ] ; then
+if [[ ! -e "$CONF_BACKUP" ]] ; then
 	sudo mkdir -p $CONF_BACKUP
 	sudo chown $USER_ID:$USER_ID $CONF_BACKUP
 fi
@@ -73,9 +73,9 @@ do
 	update $item
 done
 
-if [ -z "$WSL" ] ; then
+if [[ -z "$WSL" ]] ; then
 
-	if [ -z "`grep $USER_ID /etc/exports`" ] ; then
+	if [[ -z "`grep $USER_ID /etc/exports`" ]] ; then
 		sudo mkdir -p $USER_HOME/nfs
 		sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
 		sudo chmod g+w $USER_HOME/nfs
@@ -84,7 +84,7 @@ if [ -z "$WSL" ] ; then
 		sudo /etc/init.d/nfs-kernel-server restart
 	fi
 
-	if [ ! -e "$USER_HOME/tftpboot" ] ; then
+	if [[ ! -e "$USER_HOME/tftpboot" ]] ; then
 		sudo ln -s /tftpboot $USER_HOME/tftpboot
 	fi
 
@@ -102,7 +102,7 @@ fi	#	WSL
 
 #sudo usermod -G sudo -a $USER_ID
 
-if [ ! -e "$USER_HOME/bin" ] ; then
+if [[ ! -e "$USER_HOME/bin" ]] ; then
 	sudo mv $USER_HOME/.home-bin $USER_HOME/bin/
 	sudo chown -R $USER_ID:$USER_ID $USER_HOME/bin
 #else
