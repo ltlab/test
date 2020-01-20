@@ -1,33 +1,53 @@
-#!/bin/sh
+#!/bin/bash
+
+UBUNTU_VERSION=$(cat /etc/lsb-release | grep RELEASE | cut -d"=" -f2)
+
+echo "UBUNTU VERSION is $UBUNTU_VERSION"
 
 echo "Installing Development Tools for AOSP..."
 # Install packages for AOSP
-sudo apt-get install -y libc6-dev-i386 lib32ncurses5-dev
-sudo apt-get install -y zip unzip
-sudo apt-get install -y curl
-sudo apt-get install -y zlib1g-dev
-sudo apt-get install -y git-core
-sudo apt-get install -y gnupg flex bison gperf
-sudo apt-get install -y x11proto-core-dev libx11-dev
-sudo apt-get install -y lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc
+sudo apt install -y git-core \
+	gnupg flex bison gperf \
+	build-essential \
+	gcc-multilib g++-multilib \
+	libc6-dev-i386 lib32ncurses5-dev \
+	zip curl zlib1g-dev \
+	x11proto-core-dev libx11-dev \
+	lib32z1-dev libgl1-mesa-dev \
+	libxml2-utils xsltproc unzip
+
+sudo apt install -y ccache 
+
+if [[ "$UBUNTU_VERSION" == "18.04" ]] ; then
+	sudo apt install -y lzop \
+		bzip2 libbz2-dev libghc-bzlib-dev \
+		squashfs-tools pngcrush liblz4-tool optipng \
+		libssl-dev \
+		python-pip python-dev python-networkx \
+		libffi-dev libxml2-dev libxslt1-dev \
+		libjpeg8-dev openjdk-8-jdk
+fi	#	if [[ "$UBUNTU_VERSION" != "18.04" ]] ; then
 
 echo -e "\n" | sudo add-apt-repository ppa:openjdk-r/ppa
-sudo apt-get update
+sudo apt update
 
-sudo apt-get install -y openjdk-7-jdk
-sudo apt-get install -y openjdk-8-jdk
+sudo apt install -y openjdk-7-jdk
+sudo apt install -y openjdk-8-jdk
 
 #	Change java for lollipop by jyhuh 2018-02-22 14:12:48
 sudo update-java-alternatives -s java-1.7.0-openjdk-amd64
 #sudo update-alternatives --config java
 
-sudo apt-get install -y android-tools-adb
-sudo apt-get install -y android-tools-fastboot
+#sudo apt install -y android-tools-adb
+#sudo apt install -y android-tools-fastboot
 
-sudo apt-get install -y python2.7-minimal
+sudo apt install -y adb
+sudo apt install -y fastboot
+
+sudo apt install -y python2.7-minimal
 sudo ln -s python2.7 /usr/bin/python
 
-sudo apt-get install -y u-boot-tools
+sudo apt install -y u-boot-tools
 
 # Android NDK / SDK
 #sudo mkdir -p /usr/local/android
