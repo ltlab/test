@@ -7,8 +7,8 @@ sudo apt-add-repository "deb https://pkg.jenkins.io/debian-stable binary/"
 # FOR LATEST JENKINS VERSION RUN:
 #sudo apt-add-repository "deb http://pkg.jenkins-ci.org/debian binary/"
 
-sudo apt-get update
-sudo apt-get install jenkins
+sudo apt update
+sudo apt install -y jenkins
 
 echo "Initial Password for Jenkins"
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword

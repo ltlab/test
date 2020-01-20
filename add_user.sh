@@ -7,6 +7,7 @@ set -e
 
 USER_ID=$1
 USER_HOME=/home/$USER_ID
+NETWORK_SUBNET=$(ip a|grep -m 1 global | awk '{print $2}')
 
 LOCAL_ADMIN_PATH=~/.bin-admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
@@ -74,14 +75,16 @@ do
 done
 
 if [[ -z "$WSL" ]] ; then
-
-	if [[ -z "`grep $USER_ID /etc/exports`" ]] ; then
+	# use for user's NFS directory: tailing TAB
+	USER_NFS="\/nfs\/$USER_ID\	"
+	if [[ -z "`grep $USER_NFS /etc/exports`" ]] ; then
 		sudo mkdir -p $USER_HOME/nfs
 		sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
 		sudo chmod g+w $USER_HOME/nfs
 		sudo ln -s $USER_HOME/nfs /nfs/$USER_ID
-		echo "/nfs/$USER_ID	192.168.10.0/255.255.255.0(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
-		sudo /etc/init.d/nfs-kernel-server restart
+		echo "/nfs/$USER_ID	$NETWORK_SUBNET(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
+		#sudo /etc/init.d/nfs-kernel-server restart
+		sudo systemctl restart nfs-kernel-server
 	fi
 
 	if [[ ! -e "$USER_HOME/tftpboot" ]] ; then
@@ -93,6 +96,7 @@ if [[ -z "$WSL" ]] ; then
 	sudo usermod -G docker -a $USER_ID
 	sudo usermod -G sambashare -a $USER_ID
 	sudo usermod -G nfs -a $USER_ID
+	sudo usermod -G plugdev -a $USER_ID	# for AOSP
 
 	(echo 123456; echo 123456) | sudo smbpasswd -a $USER_ID
 else	#	WSL
