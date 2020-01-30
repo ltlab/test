@@ -52,8 +52,7 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
-#  - apt-get update -qq && apt-get install -y -qq bash
-#  - git --version
+  - apt-get update -qq && apt-get install -y -qq iproute2 sudo
   - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 after_script:
