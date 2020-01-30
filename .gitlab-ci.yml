@@ -41,21 +41,30 @@ build-aosp:
 #    except:
 #        - master
 
-test-add-user:
+test-benchmark:
     stage: test
     script:
-        - echo "Test Stage => test-add-user"
-#        - ./add_user.sh test
+        - echo "Test Stage => test-benchmark"
+        - ./script/benchmark.sh
+        - cat ./bench-result.md
     only:
         - master
 
-test-del-user:
-    stage: test
-    script:
-        - echo "Test Stage => test-del-user"
+#test-add-user:
+#    stage: test
+#    script:
+#        - echo "Test Stage => test-add-user"
+#        - ./add_user.sh test
+#    only:
+#        - master
+
+#test-del-user:
+#    stage: test
+#    script:
+#        - echo "Test Stage => test-del-user"
 #        - ./del_user.sh test
-    only:
-        - master
+#    only:
+#        - master
 
 before_script:
   - echo "Before script section"
@@ -72,22 +81,22 @@ after_script:
   - echo "After script section"
   - echo "For example you might do some cleanup here"
 
-build1:
-  stage: build
-  script:
-    - echo "Do your build here"
+#build1:
+#  stage: build
+#  script:
+#    - echo "Do your build here"
 
-test1:
-  stage: test
-  script:
-    - echo "Do a test here"
-    - echo "For example run a test suite"
+#test1:
+#  stage: test
+#  script:
+#    - echo "Do a test here"
+#    - echo "For example run a test suite"
 
-test2:
-  stage: test
-  script:
-    - echo "Do another parallel test here"
-    - echo "For example run a lint test"
+#test2:
+#  stage: test
+#  script:
+#    - echo "Do another parallel test here"
+#    - echo "For example run a lint test"
 
 deploy1:
   stage: deploy
