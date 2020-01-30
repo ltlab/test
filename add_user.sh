@@ -129,7 +129,7 @@ sudo chmod a+x $USER_HOME/bin/repo
 
 if [[ ! -z "$CI" ]] ; then
 	service --status-all
-	sudo service sshd status
+	sudo service ssh status
 	sudo service smbd status
 	sudo service vsftpd status
 	sudo service tftpd-hpa status
