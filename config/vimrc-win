@@ -1,3 +1,7 @@
+"set nocompatible
+"source $VIMRUNTIME/vimrc_example.vim
+"source $VIMRUNTIME/mswin.vim
+"behave mswin
 
 " All system-wide defaults are set in $VIMRUNTIME/debian.vim (usually just
 " /usr/share/vim/vimcurrent/debian.vim) and sourced by the call to :runtime
@@ -78,8 +82,8 @@ Plugin 'delimitMate.vim'
 "Plugin 'Indent-Guides'
 
 Plugin 'AutoComplPop'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
+" Plugin 'SirVer/ultisnips'
+" Plugin 'honza/vim-snippets'
 
 "Plugin 'justinmk/vim-syntax-extra'
 Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -155,6 +159,8 @@ set lazyredraw
 "Directories for swp Files
 "set backupdir=~/.vim_backup
 "set directory=~/.vim_backup
+"set backupdir=$HOME/vim_backup
+"set directory=$HOME/vim_backup
 
 map ,noi :set noai<CR>:set nocindent<CR>:set nosmartindent<CR>
 map ,sei :set ai<CR>:set cindent<CR>:set smartindent<CR>
@@ -226,28 +232,15 @@ autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
 autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
 
 "============= ctag config ==============
-set tags+=tags
-set tags+=/usr/include/tags
+"set tags+=tags
+set tags=.\\tags
+"set tags+=/usr/include/tags
 
 if filereadable( "/usr/include/cscope.out" )
 	cs add /usr/include/cscope.out
 endif
 
-let cwd=fnamemodify(getcwd(), ":p" )
-let g:adf_path=fnamemodify("~/work/gitlab/aosp-test/hardware/dogtra/adf7021", ":p")
 
-if isdirectory( g:adf_path )
-	"	if $ANDROID_BUILD_TOP !=""
-	let g:adf_tags = fnamemodify( findfile( "tags", g:adf_path ), ":p" )
-	let g:adf_cscope = fnamemodify( findfile( "cscope.out", g:adf_path ), ":p" )
-
-	if filereadable( g:adf_tags )
-		set tags+=~/work/gitlab/aosp-test/hardware/dogtra/adf7021/tags
-	endif
-	if filereadable( g:adf_cscope )
-		execute "cscope add" fnameescape( g:adf_cscope )
-	endif
-endif
 
 "if has("autocmd")
 	" When editing a file, always jump to the last cursor position
@@ -284,32 +277,13 @@ if has("gui_running")
 endif
 
 "set gfn=LucidaSansTypewriter\ 9
-"set gfn=D2Coding\ 12
-set gfn=Ubuntu\ Mono\ 12
+
+set gfn=Ubuntu_Mono_derivative_Powerlin:h14 " Windows
 set fileencoding=utf-8
 set fileencodings=utf-8,cp949,euc-kr
+set encoding=utf-8
 
 behave xterm
-
-"set cscopetag
-"set csprg=/usr/bin/cscope
-"set csto=0
-"set nocst
-"set nocsverb
-"set cscopeverbose
-
-"if filereadable("cscope.out")
-"	cscope add cscope.out	"	add from plugins/cscope_maps.vim
-"else
-"	if $ANDROID_BUILD_TOP !=""
-		"This assumes you have sourced the Android build environment
-"		cscope add $ANDROID_BUILD_TOP/cscope.out
-"	else
-		"Or, you can point to your android source directory in $ANDROID_DIR
-"		cscope add $ANDROID_DIR/cscope.out
-"	endif
-"endif
-"set csverb
 
 "	clang_complete
 " path to directory where library can be found
@@ -394,8 +368,6 @@ let g:solarized_termcolors=256
 set background=dark
 
 colorscheme solarized
-"hi Normal ctermbg=none
-"hi LineNr ctermfg=235 ctermbg=black
 hi Normal ctermbg=none guibg=black
 hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
@@ -473,10 +445,14 @@ hi cppAccess					guifg=Red ctermfg=Red
 "	Indent line tab
 set listchars=tab:\|\ 
 set list
-"hi SpecialKey ctermfg=234 ctermbg=black
 hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
 
 "Plugin Indent-Guides
 "let g:indent_guides_enable_on_vim_startup = 1
 "let g:indent_guides_start_level = 2
 "let g:indent_guides_guide_size = 1
+
+set clipboard^=unnamed,unnamedplus
+
+" Avoid changing permission when saving a file using samba share.
+set backupcopy=yes

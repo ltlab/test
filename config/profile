@@ -24,15 +24,17 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+#### Added by jay.huh 
 if [ -d "$HOME/usr/bin" ] ; then
-	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	#PATH=${PATH#$HOME/usr/bin:}
     PATH="$HOME/usr/bin:$PATH"
 fi
 
 if [ -d "/usr/lib/ccache" ] ; then
-	#echo "$HOME/usr/bin .... ${PATH#$HOME/usr/bin}"
-	#PATH=${PATH#$HOME/usr/bin:}
     PATH="/usr/lib/ccache:$PATH"
 fi
 
@@ -41,11 +43,15 @@ if [ ! -z "$IS_DOCKER" ] ; then
 	export LANGUAGE="en_US:en"
 	export LC_ALL=$LANG
 elif [ -z "$TMUX" ] && [ -z "$TTY_TYPE" ] ; then
-	export LANG="ko_KR.UTF-8"
-	export LANGUAGE="ko_KR:ko:en_US:en"
-	export LC_ALL=$LANG
-	#export LC_MESSAGES="ko_KR.UTF-8"
-	#export LC_TIME="ko_KR.UTF-8"
+	HAS_KO_LOCALE=$( locale -a | grep ko_KR )
+	echo "HAS_KO_LOCALE: $HAS_KO_LOCALE"
+	if [ ! -z "$HAS_KO_LOCALE" ] ; then
+		export LANG="ko_KR.UTF-8"
+		export LANGUAGE="ko_KR:ko:en_US:en"
+		export LC_ALL=$LANG
+		#export LC_MESSAGES="ko_KR.UTF-8"
+		#export LC_TIME="ko_KR.UTF-8"
+	fi
 fi
 
 echo "END .profile"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 LOCAL_ADMIN_PATH=~/.bin-admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
@@ -8,47 +8,54 @@ UDEV_NET_FILE=/etc/udev/rules.d/70-persistent-net.rules
 NET_INTERFACE_FILE=/etc/network/interfaces
 NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
-NET_INTERFACE_LIST=`ls /sys/class/net`
-
-echo "NET_INTERFACE_FILE: $NET_INTERFACE_LIST"
-
-if [ -z "`which sudo`" ] ; then
+if [[ -z "`which sudo`" ]] ; then
 	apt update
 	apt install -y sudo
 fi
 
-if [ ! -e "$CONF_BACKUP" ] ; then
+if [[ ! -e "$CONF_BACKUP" ]] ; then
 	sudo mkdir -p $CONF_BACKUP
 fi
 
-###############################################
-: << "DISABLE_ETH0_COMMENTS"
+#echo "NET_INTERFACE_LIST: $( ls /sys/class/net )"
+for item in $( ls /sys/class/net )
+do
+	# Start with character 'e' => eth* or en*
+	if [[ $item =~ ^e ]] ; then
+		IP_NETMASK=$(ip a | grep global | grep $item | awk '{print $2}')
+		NETWORK=$(echo $IP_NETMASK | cut -d'.' -f 1-3 )
+		GW=$( route -n | grep -m 1 $item | awk '{print $2}' | cut -d'.' -f 4 )
+		GATEWAY=$NETWORK"."$GW
+		echo "$item => IP + MASK=$IP_NETMASK GW=$GATEWAY"
 
-cat << EOF > ./interfaces
-# interfaces(5) file used by ifup(8) and ifdown(8)
-auto lo
-iface lo inet loopback
+		# NOTE: Do NOT change string format.
+		printf -v NETPLAN_COMMON "
+            addresses: []
+            dhcp4: true
+            #dhcp4: false
+            #addresses: [$IP_NETMASK]
+            #gateway4: $GATEWAY
+            #routes:
+            #    - to: $NETWORK".0/24"
+            #      via: $GATEWAY
+            #      metric: 100
+            #routing-policy:
+            #    - from: $NETWORK".0/24"
+            #      table: 100
+            #nameservers:
+            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]"
 
-# The primary network interface
-auto eth0
-iface eth0 inet dhcp
-
-#iface eth0 inet static
-#	address 112.151.139.189
-#	netmask 255.255.255.240
-#	gateway 112.151.139.177
-#dns-nameservers 203.248.252.2 164.124.101.2
-#dns-nameservers 168.126.63.1 168.126.63.2 8.8.8.8
-
-#auto eth1
-#iface eth1 inet static
-#	address 192.168.5.189
-#	netmask 255.255.255.0
-#	gateway 192.168.5.1
-
-#pre-up iptables-restore < /etc/iptables.rules
-#post-down iptables-save > /etc/iptables.rules
-EOF
+		if [[ -z "$NET_DEVICES" ]] ; then
+			NET_DEVICES=$item
+			printf -v NETPLAN_LIST "        $item":"$NETPLAN_COMMON"
+		else
+			NET_DEVICES="$NET_DEVICES $item"
+			printf -v NETPLAN_LIST "$NETPLAN_LIST\n        $item":"$NETPLAN_COMMON"
+		fi
+	fi
+done
+echo "NET_DEVICES: $NET_DEVICES"
+echo "$NETPLAN_LIST"
 
 cat << EOF > ./netplan_init
 # This file is generated from information provided by
@@ -58,52 +65,30 @@ cat << EOF > ./netplan_init
 # network: {config: disabled}
 network:
     ethernets:
-        eth0:
-            addresses: []
-            dhcp4: true
-            #dhcp4: false
-            #addresses: [192.168.1.230/24]
-            #gateway4: 192.168.1.254
-            #nameservers:
-            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]
-        eth1:
-            addresses: []
-            dhcp4: true
-            #dhcp4: false
-            #addresses: [192.168.1.231/24]
-            #gateway4: 192.168.1.254
-            #nameservers:
-            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]
+$NETPLAN_LIST
     version: 2
 EOF
 
-if [ -z "`ifconfig -a | grep eth0`" ] ; then
-	echo "-----------------------"
-	sudo sed -i "s/CMDLINE_LINUX=\"\"/CMDLINE_LINUX=\"net.ifnames=0 biosdevname=0\"/" /etc/default/grub
-	sudo update-grub2
-	if [ -e "$UDEV_NET_FILE" ] ; then
-		sudo mv --backup=numbered $UDEV_NET_FILE $CONF_BACKUP
-	fi
-	if [ -e "$NET_INTERFACE_FILE" ] ; then
-		sudo mv --backup=numbered $NET_INTERFACE_FILE $CONF_BACKUP
-		sudo mv ./interfaces $NET_INTERFACE_FILE
-	else
-		rm ./interfaces
-	fi
-	# 예전방식 ( /etc/network/interface)  으로 설정하고 싶은 경우에는 ifupdown 패키지를 설치하고 설정
-	if [ -e "$NETPLAN_INIT_FILE" ] ; then
-		sudo mv --backup=numbered $NETPLAN_INIT_FILE $CONF_BACKUP
-		#sudo vi /etc/netplan/50-cloud-init.yaml
-		sudo mv ./netplan_init $NETPLAN_INIT_FILE
-		sudo netplan generate
-		sudo netplan apply
-	fi
+###############################################
+: << "DEBUG_NETPLAN_INIT"
+exit 0
+DEBUG_NETPLAN_INIT
+###############################################
+
+###############################################
+: << "DISABLE_NETPLAN_INIT"
+if [[ -e "$NETPLAN_INIT_FILE" ]] ; then
+	sudo mv --backup=numbered $NETPLAN_INIT_FILE $CONF_BACKUP
+	#sudo vi /etc/netplan/50-cloud-init.yaml
+	sudo mv ./netplan_init $NETPLAN_INIT_FILE
+	sudo netplan generate
+	sudo netplan apply
 fi
-DISABLE_ETH0_COMMENTS
+DISABLE_NETPLAN_INIT
 ###############################################
 
 #	/tmp setting
-if [ -z "`grep \/tmp /etc/fstab`" ] ; then
+if [[ -z "`grep \/tmp /etc/fstab`" ]] ; then
 	#echo "tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
 	#echo "tmpfs /var/tmp tmpfs noexec,nodev,nosuid,mode=1777 0 0" | sudo tee -a /etc/fstab
 	echo "#tmpfs /tmp tmpfs noexec,nodev,nosuid,mode=1777,size=2G  0 0" | sudo tee -a /etc/fstab
@@ -112,24 +97,24 @@ else
 	echo "/tmp, /var/tmp is tmpfs..."
 fi
 
-sudo mount -a
+#sudo mount -a
 #sudo rm -rf /var/tmp
 #sudo ln -s /tmp /var/tmp
 
 # SSD mount...
 #UUID=b012b0fd-f5cc-4675-89db-3375d9a3f0bc /home ext4  defaults,discard 0 2
 
-if [ ! -d "$LOCAL_ADMIN_PATH" ] ; then
+if [[ ! -d "$LOCAL_ADMIN_PATH" ]] ; then
 	sudo mkdir -p $LOCAL_ADMIN_PATH
 	sudo cp -a ./config $LOCAL_CONF_PATH
 	sudo cp -a ./system_conf/* $LOCAL_CONF_PATH
 	sudo cp -a ./*.sh $LOCAL_ADMIN_PATH
 	sudo chown -R root:root $LOCAL_ADMIN_PATH
-	if [ ! -e ~/bin ] ; then
+	if [[ ! -e ~/bin ]] ; then
 		sudo ln -s $PWD/config/home-bin/ ~/bin
 		#sudo chown $USER:$USER ~/bin
 	fi
-	if [ ! -e ~/setting ] ; then
+	if [[ ! -e ~/setting ]] ; then
 		sudo ln -s $PWD/setting ~/setting
 	fi
 fi
