@@ -63,7 +63,7 @@ if [[ -z "`id -u $USER_ID`" ]] ; then
 	if [[ -z "$CI" ]] ; then
 		sudo adduser $USER_ID
 	else
-		sudo adduser --disabled-passwd --gecos "" $USER_ID
+		sudo adduser --disabled-password --gecos "" $USER_ID
 	fi
 fi
 
