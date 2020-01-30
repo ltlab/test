@@ -28,4 +28,13 @@ fi
 echo "Delete user $USER_ID and home"
 sudo userdel -r $USER_ID
 
-# remove /etc/exports
+if [[ ! -z "$CI" ]] ; then
+	service --status-all
+	sudo service sshd status
+	sudo service smbd status
+	sudo service vsftpd status
+	sudo service tftpd-hpa status
+	sudo service nfs-kernel-server status
+	cat /etc/exports
+	sudo exportfs
+fi
