@@ -52,9 +52,8 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
-  - apt update -qq && apt-get install -y -qq git 
-  - git --version
-  - git checkout -B work origin/WIP-new
+#  - apt-get update -qq && apt-get install -y -qq git 
+#  - git --version
 
 after_script:
   - echo "After script section"
