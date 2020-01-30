@@ -15,6 +15,10 @@ build-dev:
     script:
         - echo "Build Stage => build-dev"
         - ./development.sh
+        - echo "Build Stage => add_user"
+        - ./add_user.sh test
+        - echo "Build Stage => del_user"
+        - ./del_user.sh test
     only:
         - master
 
@@ -22,7 +26,12 @@ build-aosp:
     stage: build
     script:
         - echo "Build Stage => build-aosp"
+        - ./development.sh
         - ./script/aosp-dev.sh
+        - echo "Build Stage => add_user"
+        - ./add_user.sh test
+        - echo "Build Stage => del_user"
+        - ./del_user.sh test
     only:
         - master
 #build:
@@ -36,7 +45,7 @@ test-add-user:
     stage: test
     script:
         - echo "Test Stage => test-add-user"
-        - ./add_user.sh test
+#        - ./add_user.sh test
     only:
         - master
 
@@ -44,7 +53,7 @@ test-del-user:
     stage: test
     script:
         - echo "Test Stage => test-del-user"
-        - ./del_user.sh test
+#        - ./del_user.sh test
     only:
         - master
 
@@ -52,8 +61,8 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
-  - apt-get update -qq && apt-get install -y -qq iproute2 sudo
-  - ./cp_to_admin.sh
+#  - apt-get update -qq && apt-get install -y -qq sudo net-tools iproute2
+#  - ./cp_to_admin.sh
   - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 after_script:
