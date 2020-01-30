@@ -61,7 +61,6 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
-  - echo "nproc: $(nproc)"
   - cat /proc/cpuinfo | grep model
   - free -h
   - df -h
