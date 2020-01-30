@@ -22,7 +22,7 @@ sysbench --test=fileio --file-total-size=8G cleanup
 TEMP
 ###############################################
 
-SYSBENCH_SHELL="time $PWD/script/sysbench.sh"
+SYSBENCH_SHELL="$PWD/script/sysbench.sh"
 RESULT_FILE=bench-result.md
 MAX_TIMES=3
 
