@@ -1,17 +1,34 @@
 # Development Server Environment
 by jay.jyhuh@gmail.com
 
-## Ubuntu 16.04 / Mint 19
-
-## gcc and android build environment.
+> Support version: Ubuntu 16.04, 18.04 / Mint 19
+> gcc and android build environment.
 
 ---
+## Script files
+- `cp_to_admin.sh`
+  - Copy admin script files to `~/.bin-admin` directory.
+> **Note**: Do NOT use `cp_to_admin.sh`.
+> `cp_to_admin.sh` should be executed in `development.sh`.
+- `development.sh`
+  - Install Packages for development and service.
+- `./script/aosp-dev.sh`: `AOSP` build envirionment.
+- `add_user.sh`
+  - All setup and configuration such as `vimrc`, `bashrc`, `tmux`, and so on...
+  - default samba user password: `123456`
+  - NFS Default path: `/nfs`. `$HOME/nfs` for user. `/nfs/[USER_ID]` is a symbolic link to user's nfs path.
+  - TFTP Default path: `/tftpboot`. `$HOME/tftpboot` is a symbolic link to `/tftpboot`.
+- `del_user.sh`
 
 ## Steps for development
-- `./development.sh` : Install packages for development and Server Setup.( FTP / SAMBA / NFS / TFTTP... )
-- `./add_user.sh jyhuh` : Add user tto Server and set-up permissions.
-- powerline prompt: Append `\n` to `__powerline_set_prompt` in  `/usr/share/powerline/bindings/bash/powerline.sh` or `/usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh`.
+1. `./development.sh` : Install packages for development and Server Setup.( FTP / SAMBA / NFS / TFTTP... )
+2. `./add_user.sh [ USER ID ]` : Generate user id and set-up permissions for services.
+3. `./script/aosp-dev.sh`: `AOSP` build envirionment.
+4. **powerline prompt**: Append `\n` to `__powerline_set_prompt` in  `/usr/share/powerline/bindings/bash/powerline.sh` or `/usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh`.
 
+```
+PS1="$(_powerline_prompt aboveleft $last_exit_code $jobnum)\n$ "
+```
 ---
 
 ## ISSUE: EFI Boot using Virtualbox for Windows in Physical Disk.
