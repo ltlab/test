@@ -60,7 +60,11 @@ fi
 
 if [[ -z "`id -u $USER_ID`" ]] ; then
 	echo "Add User $USER_ID"
-	sudo adduser $USER_ID
+	if [[ -z "$CI" ]] ; then
+		sudo adduser $USER_ID
+	else
+		sudo adduser --disabled-passwd --gecos "" $USER_ID
+	fi
 fi
 
 # configuration

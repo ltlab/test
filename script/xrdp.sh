@@ -14,5 +14,5 @@ sudo apt install -y xfce4 slim
 #echo mate-session > ~/.xsession
 
 sudo apt install -y xrdp
-sudo systemctl restart xrdp
-#sudo /etc/init.d/xrdp restart
+#sudo systemctl restart xrdp
+sudo /etc/init.d/xrdp restart

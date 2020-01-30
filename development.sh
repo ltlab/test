@@ -115,3 +115,5 @@ fi
 
 #sudo apt install libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
+
+service --status-all
