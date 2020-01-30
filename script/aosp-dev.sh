@@ -1,10 +1,36 @@
 #!/bin/bash
 
+export CONF_PATH=/root/config
+export CONF_BACKUP=/root/.config-backup
+export LOCAL_ADMIN_PATH=~/.bin-admin
+export LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
+
 UBUNTU_VERSION=$(cat /etc/lsb-release | grep RELEASE | cut -d"=" -f2)
 
 echo "UBUNTU VERSION is $UBUNTU_VERSION"
 
+if [[ -z "`which sudo`" ]] ; then
+	apt update
+	apt install -y sudo
+else
+	sudo apt update
+fi
+
+if [[ ! -e "$CONF_BACKUP" ]] ; then
+	sudo mkdir -p $CONF_BACKUP
+fi
+
+if [[ ! -e "$CONF_PATH" ]] ; then
+	if [[ ! -d "$LOCAL_ADMIN_PATH" ]] ; then
+		echo "WARN: $LOCAL_CONF_PATH and $CONF_PATH NOT exist..."
+		./cp_to_admin.sh
+		#exit 1
+	fi
+	sudo cp -a $LOCAL_CONF_PATH $CONF_PATH
+fi
+
 echo "Installing Development Tools for AOSP..."
+
 # Install packages for AOSP
 sudo apt install -y git-core \
 	gnupg flex bison gperf \
