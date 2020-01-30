@@ -14,7 +14,7 @@ build-dev:
     stage: build
     script:
         - echo "Build Stage => build-dev"
-        - sh ./development.sh
+        - ./development.sh
     only:
         - master
 
@@ -22,7 +22,7 @@ build-aosp:
     stage: build
     script:
         - echo "Build Stage => build-aosp"
-        - sh ./script/aosp-dev.sh
+        - ./script/aosp-dev.sh
     only:
         - master
 #build:
@@ -36,7 +36,7 @@ test-add-user:
     stage: test
     script:
         - echo "Test Stage => test-add-user"
-        - sh ./add_user.sh test
+        - ./add_user.sh test
     only:
         - master
 
@@ -44,7 +44,7 @@ test-del-user:
     stage: test
     script:
         - echo "Test Stage => test-del-user"
-        - sh ./del_user.sh test
+        - ./del_user.sh test
     only:
         - master
 
@@ -52,7 +52,7 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
-  - apt-get update -qq && apt-get install -y -qq bash
+#  - apt-get update -qq && apt-get install -y -qq bash
 #  - git --version
 
 after_script:
