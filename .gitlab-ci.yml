@@ -61,6 +61,10 @@ before_script:
   - echo "Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
+  - echo "nproc: $(nproc)"
+  - cat /proc/cpuinfo | grep model
+  - free -h
+  - df -h
   - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
   - apt-get update -qq && apt-get install -y -qq apt-utils sudo net-tools iproute2
 #  - ./cp_to_admin.sh

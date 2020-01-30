@@ -129,11 +129,10 @@ sudo chmod a+x $USER_HOME/bin/repo
 
 if [[ ! -z "$CI" ]] ; then
 	service --status-all
-	sudo service ssh status
 	sudo service smbd status
 	sudo service vsftpd status
 	sudo service tftpd-hpa status
-	sudo service nfs-kernel-server status
+	#sudo service nfs-kernel-server status
 	cat /etc/exports
 	sudo exportfs
 fi
