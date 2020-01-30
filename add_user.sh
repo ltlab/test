@@ -87,8 +87,11 @@ if [[ -z "$WSL" ]] ; then
 		sudo chmod g+w $USER_HOME/nfs
 		sudo ln -s $USER_HOME/nfs /nfs/$USER_ID
 		echo "/nfs/$USER_ID	$NETWORK_SUBNET(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
-		#sudo /etc/init.d/nfs-kernel-server restart
-		sudo systemctl restart nfs-kernel-server
+		if [[ -z "$CI" ]] ; then
+			sudo systemctl restart nfs-kernel-server
+		else
+			sudo /etc/init.d/nfs-kernel-server restart
+		fi
 	fi
 
 	if [[ ! -e "$USER_HOME/tftpboot" ]] ; then

@@ -18,7 +18,11 @@ if [[ -e "/nfs/$USER_ID" ]] ; then
 	# use for user's NFS directory: tailing TAB
 	sudo sed -i "/$USER_ID\	/d" /etc/exports
 	sudo rm /nfs/$USER_ID
-	sudo systemctl restart nfs-kernel-server
+	if [[ -z "$CI" ]] ; then
+		sudo systemctl restart nfs-kernel-server
+	else
+		sudo /etc/init.d/nfs-kernel-server restart
+	fi
 fi
 
 echo "Delete user $USER_ID and home"
