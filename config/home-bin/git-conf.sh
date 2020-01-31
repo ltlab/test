@@ -1,8 +1,8 @@
 #!/bin/sh
 
-echo "[ GIT ] Enter Username: \c"
+echo -n "[ GIT ] Enter Username: "
 read name
-echo "[ GIT ] Enter email: \c"
+echo -n "[ GIT ] Enter email: "
 read email
 
 git config --global user.name "$name"
