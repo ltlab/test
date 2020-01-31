@@ -1,6 +1,9 @@
 # Development Environment Automation #
 by jay.jyhuh@gmail.com
 
+![build status](https://gitlab.com/jay-huh/dev-env/badges/master/pipeline.svg?style=flat-square)
+![coverage](https://gitlab.com/jay-huh/dev-env/badges/master/coverage.svg?style=flat)
+
 > Support version: Ubuntu 16.04, 18.04 / Mint 19
 > gcc and android build environment.
 
