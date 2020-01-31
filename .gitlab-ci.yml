@@ -5,101 +5,57 @@
 
 image: ubuntu:latest
 
-stages:
-    - build
-    - test
-    - deploy
-
-build-dev:
-    stage: build
-    script:
-        - echo "Build Stage => build-dev"
-        - ./development.sh
-        - echo "Build Stage => add_user"
-        - ./add_user.sh test
-        - echo "Build Stage => del_user"
-        - ./del_user.sh test
-    only:
-        - master
-
-build-aosp:
-    stage: build
-    script:
-        - echo "Build Stage => build-aosp"
-        - ./development.sh
-        - ./script/aosp-dev.sh
-        - echo "Build Stage => add_user"
-        - ./add_user.sh test
-        - echo "Build Stage => del_user"
-        - ./del_user.sh test
-    only:
-        - master
-#build:
-#    stage: build
-#    script:
-#        - echo "Build Stage => build"
-#    except:
-#        - master
-
-build-sysbench:
-    stage: build
-    script:
-        - echo "Build Stage => build-sysbench"
-        - ./script/benchmark.sh
-        - cat ./bench-result.md
-    only:
-        - master
-
-#test-add-user:
-#    stage: test
-#    script:
-#        - echo "Test Stage => test-add-user"
-#        - ./add_user.sh test
-#    only:
-#        - master
-
-#test-del-user:
-#    stage: test
-#    script:
-#        - echo "Test Stage => test-del-user"
-#        - ./del_user.sh test
-#    only:
-#        - master
-
 before_script:
-  - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Before script section"
-  - echo "For example you might run an update here or install a build dependency"
-  - echo "Or perhaps you might print out some debugging details"
-  - cat /proc/cpuinfo | grep model
-  - free -h
-  - df -h
-  - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-  - apt-get update -qq && apt-get install -y -qq apt-utils sudo net-tools iproute2
-#  - ./cp_to_admin.sh
+	- echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Before script section"
+#	- echo "For example you might run an update here or install a build dependency"
+#	- echo "Or perhaps you might print out some debugging details"
+	- cat /proc/cpuinfo | grep model
+	- free -h
+	- df -h
+	- echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+	- apt-get update -qq && apt-get install -y -qq apt-utils sudo net-tools iproute2
+#	- ./cp_to_admin.sh
 
 after_script:
-  - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> After script section"
-  - echo "For example you might do some cleanup here"
+	- echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> After script section"
+#	- echo "For example you might do some cleanup here"
 
-#build1:
-#  stage: build
-#  script:
-#    - echo "Do your build here"
+stages:
+	- build
+#	- test
+#	- deploy
 
-#test1:
-#  stage: test
-#  script:
-#    - echo "Do a test here"
-#    - echo "For example run a test suite"
+build-dev:
+	stage: build
+	script:
+		- echo "Build Stage => build-dev"
+		- ./development.sh
+		- echo "Build Stage => add_user"
+		- ./add_user.sh test
+		- echo "Build Stage => del_user"
+		- ./del_user.sh test
+	only:
+		- master
 
-#test2:
-#  stage: test
-#  script:
-#    - echo "Do another parallel test here"
-#    - echo "For example run a lint test"
+build-aosp:
+	stage: build
+	script:
+		- echo "Build Stage => build-aosp"
+		- ./development.sh
+		- ./script/aosp-dev.sh
+		- echo "Build Stage => add_user"
+		- ./add_user.sh test
+		- echo "Build Stage => del_user"
+		- ./del_user.sh test
+	only:
+		- master
 
-deploy1:
-  stage: deploy
-  script:
-    - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Deploy" 
-    - echo "Do your deploy here"
+# Benchmark using Sysbench
+#build-sysbench:
+#    stage: build
+#    script:
+#        - echo "Build Stage => build-sysbench"
+#        - ./script/benchmark.sh
+#        - cat ./bench-result.md
+#    only:
+#        - master
