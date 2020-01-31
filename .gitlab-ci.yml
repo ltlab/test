@@ -41,10 +41,10 @@ build-aosp:
 #    except:
 #        - master
 
-test-benchmark:
-    stage: test
+build-sysbench:
+    stage: build
     script:
-        - echo "Test Stage => test-benchmark"
+        - echo "Build Stage => build-sysbench"
         - ./script/benchmark.sh
         - cat ./bench-result.md
     only:
@@ -67,7 +67,7 @@ test-benchmark:
 #        - master
 
 before_script:
-  - echo "Before script section"
+  - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Before script section"
   - echo "For example you might run an update here or install a build dependency"
   - echo "Or perhaps you might print out some debugging details"
   - cat /proc/cpuinfo | grep model
@@ -78,7 +78,7 @@ before_script:
 #  - ./cp_to_admin.sh
 
 after_script:
-  - echo "After script section"
+  - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> After script section"
   - echo "For example you might do some cleanup here"
 
 #build1:
@@ -101,4 +101,5 @@ after_script:
 deploy1:
   stage: deploy
   script:
+    - echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Deploy" 
     - echo "Do your deploy here"

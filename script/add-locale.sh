@@ -22,7 +22,7 @@ sudo dpkg-reconfigure locales
 #sudo locale-gen $LOCALE
 
 # Test for Language pack
-sudo apt install --dry-run language-pack-$LOCALE_PREFIX > /dev/null 2>&1
+sudo apt install -y -qq --dry-run language-pack-$LOCALE_PREFIX > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
 	LANGUAGE_PACK="Y"
 fi
@@ -31,7 +31,7 @@ echo "LANGUAGE_PACK ? $LANGUAGE_PACK"
 
 # Install language pack
 if [[ "$LANGUAGE_PACK" == "Y" ]] ; then
-	sudo apt install language-pack-$LOCALE_PREFIX
+	sudo apt install -y -qq language-pack-$LOCALE_PREFIX
 fi
 
 # Set Default locale

@@ -16,10 +16,10 @@ export LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 echo "Installing System Services..."
 
 if [[ -z "`which sudo`" ]] ; then
-	apt update
-	apt install -y sudo
+	apt update -qq
+	apt install -y -qq sudo
 else
-	sudo apt update
+	sudo apt update -qq
 fi
 
 if [[ ! -e "$CONF_BACKUP" ]] ; then
@@ -39,7 +39,7 @@ fi
 ./script/base.sh
 
 # VCS
-#sudo apt install -y gitk
+#sudo apt install -y -qq gitk
 #sudo apt install -q -y subversion
 
 if [[ -z "$WSL" ]] ; then
@@ -94,12 +94,12 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo apt install -y build-essential
+sudo apt install -y -qq build-essential
 
-sudo apt install -y gcc-multilib g++-multilib
+sudo apt install -y -qq gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
-sudo apt install -y ncurses-dev libssl-dev
+sudo apt install -y -qq ncurses-dev libssl-dev
 
 sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile

@@ -9,8 +9,8 @@ NET_INTERFACE_FILE=/etc/network/interfaces
 NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
 if [[ -z "`which sudo`" ]] ; then
-	apt update
-	apt install -y sudo
+	apt update -qq
+	apt install -y -qq sudo
 fi
 
 if [[ ! -e "$CONF_BACKUP" ]] ; then
@@ -38,7 +38,8 @@ do
             #routes:
             #    - to: $NETWORK".0/24"
             #      via: $GATEWAY
-            #      metric: 100
+            ##      metric: 100
+            #      table: 100
             #routing-policy:
             #    - from: $NETWORK".0/24"
             #      table: 100

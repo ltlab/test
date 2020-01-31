@@ -17,7 +17,7 @@ find_group()
 	group=$1
 	ret=1
 
-	if [ -z $(grep $group /etc/group) ] ; then
+	if [[ -z $(grep $group /etc/group) ]] ; then
 		ret=0
 	fi
 
@@ -26,7 +26,7 @@ find_group()
 
 for group in ${GROUP_LIST}
 do
-	if [ $(find_group $group) -eq 1 ] ; then
+	if [[ $(find_group $group) -eq 1 ]] ; then
 		echo "Group $group is found!!!"
 	fi
 done
@@ -37,3 +37,12 @@ if [[ "$DOCKER" != "Y" ]] ; then
 fi
 
 echo "NETWORK_SUBNET: $NETWORK_SUBNET"
+
+#####
+POWERLINE_FILE="/usr/share/powerline/bindings/bash/powerline.sh"
+PS_LINE=$(grep PS1 $POWERLINE_FILE)
+
+echo "PS1 => $PS_LINE"
+PS_LINE=$PS_LINE"\n$ "
+echo "PS1 => $PS_LINE"
+

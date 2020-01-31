@@ -3,7 +3,7 @@
 ###############################################
 : << "TEMP"
 
-sudo apt install -y sysbench
+sudo apt install -y -qq sysbench
 
 #	CPU
 #sysbench cpu --events=10000 --cpu-max-prime=20000 --time=0 --threads=4 run

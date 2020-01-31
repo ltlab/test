@@ -5,7 +5,7 @@ echo "Installing FTP Service..."
 CONF_PATH=/root/config
 CONF_BACKUP=/root/.config-backup
 
-sudo apt install -q -y vsftpd
+sudo apt install -y -qq vsftpd
 
 # config for vsftpd
 sudo cp -a --backup=numbered /etc/vsftpd.conf $CONF_BACKUP

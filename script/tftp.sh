@@ -5,7 +5,7 @@ echo "Installing TFTP Service..."
 CONF_PATH=/root/config
 CONF_BACKUP=/root/.config-backup
 
-sudo apt install -q -y tftpd-hpa tftp-hpa
+sudo apt install -y -qq tftpd-hpa tftp-hpa
 
 # chown root.tftp <tftpboot dir>
 #sudo usermod -G tftp -a $USER

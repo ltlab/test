@@ -3,10 +3,10 @@
 # Uninstall old-versions
 sudo apt remove docker docker-engine docker.io containerd runc
 
-sudo apt update
+sudo apt update -qq
 
 # Install Packages to allow apt to use a repository over HTTPS
-sudo apt install -y \
+sudo apt install -y -qq \
 	apt-transport-https \
 	ca-certificates \
 	curl \
@@ -24,9 +24,9 @@ sudo add-apt-repository \
 	$(lsb_release -cs) \
 	stable"
 
-sudo apt update
+sudo apt update -qq
 
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+sudo apt install -y -qq docker-ce docker-ce-cli containerd.io
 
 # 1. List the versions available in your repo:
 #apt-cache madison docker-ce

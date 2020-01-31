@@ -67,7 +67,8 @@ COLLECT_MYSQLSTATS='y'
 COLLECT_DISKSTATS='y'
 COLLECT_PIDSTATS='y'
 
-SYSBENCH_DIR="/home/$USER/sysbench"
+#SYSBENCH_DIR="/home/$USER/sysbench"
+SYSBENCH_DIR="$HOME/sysbench"
 SYSBENCH_FILEIODIR="${SYSBENCH_DIR}/fileio"
 #########################################################
 # functions
