@@ -1,8 +1,12 @@
 # Development Environment Automation #
 by jay.jyhuh@gmail.com
 
-![build status](https://gitlab.com/jay-huh/dev-env/badges/master/pipeline.svg?style=flat-square)
-![coverage](https://gitlab.com/jay-huh/dev-env/badges/master/coverage.svg?style=flat)
+[![build status](https://gitlab.com/jay-huh/dev-env/badges/master/pipeline.svg?style=flat-square)](https://gitlab.com/jay-huh/dev-env/commits/master)
+[![coverage](https://gitlab.com/jay-huh/dev-env/badges/master/coverage.svg?style=flat)](https://gitlab.com/jay-huh/dev-env/commits/master)
+
+<!--
+Test: [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+-->
 
 > Support version: Ubuntu 16.04, 18.04 / Mint 19
 > gcc and android build environment.
