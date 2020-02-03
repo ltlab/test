@@ -299,17 +299,21 @@ sysbench_cpu() {
   echo
   cd "$SYSBENCH_DIR"
   # echo "threads: 1";
+  local CMD="sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run"
   echo "sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run" | tee "$SYSBENCH_DIR/sysbench-cpu-threads-1.log"
   if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run | egrep 'sysbench |Number of threads:|Prime numbers limit:|events per second:|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's|Prime numbers limit|prime|' -e 's|events per second|events/s|' -e 's|total time:|time:|' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1.log"
   else
+      CMD="sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run"
       sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=1 run | egrep 'sysbench |Number of threads:|Prime numbers limit:|events per second:|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's|Prime numbers limit|prime|' -e 's|events per second|events/s|' -e 's|total time:|time:|' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1.log"
   fi
   echo
   #echo -n "| cpu "; cat "$SYSBENCH_DIR/sysbench-cpu-threads-1.log" | grep -v prime | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
   #echo "| --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
   if [[ ! -e "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log" ]] ; then
-	  echo -n "| cpu " | tee "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log" ; cat "$SYSBENCH_DIR/sysbench-cpu-threads-1.log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
+	  echo -e "CMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
+	  echo -n "| cpu " | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log" ; cat "$SYSBENCH_DIR/sysbench-cpu-threads-1.log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
 	  echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
   fi
   echo -n "| "; cat "$SYSBENCH_DIR/sysbench-cpu-threads-1.log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-1-markdown.log"
@@ -321,15 +325,18 @@ sysbench_cpu() {
     # echo "threads: $(nproc)";
     echo "sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=$(nproc) run" | tee "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log"
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=$(nproc) run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=$(nproc) run | egrep 'sysbench |Number of threads:|Prime numbers limit:|events per second:|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's|Prime numbers limit|prime|' -e 's|events per second|events/s|' -e 's|total time:|time:|' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log"
     else
+      CMD="sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=$(nproc) run"
       sysbench cpu --cpu-max-prime=${CPU_MAXPRIME} --threads=$(nproc) run | egrep 'sysbench |Number of threads:|Prime numbers limit:|events per second:|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's|Prime numbers limit|prime|' -e 's|events per second|events/s|' -e 's|total time:|time:|' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log"
     fi
     echo
     #echo -n "| cpu "; cat "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log" | grep -v prime | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
     #echo "| --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
     if [[ ! -e "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log" ]] ; then
-	    echo -n "| cpu " | tee "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"; cat "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
+		echo -e "CMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
+	    echo -n "| cpu " | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"; cat "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc).log" | grep -v prime: | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-cpu-threads-$(nproc)-markdown.log"
@@ -345,15 +352,19 @@ sysbench_mem() {
   echo
   cd "$SYSBENCH_DIR"
   # echo "threads: 1";
+  local CMD="sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run"
   echo "sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run" | tee "$SYSBENCH_DIR/sysbench-mem-threads-1.log"
   if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+	  CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run | egrep 'sysbench |Number of threads:|block size:|total size:|operation:|scope:|Total operations:|transferred|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|Total operations:|total-ops:|' -e 's|total time:|time:|' -e 's|1024.00 MiB||' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-mem-threads-1.log"
   else
+    CMD="sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run"
     sysbench memory --threads=1 --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run | egrep 'sysbench |Number of threads:|block size:|total size:|operation:|scope:|Total operations:|transferred|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|Total operations:|total-ops:|' -e 's|total time:|time:|' -e 's|1024.00 MiB||' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-mem-threads-1.log"
   fi
   echo
   if [[ ! -e "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log" ]] ; then
-	  echo -n "| memory "; cat "$SYSBENCH_DIR/sysbench-mem-threads-1.log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log"
+	  echo -e "CMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log"
+	  echo -n "| memory "; cat "$SYSBENCH_DIR/sysbench-mem-threads-1.log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log"
 	  echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log"
   fi
   echo -n "| "; cat "$SYSBENCH_DIR/sysbench-mem-threads-1.log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | sed -e 's|(||' | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-1-markdown.log"
@@ -365,13 +376,16 @@ sysbench_mem() {
     # echo "threads: $(nproc)";
     echo "sysbench memory --threads=$(nproc) --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run" | tee "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log"
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench memory --threads=$(nproc) --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench memory --threads=$(nproc) --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run | egrep 'sysbench |Number of threads:|block size:|total size:|operation:|scope:|Total operations:|transferred|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|Total operations:|total-ops:|' -e 's|total time:|time:|' -e 's|1024.00 MiB||' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log"
     else
+      CMD="sysbench memory --threads=$(nproc) --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run"
       sysbench memory --threads=$(nproc) --memory-block-size=${MEM_BLOCKSIZE}K --memory-scope=global --memory-total-size=${MEM_TOTALSIZE}G --memory-oper=read run | egrep 'sysbench |Number of threads:|block size:|total size:|operation:|scope:|Total operations:|transferred|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|Total operations:|total-ops:|' -e 's|total time:|time:|' -e 's|1024.00 MiB||' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log"
     fi
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log" ]] ; then
-	    echo -n "| memory "; cat "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log"
+	    echo -e "CMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log"
+	    echo -n "| memory "; cat "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc).log" | egrep -v 'scope:' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs| sed -e 's|(||' | tee -a "$SYSBENCH_DIR/sysbench-mem-threads-$(nproc)-markdown.log"
@@ -419,13 +433,17 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio fsync prepare"
     echo "sysbench fileio --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --threads=1 --percentile=99 prepare"
-      sysbench fileio --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --threads=1 --percentile=99 prepare >/dev/null 2>&1
+	local CMD_PREPARE="sysbench fileio --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --threads=1 --percentile=99 prepare"
+    local CMD="sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run"
+	sysbench fileio --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --threads=1 --percentile=99 prepare >/dev/null 2>&1
     echo
     echo "sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run" | tee "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1.log"
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
-      LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-raw.log"
+		CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run"
+		LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-raw.log"
     else
-      sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-raw.log"
+		CMD="sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run"
+		sysbench fileio --threads=1 --time=$FILEIO_FSYNCTIME --file-num=1 --file-extra-flags= --file-total-size=4096 --file-block-size=4096 --file-fsync-all=on --file-test-mode=rndwr --file-fsync-freq=0 --file-fsync-end=0 --percentile=99 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-raw.log"
     echo
@@ -433,7 +451,8 @@ sysbench_fileio() {
     echo
 
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-fsync-threads-1-markdown.log"
@@ -450,13 +469,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-raw.log"
@@ -464,7 +486,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-1-markdown.log"
@@ -481,13 +504,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-raw.log"
@@ -495,7 +521,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-1-markdown.log"
@@ -512,13 +539,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-raw.log"
@@ -526,7 +556,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-1-markdown.log"
@@ -543,13 +574,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-raw.log"
@@ -557,7 +591,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-1-markdown.log"
@@ -574,13 +609,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-raw.log"
@@ -588,7 +626,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-1-markdown.log"
@@ -605,13 +644,16 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio prepare"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare"
+    CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare"
     sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare >/dev/null 2>&1
     echo
 
     echo "sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1.log"  
     if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+      CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run"
       LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-raw.log"
     else
+      CMD="sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run"
       sysbench fileio --threads=1 --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-raw.log"
     fi
     echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-raw.log"
@@ -619,7 +661,8 @@ sysbench_fileio() {
     cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1.log"
     echo
     if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log" ]] ; then
-	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log"
+		echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log"
+	    echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log"
 	    echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log"
     fi
     echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1.log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-1-markdown.log"
@@ -638,13 +681,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrd prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc).log"    
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-raw.log"
@@ -652,7 +698,8 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log" ]] ; then
-	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log"
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log"
+	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log"
       fi
       echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrd-threads-$(nproc)-markdown.log"
@@ -669,13 +716,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqwr prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc).log"     
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-raw.log"
@@ -683,7 +733,8 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log" ]] ; then
-	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log"
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log"
+	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log"
       fi
       echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqwr-threads-$(nproc)-markdown.log"
@@ -700,13 +751,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=seqrewr prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc).log"     
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=seqrewr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-raw.log"
@@ -714,7 +768,8 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log" ]] ; then
-	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log"
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log"
+	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log"
       fi
       echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-seqrewr-threads-$(nproc)-markdown.log"
@@ -731,13 +786,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrd prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc).log" 
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrd --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-raw.log"
@@ -745,6 +803,7 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-markdown.log" ]] ; then
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-markdown.log"
 	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrd-threads-$(nproc)-markdown.log"
       fi
@@ -762,13 +821,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndwr prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc).log"
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndwr --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-raw.log"
@@ -776,7 +838,8 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log" ]] ; then
-	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log"
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log"
+	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log"
       fi
       echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndwr-threads-$(nproc)-markdown.log"
@@ -794,13 +857,16 @@ sysbench_fileio() {
       echo
       echo "sysbench fileio prepare"
       echo "sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare"
+      CMD_PREPARE="sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare"
       sysbench fileio --file-total-size=${fileio_filesize}M --file-test-mode=rndrw prepare >/dev/null 2>&1
       echo
 
       echo "sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc).log"
       if [ -f /usr/lib64/libjemalloc.so.1 ]; then
+        CMD="LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run"
         LD_PRELOAD=/usr/lib64/libjemalloc.so.1 sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-raw.log"
       else
+        CMD="sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run"
         sysbench fileio --threads=$(nproc) --file-num=${FILEIO_FILENUM} --file-total-size=${fileio_filesize}M --file-block-size=${FILEIO_BLOCKSIZE} --file-io-mode=${FILEIO_MODE} --file-extra-flags=${FILEIO_EXTRAFLAGS} --file-test-mode=rndrw --time=${FILEIO_TIME} --events=0 run 2>&1 > "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-raw.log"
       fi
       echo "raw log saved: $SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-raw.log"
@@ -808,7 +874,8 @@ sysbench_fileio() {
       cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-raw.log" | egrep 'sysbench |Number of threads:|Block size|ratio |mode|Doing |reads/s:|writes/s:|fsyncs/s:|read, | written,|total time:|min:|avg:|max:|95th percentile:' | sed -e 's|Number of threads|threads|' -e 's| size|-size|' -e 's|total time:|time:|' -e 's|, MiB/s|-MiB/s|g' -e 's| percentile||' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' '| tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc).log"
       echo
       if [[ ! -e "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log" ]] ; then
-	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log"
+		  echo -e "CMD_PREPARE: \`$CMD_PREPARE\`\nCMD: \`$CMD\`\n" | tee "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log"
+	      echo -n "| fileio "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{ for (i=1;i<=NF;i+=2) print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log"
 	      echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |" | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log"
       fi
       echo -n "| "; cat "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc).log" | grep -v 'ratio' | sed -e 's|Using ||' -e 's| mode||' -e 's|Doing ||' -e 's| test||' | awk '{print $1,$2}' | xargs | awk '{for (i=2; i<=NF; i+=2)print $i" |" }' | xargs | tee -a "$SYSBENCH_DIR/sysbench-fileio-rndrw-threads-$(nproc)-markdown.log"
@@ -821,7 +888,7 @@ sysbench_fileio() {
     echo
     echo "sysbench fileio cleanup"
     echo "sysbench fileio --file-total-size=${fileio_filesize}M cleanup"
-    sysbench fileio --file-total-size=${fileio_filesize}M cleanup >/dev/null 2>&1
+    sysbench fileio --file-total-size=${fileio_filesize}M cleanup >/dev/null 2>&2
   
     echo
     echo "| fileio sysbench | sysbench | threads: | Block-size | synchronous | sequential | reads/s: | writes/s: | fsyncs/s: | read-MiB/s: | written-MiB/s: | time: | min: | avg: | max: | 95th: |"

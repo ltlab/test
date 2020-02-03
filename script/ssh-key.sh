@@ -23,7 +23,11 @@ if [[ "$answer" != [Yy] ]] ; then
 	exit 0;
 fi
 
-ssh-keygen -q -t rsa -b 4096 -N "" -C "$EMAIL" -f $HOME/.ssh/$RSA_KEY
+if [[ ! -f "$HOME/.ssh/$RSA_KEY" ]] ; then
+	ssh-keygen -q -t rsa -b 4096 -N "" -C "$EMAIL" -f $HOME/.ssh/$RSA_KEY
+else
+	echo -e $YELLOW_BOLD"[ SSH ] key found '$HOME/.ssh/$RSA_KEY'"
+fi
 echo -e $RED_BOLD
 file $HOME/.ssh/$RSA_KEY*
 echo -e $ENDCOLOR
