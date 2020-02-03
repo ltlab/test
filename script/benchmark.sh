@@ -24,7 +24,7 @@ TEMP
 
 SYSBENCH_SHELL="$PWD/script/sysbench.sh"
 RESULT_FILE=bench-result.md
-MAX_TIMES=3
+MAX_TIMES=5
 
 TEST_LIST="	cpu \
 		mem \
