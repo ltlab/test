@@ -27,9 +27,9 @@ RESULT_FILE=bench-result.md
 MAX_TIMES=5
 
 TEST_LIST="	cpu \
-		mem \
-		file \
-		file-fsync"
+		memory \
+		fileio \
+		fileio-fsync"
 
 
 for i in $( eval echo "{1..$MAX_TIMES}" )
