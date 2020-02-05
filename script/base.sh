@@ -5,6 +5,9 @@ CONF_BACKUP=/root/.config-backup
 
 echo "Installing Base Service..."
 
+sudo timedatectl set-timezone 'Asia/Seoul'
+date
+
 # SSH
 sudo apt install -y -qq openssh-server
 sudo cp -a --backup=numbered /etc/ssh/sshd_config $CONF_BACKUP
@@ -13,6 +16,7 @@ sudo systemctl restart sshd
 
 sudo apt install -y -qq make
 sudo apt install -y -qq git git-review
+sudo apt install -y -qq gnupg
 
 sudo apt install -y -qq vim ctags cscope
 sudo apt install -y -qq silversearcher-ag ack-grep
