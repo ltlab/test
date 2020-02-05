@@ -260,4 +260,7 @@ LANG="en_US.UTF-8"
 LANGUAGE="en_US:en"
 LC_ALL=$LANG
 
+# git commit using GPG key. 2020-02-05 17:27:58
+export GPG_TTY=$(tty)
+
 echo "END .bashrc"
