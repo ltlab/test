@@ -1,0 +1,59 @@
+# /etc/ntp.conf
+#
+# sudo apt install ntp
+# sudo service ntp restart
+# sudo ntpq -p
+
+server 1.kr.pool.ntp.org
+server 1.asia.pool.ntp.org
+server time.bora.net
+
+#########################################
+# Generate a GPG Key pair
+# gpg version > 2.1.17
+gpg --full-generate-key
+# gpg version < 2.1.17
+gpg --default-new-key-algo rsa4096 --gen-key
+
+gpg --list-keys
+	/home/jay/.gnupg/pubring.kbx
+	----------------------------
+	pub   rsa4096 2020-02-05 [SC]
+		  8E9B772760F696DDA540474EDE49AD9C7DADA874
+	uid           [ultimate] Jaeyeong Huh (Personal GPG Key) <jay.jyhuh@gmail.com>
+	sub   rsa4096 2020-02-05 [E]
+
+gpg --list-secret-keys [--keyid-format LONG | SHORT ]
+	/home/jay/.gnupg/pubring.kbx
+	----------------------------
+	sec   rsa4096/DE49AD9C7DADA874 2020-02-05 [SC]
+		  8E9B772760F696DDA540474EDE49AD9C7DADA874
+	uid                 [ultimate] Jaeyeong Huh (Personal GPG Key) <jay.jyhuh@gmail.com>
+	ssb   rsa4096/C16DC26EC46489C4 2020-02-05 [E]
+
+sec   rsa4096/6C0A2356DF050070 2019-12-28 [SC]
+      15DB9042CC2EB5B2925D61916C0A2356DF050070
+uid                 [ultimate] John Doe (COMMENT) <your_email@mail.com>
+ssb   rsa4096/5D8C2F207561B330 2019-12-28 [E]
+
+# Convert to ASCII
+gpg --armor --export DE49AD9C7DADA874
+gpg --armor --export DE49AD9C7DADA874 | clip	# Copy to clipboard
+
+# Register key to gitconfig
+git config --global commit.gpgsign true
+git config --global user.signingkey DE49AD9C7DADA874
+   or
+git config --global user.signingkey 7DADA874
+
+# Export/Import Public key
+gpg --armor --output [filename] --export [id]
+gpg --import [filename.pub]
+
+# Export/Import Secret key
+gpg -armor --output [filename] --export-secret-keys [id]
+gpg --import [filename.secret]
+
+gpg --delete-secret-key [id]
+gpg --delete-key [id]
+
