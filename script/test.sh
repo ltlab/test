@@ -46,3 +46,9 @@ echo "PS1 => $PS_LINE"
 PS_LINE=$PS_LINE"\n$ "
 echo "PS1 => $PS_LINE"
 
+for (( i = 1 ; i <= $(nproc) ; i = $(( i<<1 )) ))
+do
+	echo "i: $i"
+done
+LIST=$( for (( i = 1 ; i <= $(nproc) ; i = $(( i<<1 )) )) ; do echo -n "$i " ; done )
+echo "LIST: $LIST"

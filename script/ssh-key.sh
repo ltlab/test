@@ -80,6 +80,7 @@ NAME_LINE=$( grep "[[:space:]]name" $GIT_CONFIG )
 echo "[user]" > $GIT_CONFIG_ADD
 echo "$NAME_LINE" >> $GIT_CONFIG_ADD
 echo "	email = $EMAIL" >> $GIT_CONFIG_ADD
+echo "	#signingkey = 7104CF72"
 
 echo -e $GREEN_BOLD"FILE: $GIT_CONFIG"$ENDCOLOR
 tail -n 10 $GIT_CONFIG

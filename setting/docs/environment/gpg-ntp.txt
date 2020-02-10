@@ -15,7 +15,10 @@ gpg --full-generate-key
 # gpg version < 2.1.17
 gpg --default-new-key-algo rsa4096 --gen-key
 
-gpg --list-skeys --keyid-format SHORT
+gpg --delete-secret-key [id]
+gpg --delete-key [id]
+
+gpg --list-keys --keyid-format SHORT
 	/home/jay/.gnupg/pubring.kbx
 	----------------------------
 	pub   rsa4096/7DADA874 2020-02-05 [SC]
@@ -39,22 +42,18 @@ gpg --list-secret-keys --keyid-format LONG
 	uid                 [ultimate] Jaeyeong Huh (Personal GPG Key) <jay.jyhuh@gmail.com>
 	ssb   rsa4096/C16DC26EC46489C4 2020-02-05 [E]
 
-# Convert to ASCII
-gpg --armor --export 7DADA874
-gpg --armor --export 7DADA874 | clip	# Copy to clipboard
-
 # Register to gitconfig
 git config --global commit.gpgsign true
 git config --global user.signingkey 7DADA874
 
-# Export/Import Public key
-gpg --armor --output [filename] --export [id]
+# Import Public key
 gpg --import [filename.pub]
-
-# Export/Import Secret key
-gpg -armor --output [filename] --export-secret-keys [id]
 gpg --import [filename.secret]
 
-gpg --delete-secret-key [id]
-gpg --delete-key [id]
+# Export Secret key
+gpg --armor --output [filename] --export [keyid]
+gpg --armor --output [filename] --export-secret-keys [keyid]
 
+# Convert to ASCII
+gpg --armor --export 7DADA874
+gpg --armor --export 7DADA874 | clip	# Copy to clipboard

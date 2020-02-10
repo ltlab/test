@@ -158,7 +158,7 @@ parse_git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
-PS1="${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[00m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[00;36m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\n $ "
+PS1="${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[00m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[00;36m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\n$ "
 
 export SVN_EDITOR=/usr/bin/vi
 alias svndiff="svn diff --diff-cmd=colordiff"
