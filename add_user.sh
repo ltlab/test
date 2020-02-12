@@ -41,7 +41,9 @@ update()
 		return 1
 	fi
 
-	if [[ -e $dst ]] ; then
+	# over-write directory
+	# maybe... ~/.config
+	if [[ -e $dst ]] && [[ -d $dst ]] ; then
 		echo "Backup $item to $CONF_BACKUP..."
 		sudo mv --backup=numbered $dst $CONF_BACKUP
 	fi
