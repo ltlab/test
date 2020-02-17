@@ -107,6 +107,7 @@ sudo cp -a $CONF_PATH/etc_profile /etc/profile
 # Remote Desktop
 if [[ "$SERVER" = "Y" ]] ; then
 	./script/xrdp.sh
+	sudo systemctl set-default multi-user.target
 fi
 
 # Clean apt packages and cache
