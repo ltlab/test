@@ -57,3 +57,8 @@ gpg --armor --output [filename] --export-secret-keys [keyid]
 # Convert to ASCII
 gpg --armor --export 7DADA874
 gpg --armor --export 7DADA874 | clip	# Copy to clipboard
+
+# Edit Key
+gpg --edit-key [keyid]
+
+- change passphrase => gpg> passwd
