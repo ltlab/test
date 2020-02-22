@@ -96,8 +96,8 @@ TCPKeepAlive yes
 #UseLogin no
 #PermitUserEnvironment no
 #Compression delayed
-ClientAliveInterval 600
-ClientAliveCountMax 0
+ClientAliveInterval 600 # 5 minutes
+ClientAliveCountMax 2   # 5 x 2 = 10 minutes
 #UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10:30:100
