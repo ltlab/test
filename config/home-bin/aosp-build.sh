@@ -2,13 +2,13 @@
 
 DEBUG=
 
-SOURCE_TOP="home-cached/jay/work/android_build"
+SOURCE_TOP="$HOME/home-cached/jay/work/android_build"
 LOG_PATH="$HOME/log/auto-log"
 SUMMARY_FILE=${LOG_PATH}/summary.txt
 BOARD_CFG="evk_8mm-userdebug"
 
 TIMES=3
-PREFIX="none"
+PREFIX=
 INTERVAL=3
 MIN_JOB=16
 
@@ -54,9 +54,11 @@ done
 
 build()
 {
-	local JOB=$1
+	local IDX=$1
+	local JOB=$2
+	LOG_FILE="build-${HOSTNAME}-v$(nproc)-${PREFIX}j${JOB}-${IDX}.log"
 
-	if [[ -z "${DEBUG}" ]] ; then
+	if [[ ! -z "${DEBUG}" ]] ; then
 		time echo "make -j${JOB}" 2>&1 | tee /tmp/${LOG_FILE} && mv /tmp/${LOG_FILE} ${LOG_PATH}
 		return 0
 	fi
@@ -64,7 +66,10 @@ build()
 	time make clean && time make clobber
 	time lunch ${BOARD_CFG}
 	ccache -z
+	echo -e "[${idx}] JOB=${job} Build START: $(date)"
+	echo -e "log: ${LOG_FILE}"
 	make -j${JOB} 2>&1 | tee /tmp/${LOG_FILE} && mv /tmp/${LOG_FILE} ${LOG_PATH}
+	echo -e "[${idx}] JOB=${job} Build END: $(date)"
 
 	return 0
 }
@@ -85,9 +90,8 @@ for idx in $( seq 1 ${TIMES} )
 do
 	for job in ${JOBS_LIST}
 	do
-		echo -e "[${idx}] JOB=${job}"
-		LOG_FILE="build-${HOSTNAME}-v$(nproc)-${PREFIX}-j${JOB}-${idx}.log"
-		build ${job}
+		echo -e "[${idx}] JOB=${job} START: $(date)"
+		build ${idx} ${job}
 
 		sleep ${INTERVAL}
 	done
