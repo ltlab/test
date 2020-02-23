@@ -9,7 +9,7 @@ BOARD_CFG="evk_8mm-userdebug"
 
 TIMES=3
 PREFIX="none"
-INTERVAL=0
+INTERVAL=3
 MIN_JOB=16
 
 JOBS_LIST=$( for (( i = $(nproc) ; i >= ${MIN_JOB} ; i = $(( i>>1 )) )) ; do echo -n "$i " ; done )
