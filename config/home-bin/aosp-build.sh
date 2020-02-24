@@ -92,7 +92,7 @@ build()
 	echo -e "[${IDX}] JOB=${JOB} Configure END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
 	ccache -z
 	echo -e "[${IDX}] JOB=${JOB} Build START: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
-	make -j${JOB} 2>&1 | tee -a ${TMP_LOGFILE}}
+	make -j${JOB} 2>&1 | tee -a ${TMP_LOGFILE}
 	echo -e "[${IDX}] JOB=${JOB} Build END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
 
 	return 0
@@ -150,6 +150,7 @@ do
 
 	if [[ ! -z "${DEBUG}" ]] ; then
 		grep "Testing START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
+		tail -n 20 ${LOG_FILE} | grep successful 2>&1 | tee -a ${SUMMARY_FILE}
 		grep "Testing END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
 
 		continue
