@@ -272,6 +272,15 @@ if [[ ! -z "$IM_CONFIG_PHASE" ]] ; then
 fi
 
 export USE_CCACHE=1
-#export OUT_DIR_COMMON_BASE="$HOME/out"
+if [[ -e "$HOME/out/mounted" ]] ; then
+	export CCACHE_DIR="$HOME/out/.ccache"
+	export OUT_DIR_COMMON_BASE="$HOME/out"
+#else
+	#if [[ -d "/home/jay/home-cached/jay" ]] ; then
+	#	export CCACHE_DIR="/home/jay/home-cached/jay/.ccache"
+	#fi
+fi
+
+set -o vi
 
 echo "END .bashrc"
