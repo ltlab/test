@@ -1,8 +1,10 @@
 #!/bin/bash
 
+set -e
+
 DEBUG=
 
-SOURCE_TOP="$HOME/home-cached/jay/work/android_build"
+SRC_PATH="$HOME/home-cached/jay/work/android_build"
 BOARD_CFG="evk_8mm-userdebug"
 LOG_PATH="$HOME/log/auto-log"
 TIMES=3
@@ -10,7 +12,11 @@ PREFIX=
 INTERVAL=3
 
 MIN_JOB=16
+MIN_JOB=$(nproc)
 JOBS_LIST=$( for (( i = $(nproc) ; i >= ${MIN_JOB} ; i = $(( i>>1 )) )) ; do echo -n "$i " ; done )
+
+GREP_CMD=$( if [[ -z $( command -v ag ) ]] ; then echo "grep" ; else echo "ag --nonumbers" ; fi )
+TIMESTAMP=$( date +%s )
 
 help()
 {
@@ -34,7 +40,7 @@ while getopts $OPTSPEC  opt ; do
 			DEBUG=1
 			;;
 		s )
-			SOURCE_TOP=$OPTARG
+			SRC_PATH=$OPTARG
 			;;
 		l )
 			LOG_PATH=$OPTARG
@@ -74,26 +80,26 @@ build()
 {
 	local IDX=$1
 	local JOB=$2
-	local LOG_FILE="build-${HOSTNAME}-v$(nproc)-${PREFIX}j${JOB}-${IDX}.log"
+	local LOG_FILE=$3
 	local TMP_LOGFILE="/tmp/${LOG_FILE}"
 
 	if [[ ! -z "${DEBUG}" ]] ; then
-		echo -e "[${IDX}] JOB=${JOB} Testing START: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+		echo -e "[${IDX}] JOB=${JOB} Testing START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 		sleep 0.2
-		echo -e "[${IDX}] JOB=${JOB} Testing END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+		echo -e "[${IDX}] JOB=${JOB} Testing END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 		return 0
 	fi
 
-	echo -e "[${IDX}] JOB=${JOB} Cleaning START: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Cleaning START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	time make clean && time make clobber
-	echo -e "[${IDX}] JOB=${JOB} Cleaning END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
-	echo -e "[${IDX}] JOB=${JOB} Configure START: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Cleaning END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Configure START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	time lunch ${BOARD_CFG}
-	echo -e "[${IDX}] JOB=${JOB} Configure END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Configure END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	ccache -z
-	echo -e "[${IDX}] JOB=${JOB} Build START: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Build START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	make -j${JOB} 2>&1 | tee -a ${TMP_LOGFILE}
-	echo -e "[${IDX}] JOB=${JOB} Build END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+	echo -e "[${IDX}] JOB=${JOB} Build END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 
 	return 0
 }
@@ -106,61 +112,78 @@ echo -e "INTERVAL: ${INTERVAL}"
 
 mkdir -p ${LOG_PATH}
 if [[ -z "${DEBUG}" ]] ; then
-	cd ${SOURCE_TOP}
+	cd ${SRC_PATH}
 	time source  build/envsetup.sh
 fi
 
 for idx in $( seq 1 ${TIMES} )
 do
+	offset=0
+
 	for job in ${JOBS_LIST}
 	do
-		LOG_FILE="build-${HOSTNAME}-v$(nproc)-${PREFIX}j${job}-${idx}.log"
+		while true
+		do
+			LOG_FILE="build-${HOSTNAME}-v$(nproc)-${PREFIX}j${job}-$( printf "%03d" $(( $idx + $offset )) ).log"
+			if [[ -e "${LOG_PATH}/${LOG_FILE}" ]] ; then
+				offset=$(( offset + 1 ))
+			else
+				break
+			fi
+		done
+
 		TMP_LOGFILE="/tmp/${LOG_FILE}"
 
-		echo -e "[${idx}] JOB=${job} ======== START: $(date) LOG_FILE: ${LOG_FILE}" 2>&1 | tee ${TMP_LOGFILE}
-		build ${idx} ${job}
-		echo -e "[${idx}] JOB=${job} ======== END: $(date)" 2>&1 | tee -a ${TMP_LOGFILE}
+		echo -e "[${idx}] JOB=${job} ======== START: $(date) TS: ${TIMESTAMP} LOG_FILE: ${LOG_FILE}" 2>&1 | tee ${TMP_LOGFILE}
+		build ${idx} ${job} ${LOG_FILE}
+		echo -e "[${idx}] JOB=${job} ======== END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 		mv ${TMP_LOGFILE} ${LOG_PATH}
 
 		sleep ${INTERVAL}
 	done
 done
 
-if [[ ! -z "${DEBUG}" ]] ; then
-	ls -lh ${LOG_PATH}
-fi
+#if [[ ! -z "${DEBUG}" ]] ; then
+#	ls -lh ${LOG_PATH}
+#fi
+
+echo -e "\n\n"
 
 LOG_FILES=$(find ${LOG_PATH} -name "build-*" -print0 | sort -z | xargs -r0 ls)
-echo -e "# AOSP Build Test Summary\n" 2>&1 | tee ${SUMMARY_FILE}
+echo -e "# AOSP Build Test Summary\n" 2>&1 | tee ${SUMMARY_FILE} > /dev/null
 echo -e "Tested at $(date)\n" 2>&1 | tee -a ${SUMMARY_FILE}
 
 echo -e "##Test configration\n" 2>&1 | tee -a ${SUMMARY_FILE}
-echo -e "- SRC_PATH: \`${SOURCE_TOP}\`" >> ${SUMMARY_FILE}
-echo -e "- BOARD_CFG: \`${BOARD_CFG}\`" >> ${SUMMARY_FILE}
-echo -e "- LOG_PATH: \`${LOG_PATH}\`" >> ${SUMMARY_FILE}
-echo -e "- HOSTNAME: \`${HOSTNAME}\`" >> ${SUMMARY_FILE}
-echo -e "- PREFIX: \`${PREFIX}\`" >> ${SUMMARY_FILE}
-echo -e "- JOBS_LIST: \`${JOBS_LIST}\`" >> ${SUMMARY_FILE}
-echo -e "- TIMES: ${TIMES}" >> ${SUMMARY_FILE}
-echo -e "- INTERVAL: ${INTERVAL} seconds" >> ${SUMMARY_FILE}
+echo -e "- SRC_PATH: \`${SRC_PATH}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- BOARD_CFG: \`${BOARD_CFG}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- LOG_PATH: \`${LOG_PATH}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- HOSTNAME: \`${HOSTNAME}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- PREFIX: \`${PREFIX}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- JOBS_LIST: \`${JOBS_LIST}\`" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- TIMES: ${TIMES}" 2>&1 | tee -a ${SUMMARY_FILE}
+echo -e "- INTERVAL: ${INTERVAL} seconds" 2>&1 | tee -a ${SUMMARY_FILE}
 
 for LOG_FILE in ${LOG_FILES}
 do
-	echo -e "\nLOG_FILE: ${LOG_FILE}" 2>&1 | tee -a ${SUMMARY_FILE}
+	echo -e "\nLOG_FILE: ${LOG_FILE}" 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 
 	if [[ ! -z "${DEBUG}" ]] ; then
-		grep "Testing START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
-		tail -n 20 ${LOG_FILE} | grep successful 2>&1 | tee -a ${SUMMARY_FILE}
-		grep "Testing END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
+		${GREP_CMD} "= START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+		${GREP_CMD} "Testing START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+		tail -n 20 ${LOG_FILE} | ${GREP_CMD} successful 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+		${GREP_CMD} "Testing END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+		${GREP_CMD} "= END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 
 		continue
 	fi
 
-	grep "Cleaning START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
-	grep "Configure START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
-	grep "Build START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
-	tail -n 20 ${LOG_FILE} | grep successful 2>&1 | tee -a ${SUMMARY_FILE}
-	grep "Build END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE}
+	${GREP_CMD} "= START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	${GREP_CMD} "Cleaning START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	${GREP_CMD} "Configure START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	${GREP_CMD} "Build START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	tail -n 20 ${LOG_FILE} | ${GREP_CMD} successful 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	${GREP_CMD} "Build END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	${GREP_CMD} "= END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 done
 
 exit 0
