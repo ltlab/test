@@ -272,5 +272,6 @@ if [[ ! -z "$IM_CONFIG_PHASE" ]] ; then
 fi
 
 export USE_CCACHE=1
+#export OUT_DIR_COMMON_BASE="$HOME/out"
 
 echo "END .bashrc"

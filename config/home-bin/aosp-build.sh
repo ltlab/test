@@ -177,7 +177,7 @@ do
 		continue
 	fi
 
-	${GREP_CMD} "= START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	#${GREP_CMD} "= START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "Cleaning START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "Configure START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "Build START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
