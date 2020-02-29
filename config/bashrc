@@ -198,10 +198,11 @@ alias ack="ack --nogroup --column --ignore-file=match:tags --ignore-file=match:c
 alias ack-grep="ack-grep --nogroup --column --ignore-file=match:tags --ignore-file=match:cscope*"
 #alias ack="ack-grep"
 #sudo dpkg-divert --local --divert /usr/bin/ack --rename --add /usr/bin/ack-grep
-alias repo-sync="time repo sync --force-sync"
+alias repo-sync="time repo sync --force-sync -j$(nproc)"
 alias repo-remote="repo forall -c \"git remote -v\""
 alias repo-status="repo forall -c \"git remote -v && git status\""
 alias repo-branch="repo forall -c \"git remote -v && git branch -avv\""
+alias repo-clean="repo forall -c \"time git reset --hard && time git clean -fdx\" -j$(nproc)"
 
 #	pettra
 #AOSP_PATH="~/work/gitlab/aosp-test"
@@ -272,9 +273,9 @@ if [[ ! -z "$IM_CONFIG_PHASE" ]] ; then
 fi
 
 export USE_CCACHE=1
-if [[ -e "$HOME/out/mounted" ]] ; then
+if [[ -e "$HOME/out/.mounted" ]] ; then
 	export CCACHE_DIR="$HOME/out/.ccache"
-	export OUT_DIR_COMMON_BASE="$HOME/out"
+	#export OUT_DIR_COMMON_BASE="$HOME/out"
 #else
 	#if [[ -d "/home/jay/home-cached/jay" ]] ; then
 	#	export CCACHE_DIR="/home/jay/home-cached/jay/.ccache"

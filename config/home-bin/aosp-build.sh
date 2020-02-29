@@ -182,6 +182,7 @@ do
 	${GREP_CMD} "Configure START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "Build START" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	tail -n 20 ${LOG_FILE} | ${GREP_CMD} successful 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
+	tail -n 20 ${LOG_FILE} | ${GREP_CMD} failed 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "Build END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 	${GREP_CMD} "= END" ${LOG_FILE} 2>&1 | tee -a ${SUMMARY_FILE} > /dev/null
 done

@@ -270,9 +270,9 @@ if has("gui_running")
 	set guioptions-=T "remove Toolbar
 	set guioptions+=b
 	"set guioptions-=m "remove memu bar
-	"set guioptions+=b "bottom scroll bar 
-	"set nowrap 
-	set wrap 
+	"set guioptions+=b "bottom scroll bar
+	"set nowrap
+	set wrap
 
 	"set gfn=Courier\ New:h10
 	map <A-SPACE> :simalt~x <CR>
@@ -357,6 +357,8 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 
 " for vim-airline
 let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
+let g:airline#extensions#whitespace#enabled = 1 " trailing whitespace and mixed indent
+let g:airline#extensions#tabline#formatter = 'default' "'unique_tail'
 "AirlineTheme dark
 "let g:airline_theme='dark'
 let g:airline_theme='base16_chalk'
@@ -365,7 +367,7 @@ let g:airline_solarized_bg='dark'
 "set laststatus=2 " turn on bottom bar
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
+	let g:airline_symbols = {}
 endif
 let g:airline_symbols.space = "\ua0"
 "set rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
@@ -471,7 +473,7 @@ let c_no_curly_error=1
 hi cppAccess					guifg=Red ctermfg=Red
 
 "	Indent line tab
-set listchars=tab:\|\ 
+set listchars=tab:\|\ ",trail:\  "
 set list
 "hi SpecialKey ctermfg=234 ctermbg=black
 hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
