@@ -27,7 +27,8 @@ ITEMS=" bashrc \
 	gitconfig \
 	dircolors-solarized \
 	dircolors \
-	config"
+	config \
+	most"
 
 update()
 {

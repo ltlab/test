@@ -27,3 +27,6 @@ sudo apt install -y -qq tmux sysstat
 # Powerline
 sudo apt install -y -qq powerline fonts-powerline
 
+# MOST for color manpages
+sudo apt install -y -qq most
+
