@@ -1,10 +1,10 @@
 #!/bin/bash
 
-SRC_DISK="nvme0n1"
-DISK_PART=$SRC_DISK"p6"
+SRC_DISK="nvme0n3"
+DISK_PART=$SRC_DISK"p1"
 DISK_PATH="/dev/$DISK_PART"
-MOUNT_POINT="/home/jay/work"
-SIZE=2048
+MOUNT_POINT="$HOME/out"
+SIZE=6144
 
 sudo rapiddisk --attach $SIZE
 
