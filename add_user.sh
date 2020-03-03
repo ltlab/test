@@ -28,7 +28,7 @@ ITEMS=" bashrc \
 	dircolors-solarized \
 	dircolors \
 	config \
-	most"
+	mostrc"
 
 update()
 {
