@@ -273,9 +273,12 @@ if [[ ! -z "$IM_CONFIG_PHASE" ]] ; then
 fi
 
 export USE_CCACHE=1
-#export CCACHE_BASEDIR="$HOME"
-#export CCACHE_TEMPDIR="/tmp"
-#export CCACHE_DIR=
+export CCACHE_BASEDIR="$HOME"
+export CCACHE_TEMPDIR="/tmp"
+if [[ -d "$HOME/out/.mounted" ]] ; then
+	export CCACHE_DIR="$HOME/out/.ccache"
+	#export OUT_DIR_COMMON_BASE="$HOME/out"
+fi
 
 set -o vi
 if [[ ! -z $(which most) ]] ; then
