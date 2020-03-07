@@ -10,6 +10,7 @@ LOG_PATH="$HOME/log/auto-log"
 TIMES=3
 PREFIX=
 INTERVAL=3
+VERBOSE=""
 
 MIN_JOB=16
 MIN_JOB=$(nproc)
@@ -28,16 +29,20 @@ help()
 	echo "  -t TIMES        Build Count. default 3"
 	echo "  -p LOG_PREFIX   LOG_PREFIX"
 	echo "  -i INTERVAL     Interval between builds. default 3 seconds"
+	echo "  -v              Verbose. showcommands"
 	echo "  -d              Debug mode"
 	echo "  -h              Display this help and exit"
 	exit 1;
 }
 
-OPTSPEC="hds:b:l:t:p:i:"
+OPTSPEC="hdvs:b:l:t:p:i:"
 while getopts $OPTSPEC  opt ; do
 	case $opt in
 		d )
 			DEBUG=1
+			;;
+		v )
+			VERBOSE="showcommands"
 			;;
 		s )
 			SRC_PATH=$OPTARG
@@ -91,14 +96,14 @@ build()
 	fi
 
 	echo -e "[${IDX}] JOB=${JOB} Cleaning START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
-	time make clean && time make clobber
+	time make clean ${VERBOSE} && time make clobber ${VERBOSE}
 	echo -e "[${IDX}] JOB=${JOB} Cleaning END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	echo -e "[${IDX}] JOB=${JOB} Configure START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	time lunch ${BOARD_CFG}
 	echo -e "[${IDX}] JOB=${JOB} Configure END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	ccache -z
 	echo -e "[${IDX}] JOB=${JOB} Build START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
-	make -j${JOB} 2>&1 | tee -a ${TMP_LOGFILE}
+	make -j${JOB} ${VERBOSE} 2>&1 | tee -a ${TMP_LOGFILE}
 	echo -e "[${IDX}] JOB=${JOB} Build END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 
 	return 0
