@@ -13,7 +13,7 @@ INTERVAL=3
 
 MIN_JOB=16
 MIN_JOB=$(nproc)
-JOBS_LIST=$( for (( i = $(nproc) ; i >= ${MIN_JOB} ; i = $(( i>>1 )) )) ; do echo -n "$i " ; done )
+JOBS_LIST=$( for (( i = $(nproc) ; i >= ${MIN_JOB} ; i = $(( i>>1 )) )) ; do echo -n "$(( $i + 2 )) " ; done )
 
 GREP_CMD=$( if [[ -z $( command -v ag ) ]] ; then echo "grep" ; else echo "ag --nonumbers" ; fi )
 TIMESTAMP=$( date +%s )
@@ -139,7 +139,12 @@ do
 		echo -e "[${idx}] JOB=${job} ======== END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 		mv ${TMP_LOGFILE} ${LOG_PATH}
 
-		sleep ${INTERVAL}
+		for (( i = ${INTERVAL} ; i > 0 ; i = $(( i - 1 )) ))
+		do
+			echo -e "Interval ${INTERVAL} | Remain $i seconds"
+			sleep 1
+		done
+
 	done
 done
 

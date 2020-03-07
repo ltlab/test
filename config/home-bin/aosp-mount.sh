@@ -6,8 +6,8 @@ DISK_PATH="/dev/$DISK_PART"
 SIZE=4096
 
 DEV_AOSP="/dev/nvme0n2p1"
-DEV_OUT="/dev/nvme0n3p1"
-DEV_CCACHE="/dev/nvme0n3p2"
+DEV_OUT="/dev/nvme1n1p1"
+#DEV_CCACHE="/dev/nvme0n3p2"
 
 MOUNT_POINT="/home/jay/home-cached"
 
