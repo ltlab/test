@@ -53,7 +53,7 @@ build-dev:
         paths:
             - apt-cache
     artifacts:
-        name: "${CI_JOB_NAME}"
+        name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
         expose_as: "build-dev artifacts"
         paths:
             - apt-cache
@@ -75,7 +75,7 @@ build-aosp:
         paths:
             - apt-cache
     artifacts:
-        name: "${CI_JOB_NAME}"
+        name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
         expose_as: "build-aosp artifacts"
         paths:
             - apt-cache
