@@ -5,6 +5,14 @@
 
 WSL=`uname -v | grep Microsoft`
 
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
+export APT
+
 export SERVER="Y"
 export DOCKER="N"
 
@@ -19,10 +27,10 @@ echo "CI: ${CI} nproc: $(nproc)"
 echo "Installing System Services..."
 
 if [[ -z "`which sudo`" ]] ; then
-	apt update -qq
-	apt ${APT_CACHE_OPTION} install -y -qq sudo
+	${APT} update -qq
+	${APT} ${APT_CACHE_OPTION} install -y -qq sudo
 else
-	sudo apt update -qq
+	sudo ${APT} update -qq
 fi
 
 if [[ ! -e "$CONF_BACKUP" ]] ; then
@@ -42,8 +50,8 @@ fi
 ./script/base.sh
 
 # VCS
-#sudo apt ${APT_CACHE_OPTION} install -y -qq gitk
-#sudo apt ${APT_CACHE_OPTION} install -q -y subversion
+#sudo ${APT} ${APT_CACHE_OPTION} install -y -qq gitk
+#sudo ${APT} ${APT_CACHE_OPTION} install -q -y subversion
 
 if [[ -z "$WSL" ]] ; then
 	# APM
@@ -83,12 +91,12 @@ else
 	sudo dbus-uuidgen --ensure
 	cat /etc/machine-id
 
-	sudo apt -y install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
+	sudo ${APT} -y install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
 
-	sudo apt -y install language-pack-ko
+	sudo ${APT} -y install language-pack-ko
 	sudo locale-gen ko_KR.UTF-8
-	sudo apt -y install fonts-unfonts-core fonts-unfonts-extra
-	sudo apt -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
+	sudo ${APT} -y install fonts-unfonts-core fonts-unfonts-extra
+	sudo ${APT} -y install fonts-baekmuk fonts-nanum fonts-nanum-coding fonts-nanum-extra
 fi	#	WSL
 
 #exit 0
@@ -97,12 +105,12 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo apt ${APT_CACHE_OPTION} install -y -qq build-essential
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq build-essential
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq gcc-multilib g++-multilib
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
-sudo apt ${APT_CACHE_OPTION} install -y -qq ncurses-dev libssl-dev
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ncurses-dev libssl-dev
 
 sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile
@@ -113,11 +121,11 @@ if [[ "$SERVER" = "Y" ]] ; then
 	sudo systemctl set-default multi-user.target
 fi
 
-# Clean apt packages and cache
-#sudo apt clean && sudo apt autoremove
+# Clean ${APT} packages and cache
+#sudo ${APT} clean && sudo ${APT} autoremove
 #sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#sudo apt ${APT_CACHE_OPTION} install libpython2.7-dev
+#sudo ${APT} ${APT_CACHE_OPTION} install libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
 
 service --status-all

@@ -1,11 +1,17 @@
 #!/bin/sh
 
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
 echo "Installing TFTP Service..."
 
 CONF_PATH=/root/config
 CONF_BACKUP=/root/.config-backup
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq tftpd-hpa tftp-hpa
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq tftpd-hpa tftp-hpa
 
 # chown root.tftp <tftpboot dir>
 #sudo usermod -G tftp -a $USER

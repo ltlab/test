@@ -1,6 +1,12 @@
 #!/bin/sh
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq uuid uuid-dev \
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq uuid uuid-dev \
 	liblz-dev \
 	liblzo2-2 liblzo2-dev \
 	lzop \

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
 LOCAL_ADMIN_PATH=~/.bin-admin
 LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 CONF_BACKUP=/root/.config-backup
@@ -9,8 +15,8 @@ NET_INTERFACE_FILE=/etc/network/interfaces
 NETPLAN_INIT_FILE=/etc/netplan/50-cloud-init.yaml
 
 if [[ -z "`which sudo`" ]] ; then
-	apt update -qq
-	apt install -y -qq sudo
+	${APT} update -qq
+	${APT} install -y -qq sudo
 fi
 
 if [[ ! -e "$CONF_BACKUP" ]] ; then

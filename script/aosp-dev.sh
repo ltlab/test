@@ -1,5 +1,11 @@
 #!/bin/bash
 
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
 export CONF_PATH=/root/config
 export CONF_BACKUP=/root/.config-backup
 export LOCAL_ADMIN_PATH=~/.bin-admin
@@ -10,10 +16,10 @@ UBUNTU_VERSION=$(cat /etc/lsb-release | grep RELEASE | cut -d"=" -f2)
 echo "UBUNTU VERSION is $UBUNTU_VERSION"
 
 if [[ -z "`which sudo`" ]] ; then
-	apt update -qq
-	apt ${APT_CACHE_OPTION} install -y -qq sudo
+	${APT} update -qq
+	${APT} ${APT_CACHE_OPTION} install -y -qq sudo
 else
-	sudo apt update -qq
+	sudo ${APT} update -qq
 fi
 
 if [[ ! -e "$CONF_BACKUP" ]] ; then
@@ -32,7 +38,7 @@ fi
 echo "Installing Development Tools for AOSP..."
 
 # Install packages for AOSP
-sudo apt ${APT_CACHE_OPTION} install -y -qq git-core \
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq git-core \
 	gnupg flex bison gperf \
 	build-essential \
 	gcc-multilib g++-multilib \
@@ -42,10 +48,10 @@ sudo apt ${APT_CACHE_OPTION} install -y -qq git-core \
 	lib32z1-dev libgl1-mesa-dev \
 	libxml2-utils xsltproc unzip
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq ccache 
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ccache 
 
 if [[ "$UBUNTU_VERSION" == "18.04" ]] ; then
-	sudo apt ${APT_CACHE_OPTION} install -y -qq lzop \
+	sudo ${APT} ${APT_CACHE_OPTION} install -y -qq lzop \
 		bzip2 libbz2-dev libghc-bzlib-dev \
 		squashfs-tools pngcrush liblz4-tool optipng \
 		libssl-dev \
@@ -55,25 +61,25 @@ if [[ "$UBUNTU_VERSION" == "18.04" ]] ; then
 fi	#	if [[ "$UBUNTU_VERSION" != "18.04" ]] ; then
 
 echo -e "\n" | sudo add-apt-repository ppa:openjdk-r/ppa
-sudo apt update -qq
+sudo ${APT} update -qq
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq openjdk-7-jdk
-sudo apt ${APT_CACHE_OPTION} install -y -qq openjdk-8-jdk
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq openjdk-7-jdk
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq openjdk-8-jdk
 
 #	Change java for lollipop by jyhuh 2018-02-22 14:12:48
 sudo update-java-alternatives -s java-1.7.0-openjdk-amd64
 #sudo update-alternatives --config java
 
-#sudo apt ${APT_CACHE_OPTION} install -y -qq android-tools-adb
-#sudo apt ${APT_CACHE_OPTION} install -y -qq android-tools-fastboot
+#sudo ${APT} ${APT_CACHE_OPTION} install -y -qq android-tools-adb
+#sudo ${APT} ${APT_CACHE_OPTION} install -y -qq android-tools-fastboot
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq adb
-sudo apt ${APT_CACHE_OPTION} install -y -qq fastboot
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq adb
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq fastboot
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq python2.7-minimal
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq python2.7-minimal
 sudo ln -s python2.7 /usr/bin/python
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq u-boot-tools
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq u-boot-tools
 
 # Android NDK / SDK
 #sudo mkdir -p /usr/local/android

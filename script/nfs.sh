@@ -2,10 +2,16 @@
 
 echo "Installing NFS Service..."
 
+APT="apt-get"
+
+if [[ -z "${CI}" ]] ; then
+	APT="apt"
+fi
+
 CONF_PATH=/root/config
 CONF_BACKUP=/root/.config-backup
 
-sudo apt ${APT_CACHE_OPTION} install -y -qq nfs-kernel-server
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq nfs-kernel-server
 sudo cp -a --backup=numbered /etc/exports $CONF_BACKUP
 #sudo cp -a $CONF_PATH/exports /etc/exports
 sudo mkdir -p /nfs
