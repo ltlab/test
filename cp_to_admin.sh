@@ -32,9 +32,15 @@ do
 		printf -v NETPLAN_COMMON "
             addresses: []
             dhcp4: true
+
+			# Static IP
             #dhcp4: false
             #addresses: [$IP_NETMASK]
             #gateway4: $GATEWAY
+            #nameservers:
+            #    addresses: [ 1.1.1.1, 1.0.0.1 ]
+
+			## Use routes and routing-policy for multiple interfaces.
             #routes:
             #    - to: $NETWORK".0/24"
             #      via: $GATEWAY
@@ -42,9 +48,7 @@ do
             #      table: 100
             #routing-policy:
             #    - from: $NETWORK".0/24"
-            #      table: 100
-            #nameservers:
-            #    addresses: [ 168.126.63.1, 8.8.8.8, 8.8.4.4 ]"
+            #      table: 100"
 
 		if [[ -z "$NET_DEVICES" ]] ; then
 			NET_DEVICES=$item
