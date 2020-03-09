@@ -86,8 +86,9 @@ if [[ -z "$WSL" ]] ; then
 	USER_NFS="\/nfs\/$USER_ID\	"
 	if [[ -z "`grep $USER_NFS /etc/exports`" ]] ; then
 		sudo mkdir -p $USER_HOME/nfs
-		sudo chown $USER_ID:$USER_ID $USER_HOME/nfs
-		sudo chmod g+w $USER_HOME/nfs
+		sudo chown $USER_ID:nfs $USER_HOME/nfs
+		# Set group permission for Write and setgid.
+		sudo chmod g+ws $USER_HOME/nfs
 		sudo ln -s $USER_HOME/nfs /nfs/$USER_ID
 		echo "/nfs/$USER_ID	$NETWORK_SUBNET(rw,no_root_squash,no_all_squash,subtree_check,sync)" | sudo tee -a /etc/exports
 		if [[ -z "$CI" ]] ; then

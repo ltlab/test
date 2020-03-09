@@ -6,7 +6,7 @@
 WSL=`uname -v | grep Microsoft`
 
 export SERVER="Y"
-export DOCKER="Y"
+export DOCKER="N"
 
 export CONF_PATH=/root/config
 export CONF_BACKUP=/root/.config-backup

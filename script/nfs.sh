@@ -12,5 +12,6 @@ sudo mkdir -p /nfs
 sudo groupadd -g 2000 nfs
 #sudo useradd nfs -u 2000 -U
 sudo chown root:nfs /nfs
-sudo chmod g+w /nfs
+# Set group permission for Write and setgid.
+sudo chmod g+ws /nfs
 sudo /etc/init.d/nfs-kernel-server restart
