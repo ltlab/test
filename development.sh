@@ -20,7 +20,7 @@ echo "Installing System Services..."
 
 if [[ -z "`which sudo`" ]] ; then
 	apt update -qq
-	apt install ${APT_CACHE_OPTION} -y -qq sudo
+	apt ${APT_CACHE_OPTION} install -y -qq sudo
 else
 	sudo apt update -qq
 fi
@@ -42,8 +42,8 @@ fi
 ./script/base.sh
 
 # VCS
-#sudo apt install ${APT_CACHE_OPTION} -y -qq gitk
-#sudo apt install ${APT_CACHE_OPTION} -q -y subversion
+#sudo apt ${APT_CACHE_OPTION} install -y -qq gitk
+#sudo apt ${APT_CACHE_OPTION} install -q -y subversion
 
 if [[ -z "$WSL" ]] ; then
 	# APM
@@ -97,12 +97,12 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo apt install ${APT_CACHE_OPTION} -y -qq build-essential
+sudo apt ${APT_CACHE_OPTION} install -y -qq build-essential
 
-sudo apt install ${APT_CACHE_OPTION} -y -qq gcc-multilib g++-multilib
+sudo apt ${APT_CACHE_OPTION} install -y -qq gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
-sudo apt install ${APT_CACHE_OPTION} -y -qq ncurses-dev libssl-dev
+sudo apt ${APT_CACHE_OPTION} install -y -qq ncurses-dev libssl-dev
 
 sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile
@@ -117,7 +117,7 @@ fi
 #sudo apt clean && sudo apt autoremove
 #sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#sudo apt install ${APT_CACHE_OPTION} libpython2.7-dev
+#sudo apt ${APT_CACHE_OPTION} install libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
 
 service --status-all

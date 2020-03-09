@@ -3,17 +3,17 @@
 echo "Installing xRDP Service..."
 
 # Install XFCE
-sudo apt install ${APT_CACHE_OPTION} -y -qq xfce4 slim
-#sudo apt install ${APT_CACHE_OPTION} -y -qq fonts-nanum* fcitx fcitx-hangul
+sudo apt ${APT_CACHE_OPTION} install -y -qq xfce4 slim
+#sudo apt ${APT_CACHE_OPTION} install -y -qq fonts-nanum* fcitx fcitx-hangul
 
-#sudo apt install ${APT_CACHE_OPTION} -y -qq xfce4-goodies
-#sudo apt install ${APT_CACHE_OPTION} -y -qq xorg dbus-x11 x11-xserver-utils
+#sudo apt ${APT_CACHE_OPTION} install -y -qq xfce4-goodies
+#sudo apt ${APT_CACHE_OPTION} install -y -qq xorg dbus-x11 x11-xserver-utils
 
 ##	MATE
-#sudo apt install ${APT_CACHE_OPTION} -y -qq mate-core mate-desktop-environment mate-notification-daemon
+#sudo apt ${APT_CACHE_OPTION} install -y -qq mate-core mate-desktop-environment mate-notification-daemon
 #echo mate-session > ~/.xsession
 
-sudo apt install ${APT_CACHE_OPTION} -y -qq xrdp
+sudo apt ${APT_CACHE_OPTION} install -y -qq xrdp
 if [[ -z "$CI" ]] ; then
 	sudo systemctl restart xrdp
 else
