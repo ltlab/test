@@ -14,7 +14,7 @@ sudo cp -a --backup=numbered /etc/ssh/sshd_config $CONF_BACKUP
 sudo cp -a $CONF_PATH/sshd_config /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-sudo apt install -y -qq make
+sudo apt install -y -qq make curl
 sudo apt install -y -qq git git-review
 sudo apt install -y -qq gnupg
 
