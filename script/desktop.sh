@@ -2,9 +2,9 @@
 
 echo "Installing Desktop Utils..."
 
-sudo apt install -y -qq vim-gtk3
-sudo apt install -y -qq gparted
-sudo apt install -y -qq mdadm
-sudo apt install -y -qq gksu
-sudo apt install -y -qq meld
-sudo apt install -y -qq dconf-editor gconf-editor
+sudo apt install ${APT_CACHE_OPTION} -y -qq vim-gtk3
+sudo apt install ${APT_CACHE_OPTION} -y -qq gparted
+sudo apt install ${APT_CACHE_OPTION} -y -qq mdadm
+sudo apt install ${APT_CACHE_OPTION} -y -qq gksu
+sudo apt install ${APT_CACHE_OPTION} -y -qq meld
+sudo apt install ${APT_CACHE_OPTION} -y -qq dconf-editor gconf-editor

@@ -11,7 +11,7 @@ echo "UBUNTU VERSION is $UBUNTU_VERSION"
 
 if [[ -z "`which sudo`" ]] ; then
 	apt update -qq
-	apt install -y -qq sudo
+	apt install ${APT_CACHE_OPTION} -y -qq sudo
 else
 	sudo apt update -qq
 fi
@@ -32,7 +32,7 @@ fi
 echo "Installing Development Tools for AOSP..."
 
 # Install packages for AOSP
-sudo apt install -y -qq git-core \
+sudo apt install ${APT_CACHE_OPTION} -y -qq git-core \
 	gnupg flex bison gperf \
 	build-essential \
 	gcc-multilib g++-multilib \
@@ -42,10 +42,10 @@ sudo apt install -y -qq git-core \
 	lib32z1-dev libgl1-mesa-dev \
 	libxml2-utils xsltproc unzip
 
-sudo apt install -y -qq ccache 
+sudo apt install ${APT_CACHE_OPTION} -y -qq ccache 
 
 if [[ "$UBUNTU_VERSION" == "18.04" ]] ; then
-	sudo apt install -y -qq lzop \
+	sudo apt install ${APT_CACHE_OPTION} -y -qq lzop \
 		bzip2 libbz2-dev libghc-bzlib-dev \
 		squashfs-tools pngcrush liblz4-tool optipng \
 		libssl-dev \
@@ -57,23 +57,23 @@ fi	#	if [[ "$UBUNTU_VERSION" != "18.04" ]] ; then
 echo -e "\n" | sudo add-apt-repository ppa:openjdk-r/ppa
 sudo apt update -qq
 
-sudo apt install -y -qq openjdk-7-jdk
-sudo apt install -y -qq openjdk-8-jdk
+sudo apt install ${APT_CACHE_OPTION} -y -qq openjdk-7-jdk
+sudo apt install ${APT_CACHE_OPTION} -y -qq openjdk-8-jdk
 
 #	Change java for lollipop by jyhuh 2018-02-22 14:12:48
 sudo update-java-alternatives -s java-1.7.0-openjdk-amd64
 #sudo update-alternatives --config java
 
-#sudo apt install -y -qq android-tools-adb
-#sudo apt install -y -qq android-tools-fastboot
+#sudo apt install ${APT_CACHE_OPTION} -y -qq android-tools-adb
+#sudo apt install ${APT_CACHE_OPTION} -y -qq android-tools-fastboot
 
-sudo apt install -y -qq adb
-sudo apt install -y -qq fastboot
+sudo apt install ${APT_CACHE_OPTION} -y -qq adb
+sudo apt install ${APT_CACHE_OPTION} -y -qq fastboot
 
-sudo apt install -y -qq python2.7-minimal
+sudo apt install ${APT_CACHE_OPTION} -y -qq python2.7-minimal
 sudo ln -s python2.7 /usr/bin/python
 
-sudo apt install -y -qq u-boot-tools
+sudo apt install ${APT_CACHE_OPTION} -y -qq u-boot-tools
 
 # Android NDK / SDK
 #sudo mkdir -p /usr/local/android

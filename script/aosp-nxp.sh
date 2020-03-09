@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo apt install -y -qq uuid uuid-dev \
+sudo apt install ${APT_CACHE_OPTION} -y -qq uuid uuid-dev \
 	liblz-dev \
 	liblzo2-2 liblzo2-dev \
 	lzop \

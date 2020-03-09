@@ -5,7 +5,7 @@ CONF_BACKUP=/root/.config-backup
 
 echo "Installing Samba Service..."
 
-sudo apt install -y -qq samba
+sudo apt install ${APT_CACHE_OPTION} -y -qq samba
 #sudo smbpasswd -a jyhuh
 #sudo vi /etc/samba/smb.conf
 sudo cp -a --backup=numbered /etc/samba/smb.conf $CONF_BACKUP
