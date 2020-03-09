@@ -6,6 +6,7 @@ GROUP_LIST=" ftp \
 	docker \
 	ssh \
 	xrdp \
+	dddxrdp \
 	sambashare"
 
 NETWORK_SUBNET=$(ip a|grep -m 1 global | awk '{print $2}')
@@ -14,10 +15,10 @@ DOCKER="Y"
 
 find_group()
 {
-	group=$1
-	ret=1
+	local group=$1
+	local ret=1
 
-	if [[ -z $(grep $group /etc/group) ]] ; then
+	if [[ -z $(grep -E "^${group}" /etc/group) ]] ; then
 		ret=0
 	fi
 
@@ -26,8 +27,10 @@ find_group()
 
 for group in ${GROUP_LIST}
 do
-	if [[ $(find_group $group) -eq 1 ]] ; then
-		echo "Group $group is found!!!"
+	if [[ $(find_group ${group}) -eq 1 ]] ; then
+		echo "Group ${group} is found!!!"
+	else
+		echo "Group ${group} is NOT found!!!"
 	fi
 done
 
