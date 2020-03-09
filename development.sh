@@ -13,11 +13,14 @@ export CONF_BACKUP=/root/.config-backup
 export LOCAL_ADMIN_PATH=~/.bin-admin
 export LOCAL_CONF_PATH=$LOCAL_ADMIN_PATH/config
 
+echo "APT_CACHE_DIR: ${APT_CACHE_DIR} APT_CACHE_OPTION: ${APT_CACHE_OPTION}"
+echo "CI: ${CI} nproc: $(nproc)"
+
 echo "Installing System Services..."
 
 if [[ -z "`which sudo`" ]] ; then
 	apt update -qq
-	apt install -y -qq sudo
+	apt install ${APT_CACHE_OPTION} -y -qq sudo
 else
 	sudo apt update -qq
 fi
@@ -39,8 +42,8 @@ fi
 ./script/base.sh
 
 # VCS
-#sudo apt install -y -qq gitk
-#sudo apt install -q -y subversion
+#sudo apt install ${APT_CACHE_OPTION} -y -qq gitk
+#sudo apt install ${APT_CACHE_OPTION} -q -y subversion
 
 if [[ -z "$WSL" ]] ; then
 	# APM
@@ -94,12 +97,12 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo apt install -y -qq build-essential
+sudo apt install ${APT_CACHE_OPTION} -y -qq build-essential
 
-sudo apt install -y -qq gcc-multilib g++-multilib
+sudo apt install ${APT_CACHE_OPTION} -y -qq gcc-multilib g++-multilib
 
 # for compiling kernel( menuconfig )
-sudo apt install -y -qq ncurses-dev libssl-dev
+sudo apt install ${APT_CACHE_OPTION} -y -qq ncurses-dev libssl-dev
 
 sudo cp -a --backup=numbered /etc/profile $CONF_BACKUP/etc_profile
 sudo cp -a $CONF_PATH/etc_profile /etc/profile
@@ -114,7 +117,7 @@ fi
 #sudo apt clean && sudo apt autoremove
 #sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#sudo apt install libpython2.7-dev
+#sudo apt install ${APT_CACHE_OPTION} libpython2.7-dev
 #\~/.vim/bundle/YouCompleteMe/install.sh --clang-completer
 
 service --status-all
