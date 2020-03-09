@@ -56,6 +56,8 @@ build-dev:
 #        expose_as: "build-dev artifacts"
 #        paths:
 #            - apt-cache
+    tags:
+        - ltlab_test
 
 build-aosp:
     stage: build
@@ -78,6 +80,8 @@ build-aosp:
         expose_as: "build-aosp artifacts"
         paths:
             - apt-cache
+    tags:
+        - ltlab_test
 
 # Benchmark using Sysbench
 #build-sysbench:
@@ -89,5 +93,3 @@ build-aosp:
 #    only:
 #        - master
 
-tags:
-    - ltlab_test
