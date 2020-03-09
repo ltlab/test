@@ -81,8 +81,8 @@ build-aosp:
 #        expose_as: "build-aosp artifacts"
 #        paths:
 #            - apt-cache
-    tags:
-        - ltlab_test
+#   tags:
+#        - ltlab_test
 
 # Benchmark using Sysbench
 #build-sysbench:
