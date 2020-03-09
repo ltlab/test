@@ -19,7 +19,7 @@ before_script:
       #	- echo "Or perhaps you might print out some debugging details"
     - export APT_CACHE_DIR=`pwd`/apt-cache && mkdir -pv ${APT_CACHE_DIR}
     - export APT_CACHE_OPTION="-o dir::cache::archives=${APT_CACHE_DIR}"
-    - du -sh ${APT_CACHE_DIR}/*
+    - du -sh ${APT_CACHE_DIR}
     - cat /proc/cpuinfo | grep model
     - free -h
     - df -h
