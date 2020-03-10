@@ -163,7 +163,11 @@ if [[ ! -z "${CI}" ]] ; then
 	service --status-all
 	sudo service smbd status
 	sudo service vsftpd status
+	echo "================"
+	cat /etc/default/tftpd-hpa
+	echo "================"
 	sudo service tftpd-hpa status
+	echo "================"
 	#sudo service nfs-kernel-server status
 	cat /etc/exports
 	sudo exportfs
