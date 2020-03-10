@@ -59,7 +59,7 @@ build-dev:
 #        paths:
 #            - apt-cache
     tags:
-        - ltlab_test
+        - ltlab-coreos
 
 build-aosp:
     stage: build
