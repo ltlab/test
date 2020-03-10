@@ -24,6 +24,7 @@ before_script:
     - free -h
     - df -h
     - ls -al /home
+    - uname -a
     - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
     - apt-get update -qq && apt-get install ${APT_CACHE_OPTION} -y -qq apt-utils sudo net-tools iproute2 systemd
       #	- ./cp_to_admin.sh
