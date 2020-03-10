@@ -2,10 +2,8 @@
 
 TFTP_USERNAME="tftp"
 #TFTP_DIRECTORY="/var/lib/tftpboot"
-#TFTP_ADDRESS=":69"
-#TFTP_OPTIONS="--secure"
-#TFTP_DIRECTORY="/home/vagrant/tftpboot"
 TFTP_DIRECTORY="/tftpboot"
-TFTP_ADDRESS="[::]:69"
-#TFTP_ADDRESS="0.0.0.0:69"
+#TFTP_ADDRESS="[::]:69"
+TFTP_ADDRESS=":69"
+#TFTP_OPTIONS="--secure"
 TFTP_OPTIONS="--secure -c -l -v --port-range 3001:3010"
