@@ -90,6 +90,7 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 "Plugin 'clang-complete'
 
 "Plugin 'deoplete'	"	NG
+Plugin 'stephpy/vim-yaml'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -396,8 +397,6 @@ let g:solarized_termcolors=256
 set background=dark
 
 colorscheme solarized
-"hi Normal ctermbg=none
-"hi LineNr ctermfg=235 ctermbg=black
 hi Normal ctermbg=none guibg=black
 hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
@@ -475,7 +474,6 @@ hi cppAccess					guifg=Red ctermfg=Red
 "	Indent line tab
 set listchars=tab:\|\ ",trail:\  "
 set list
-"hi SpecialKey ctermfg=234 ctermbg=black
 hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
 
 "Plugin Indent-Guides
