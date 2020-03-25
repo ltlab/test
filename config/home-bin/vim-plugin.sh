@@ -18,6 +18,7 @@ fi
 
 vim +PluginInstall +qall
 
+# patch for syntax Highlighting
 C_VIM_FILE="$HIGHLIGHT_PLUGIN_PATH/after/syntax/c.vim"
 CPP_VIM_FILE="$HIGHLIGHT_PLUGIN_PATH/after/syntax/cpp.vim"
 
