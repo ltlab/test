@@ -286,3 +286,4 @@ if [[ ! -z $(which most) ]] ; then
 fi
 
 echo "END .bashrc"
+sudo mount -t overlay overlay -o lowerdir=./lower,upperdir=./out/upper,workdir=./out/work ./out/merged
