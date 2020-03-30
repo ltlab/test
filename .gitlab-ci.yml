@@ -59,8 +59,8 @@ build-dev:
         expire_in: 1 week
         paths:
             - apt-cache
-    tags:
-        - ltlab-coreos
+#    tags:
+#        - ltlab-coreos
 
 build-aosp:
     stage: build
@@ -84,8 +84,8 @@ build-aosp:
         expire_in: 1 week
         paths:
             - apt-cache
-    tags:
-        - ltlab_test
+#    tags:
+#        - ltlab_test
 
 # Benchmark using Sysbench
 #build-sysbench:
