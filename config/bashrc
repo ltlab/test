@@ -83,6 +83,7 @@ if [ -z "$GREP_OPTIONS" ]; then
 	for PATTERN in tags cscope*;
 	do
 		GREP_OPTIONS+="--exclude=$PATTERN "
+		AG_OPTIONS+="--ignore $PATTERN "
 	done
 
 	GREP_OPTIONS+='--binary-files=without-match '
@@ -96,7 +97,15 @@ alias grep="grep --color=auto $GREP_OPTIONS"
 alias fgrep="fgrep --color=auto $GREP_OPTIONS"
 alias egrep="egrep --color=auto $GREP_OPTIONS"
 echo "GREP_OPTIONS: $GREP_OPTIONS"
-unset GREP_OPTIONS
+## Summary for args to less:
+# less(1)
+#   -M (-M or --LONG-PROMPT) Prompt very verbosely
+#   -I (-I or --IGNORE-CASE) Searches with '/' ignore case
+#   -R (-R or --RAW-CONTROL-CHARS) For handling ANSI colors
+#   -F (-F or --quit-if-one-screen) Auto exit if <1 screen
+#   -X (-X or --no-init) Disable termcap init & deinit
+alias ag="ag --smart-case --pager=\"less -MIRFX\" ${AG_OPTIONS}"
+unset GREP_OPTIONS AG_OPTIONS
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -146,7 +155,6 @@ fi
 #if [ -d "$HOME/bin" ] ; then
 #    PATH="$HOME/bin:$PATH"
 #fi
-
 #if [ -d "$HOME/usr/bin" ] ; then
 #    PATH="$HOME/usr/bin:$PATH"
 #fi
@@ -161,12 +169,12 @@ parse_git_branch() {
 
 PS1="${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[00m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[00;36m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\n$ "
 
-export SVN_EDITOR=/usr/bin/vi
-alias svndiff="svn diff --diff-cmd=colordiff"
-alias svn-add-new-files='svn status | grep ^\? | sed s/\?// | xargs svn add $1'
-alias svn-del-files='svn status | grep ^\! | sed s/\!// | xargs svn --force delete $1'
-alias svn-mod-files="svn status | grep -v ^\? | awk '{ print \$2 }' "
-alias svn-merge-trunk="svn merge svn://192.168.10.180/ctrqt/trunk ./"
+#export SVN_EDITOR=/usr/bin/vi
+#alias svndiff="svn diff --diff-cmd=colordiff"
+#alias svn-add-new-files='svn status | grep ^\? | sed s/\?// | xargs svn add $1'
+#alias svn-del-files='svn status | grep ^\! | sed s/\!// | xargs svn --force delete $1'
+#alias svn-mod-files="svn status | grep -v ^\? | awk '{ print \$2 }' "
+#alias svn-merge-trunk="svn merge svn://192.168.10.180/ctrqt/trunk ./"
 
 alias gitdiff="git difftool --dir-diff"
 #alias gitdiff="git difftool --dir-diff --no-symlinks"
@@ -190,6 +198,7 @@ if [ "$FCITX_ENABLE" == "0" ] ; then
 else
 	echo "FCITX is Running."
 fi
+unset FCITX_ENABLE
 
 #	common aliases
 #	ack
@@ -258,6 +267,7 @@ echo "WSL: $WSL"
 if [ ! -z "$WSL" ] ; then
 	export DISPLAY="localhost:0"
 fi
+unset WSL
 
 LANG="en_US.UTF-8"
 LANGUAGE="en_US:en"
@@ -275,15 +285,36 @@ fi
 export USE_CCACHE=1
 export CCACHE_BASEDIR="$HOME"
 export CCACHE_TEMPDIR="/tmp"
-if [[ -d "$HOME/out/.mounted" ]] ; then
+if [[ -d "/home/jay/out/.ccache" ]] ; then
 	export CCACHE_DIR="$HOME/out/.ccache"
 	#export OUT_DIR_COMMON_BASE="$HOME/out"
 fi
 
 set -o vi
-if [[ ! -z $(which most) ]] ; then
-	export PAGER=most
+
+# 31 – red
+# 32 – green
+# 33 – yellow
+# 0 – reset/normal
+# 1 – bold
+# 4 – underlined
+LESS_COLOR=1
+if [[ ! -z ${LESS_COLOR} ]] ; then
+	export LESS_TERMCAP_mb=$'\e[1;32m'
+	export LESS_TERMCAP_md=$'\e[1;32m'
+	export LESS_TERMCAP_me=$'\e[0m'
+	export LESS_TERMCAP_se=$'\e[0m'
+	export LESS_TERMCAP_so=$'\e[01;33m'
+	export LESS_TERMCAP_ue=$'\e[0m'
+	export LESS_TERMCAP_us=$'\e[1;4;31m'
 fi
+unset LESS_COLOR
+
+#if [[ ! -z $(which most) ]] ; then
+#	export PAGER=most
+#fi
 
 echo "END .bashrc"
-sudo mount -t overlay overlay -o lowerdir=./lower,upperdir=./out/upper,workdir=./out/work ./out/merged
+
+# mount overlayfs excample
+#sudo mount -t overlay overlay -o lowerdir=./lower,upperdir=./out/upper,workdir=./out/work ./out/merged

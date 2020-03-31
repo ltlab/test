@@ -34,5 +34,5 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq tmux sysstat
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq powerline fonts-powerline
 
 # MOST for color manpages
-sudo ${APT} ${APT_CACHE_OPTION} install -y -qq most
+#sudo ${APT} ${APT_CACHE_OPTION} install -y -qq most
 
