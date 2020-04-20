@@ -55,6 +55,10 @@ Host gitlab.com
     User git
     PreferredAuthentications publickey
     IdentityFile ~/.ssh/$RSA_KEY
+
+Host review.gerrithub.io
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/$RSA_KEY
 EOF
 
 if [[ -z "$( grep $EMAIL $SSH_CONFIG )" ]] ; then
