@@ -7,10 +7,11 @@ DEBUG=
 SRC_PATH="$HOME/home-cached/jay/work/android_build"
 BOARD_CFG="evk_8mm-userdebug"
 LOG_PATH="$HOME/log/auto-log"
-TIMES=3
+TIMES=1
 PREFIX=
 INTERVAL=3
 VERBOSE=""
+CLEAN_BUILD=1
 
 MIN_JOB=16
 MIN_JOB=$(nproc)
@@ -30,12 +31,13 @@ help()
 	echo "  -p LOG_PREFIX   LOG_PREFIX"
 	echo "  -i INTERVAL     Interval between builds. default 3 seconds"
 	echo "  -v              Verbose. showcommands"
+	echo "  -n              No Clean Build = Incremental build"
 	echo "  -d              Debug mode"
 	echo "  -h              Display this help and exit"
 	exit 1;
 }
 
-OPTSPEC="hdvs:b:l:t:p:i:"
+OPTSPEC="hdvns:b:l:t:p:i:"
 while getopts $OPTSPEC  opt ; do
 	case $opt in
 		d )
@@ -62,6 +64,9 @@ while getopts $OPTSPEC  opt ; do
 		i )
 			INTERVAL=$OPTARG
 			;;
+		n )
+			CLEAN_BUILD=0
+			;;
 		h )
 			help
 			exit 1
@@ -80,6 +85,10 @@ if [[ -z $1 ]] ; then
 fi
 
 SUMMARY_FILE=${LOG_PATH}/summary.md
+if [[ "${CLEAN_BUILD}" == "0" ]] ; then
+	TIMES=1
+	INTERVAL=0
+fi
 
 build()
 {
@@ -95,9 +104,12 @@ build()
 		return 0
 	fi
 
-	echo -e "[${IDX}] JOB=${JOB} Cleaning START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
-	time make clean ${VERBOSE} && time make clobber ${VERBOSE}
-	echo -e "[${IDX}] JOB=${JOB} Cleaning END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
+	if [[ "${CLEAN_BUILD}" == "1" ]] ; then
+		echo -e "[${IDX}] JOB=${JOB} Cleaning START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
+		time make clean ${VERBOSE} && time make clobber ${VERBOSE}
+		echo -e "[${IDX}] JOB=${JOB} Cleaning END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
+	fi
+
 	echo -e "[${IDX}] JOB=${JOB} Configure START: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
 	time lunch ${BOARD_CFG}
 	echo -e "[${IDX}] JOB=${JOB} Configure END: $(date) TS: ${TIMESTAMP}" 2>&1 | tee -a ${TMP_LOGFILE}
@@ -112,6 +124,7 @@ build()
 echo -e "HOSTNAME: ${HOSTNAME}"
 echo -e "PREFIX: ${PREFIX}"
 echo -e "JOBS_LIST: ${JOBS_LIST}"
+echo -e "CLEAN_BUILD: ${CLEAN_BUILD}"
 echo -e "TIMES: ${TIMES}"
 echo -e "INTERVAL: ${INTERVAL}"
 

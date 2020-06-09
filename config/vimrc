@@ -91,6 +91,8 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 
 "Plugin 'deoplete'	"	NG
 Plugin 'stephpy/vim-yaml'
+Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'ekalinin/dockerfile.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -218,13 +220,13 @@ set ttyfast
 "set scs
 
 set cursorline
-"set cursorcolumn
-autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
-autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
-autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
-autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+set cursorcolumn
+"autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
+"autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
+"autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+"autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
 
 "============= ctag config ==============
 set tags+=tags
@@ -397,8 +399,9 @@ let g:solarized_termcolors=256
 set background=dark
 
 colorscheme solarized
+"colorscheme PaperColor
 hi Normal ctermbg=none guibg=black
-hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
+"hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
 
 "colorscheme torte
