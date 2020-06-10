@@ -109,6 +109,10 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq build-essential
 
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq gcc-multilib g++-multilib
 
+# YouCompleteMe
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq python3-dev
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq golang-go
+
 # for compiling kernel( menuconfig )
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ncurses-dev libssl-dev
 
