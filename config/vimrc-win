@@ -31,14 +31,13 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/vundle.vim
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-"Plugin 'VundleVim/Vundle.vim'
-Plugin 'gmarik/vundle.vim'	"Link to VunbleVim project
+Plugin 'vundlevim/vundle.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -82,8 +81,8 @@ Plugin 'delimitMate.vim'
 "Plugin 'Indent-Guides'
 
 Plugin 'AutoComplPop'
-" Plugin 'SirVer/ultisnips'
-" Plugin 'honza/vim-snippets'
+"" Plugin 'SirVer/ultisnips'
+"" Plugin 'honza/vim-snippets'
 
 "Plugin 'justinmk/vim-syntax-extra'
 Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -95,6 +94,8 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 
 "Plugin 'deoplete'	"	NG
 Plugin 'stephpy/vim-yaml'
+Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'ekalinin/dockerfile.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -146,7 +147,7 @@ if filereadable("/etc/vim/vimrc.local")
 	source /etc/vim/vimrc.local
 endif
 
-"=========== By elechole
+"=========== By elechole, jay-huh
 
 "	map leader key. default: '\'
 "let mapleader=','
@@ -224,13 +225,13 @@ set ttyfast
 "set scs
 
 set cursorline
-"set cursorcolumn
-autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
-autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
-autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
-autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+set cursorcolumn
+"autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
+"autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
+"autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+"autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
 
 "============= ctag config ==============
 "set tags+=tags
@@ -299,10 +300,13 @@ behave xterm
 
 " UltiSnips
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsListSnippets="<s-tab>"
+let g:UltiSnipsExpandTrigger="<Tab>"
+let g:UltiSnipsJumpForwardTrigger="<C-n>"
+let g:UltiSnipsJumpBackwardTrigger="<C-p>"
+"let g:UltiSnipsSnippetDirectories = ['UltiSnips']
+
+"let g:UltiSnipsListSnippets="<s-tab>"
+
 "let g:UltiSnipsExpandTrigger="<c-i>"	"Do NOT Use This. 'tab' input is not working.
 "let g:UltiSnipsJumpForwardTrigger="<C-j>"
 "let g:UltiSnipsJumpBackwardTrigger="<C-k>"
@@ -312,17 +316,35 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 "let g:deoplete#enable_at_startup = 1
 
 "	YCM
-"let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
-"let g:ycm_confirm_extra_conf = 0
+" Let clangd fully control code completion
+"let g:ycm_clangd_uses_ycmd_caching = 0
+" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
+"let g:ycm_clangd_binary_path = exepath("clangd")
+
+let g:ycm_server_python_interpreter = '/usr/bin/python3'
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_complete_in_strings = 1
+"let g:ycm_complete_in_comments = 1
+let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_filetype_blacklist = {}
+"
+set completeopt-=preview	"Disable Preview Window
 
 "To avoid conflict snippets
+"let g:ycm_use_ultisnips_completer = 0
 "let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
 "let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+let g:ycm_key_list_select_completion = ['', '']
+let g:ycm_key_list_previous_completion = ['', '']
+let g:ycm_seed_identifiers_with_syntax = 1
 ""let g:ycm_autoclose_preview_window_after_completion = 1
 ""let g:ycm_autoclose_preview_window_after_insertion = 1
-"let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_collect_identifiers_from_tags_files = 1
 "let g:ycm_key_invoke_completion = '<C-c>'	" C-Space for trigger
-"let g:ycm_auto_trigger = 1	" C-Space for trigger
+let g:ycm_auto_trigger = 0	" C-Space for trigger
 
 "nnoremap <leader>g :YcmCompleter GoTo<CR>
 "nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
@@ -371,8 +393,9 @@ let g:solarized_termcolors=256
 set background=dark
 
 colorscheme solarized
+"colorscheme PaperColor
 hi Normal ctermbg=none guibg=black
-hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
+"hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
 
 "colorscheme torte
