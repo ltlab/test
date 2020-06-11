@@ -55,11 +55,17 @@ Plugin 'tpope/vim-fugitive'		"Need for airline
 Plugin 'scrooloose/nerdtree'
 Plugin 'MultipleSearch'
 
+" Colorscheme and Airline
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
-Plugin 'scrooloose/syntastic'
+" Code Analysis and Syntax checking
+"Plugin 'scrooloose/syntastic'
+Plugin 'dense-analysis/ale'
+
+" tags and cscope
 "Plugin 'taglist.vim'
 "Plugin 'taglist-plus'
 "Plugin 'easytags.vim'
@@ -76,21 +82,16 @@ Plugin 'delimitMate.vim'
 "Plugin 'Yggdroot/indentLine'
 "Plugin 'Indent-Guides'
 
+" Auto-completions
 "Plugin 'AutoComplPop'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
-
-"Plugin 'justinmk/vim-syntax-extra'
-Plugin 'octol/vim-cpp-enhanced-highlight'
-
 Plugin 'Valloric/YouCompleteMe'
 
-"Plugin 'Shougo/deoplete.nvim'	"	NG
-"Plugin 'clang-complete'
-
-"Plugin 'deoplete'	"	NG
+" Syntax Highlighting
+"Plugin 'justinmk/vim-syntax-extra'
+Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'stephpy/vim-yaml'
-Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'ekalinin/dockerfile.vim'
 
 " All of your Plugins must be added before the following line
@@ -217,15 +218,6 @@ set ttyfast
 "				대문자 있으면: 대소문자 구분하여 검색
 
 "set scs
-
-set cursorline
-set cursorcolumn
-"autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
-"autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
-"autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-"autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
-"autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
-"autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
 
 "============= ctag config ==============
 set tags+=tags
@@ -407,44 +399,6 @@ vnoremap <silent> ,h y:SearchBuffers <C-R>"<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax enable
 
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-let g:solarized_termcolors=256
-"let g:solarized_termcolors=16
-"let g:solarized_termtrans=1
-"let g:solarized_degrade=1
-"let g:solarized_bold=0
-"let g:solarized_contrast="high"
-"let g:solarized_visibility="high"
-set background=dark
-
-colorscheme solarized
-"colorscheme PaperColor
-hi Normal ctermbg=none guibg=black
-"hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
-hi Visual cterm=none ctermfg=none ctermbg=17
-
-"colorscheme torte
-"colorscheme elechole_colorscheme
-
-highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
-highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
-
-" Trailing White-spaces....
-highlight TrailingWhiteSpace guibg=#505050 ctermbg=DarkGray
-match TrailingWhiteSpace /\s\+$/
-autocmd InsertEnter * match TrailingWhiteSpace /\s\+\%#\@<!$/
-autocmd InsertLeave * match TrailingWhiteSpace /\s\+$/
-autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
-
-"	set textwidth and 'gg' 'gqG'
-"set textwidth=80
-"set formatoptions+=w
-
-"set colorcolumn=81
-"hi ColorColumn ctermbg=52 guibg=DarkRed
-"syn match ColorColumn /\%81v.\*/
-
 "	vim-cpp-enhanced-highlighting
 "Highlighting of class scope is disabled by default. To enable set
 let g:cpp_class_scope_highlight = 1
@@ -494,12 +448,65 @@ let c_no_curly_error=1
 "hi def link cppSTLtype			cppType
 hi cppAccess					guifg=Red ctermfg=Red
 
-"	Indent line tab
-set listchars=tab:\|\ ",trail:\  "
-set list
-hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
 
 "Plugin Indent-Guides
 "let g:indent_guides_enable_on_vim_startup = 1
 "let g:indent_guides_start_level = 2
 "let g:indent_guides_guide_size = 1
+
+" Termdebug
+let g:termdebug_wide = 163
+
+" Colorscheme and Highlighting =======================================
+colorscheme solarized
+"colorscheme PaperColor
+
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+let g:solarized_termcolors=256
+"let g:solarized_termcolors=16
+"let g:solarized_termtrans=1
+"let g:solarized_degrade=1
+"let g:solarized_bold=0
+"let g:solarized_contrast="high"
+"let g:solarized_visibility="high"
+
+set background=dark
+set cursorline
+set cursorcolumn
+"	set textwidth and 'gg' 'gqG'
+"set textwidth=80
+"set formatoptions+=w
+
+" Highlight
+hi Normal ctermbg=none guibg=black
+hi Visual cterm=none ctermfg=none ctermbg=17
+"hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
+
+" Cursor Line and Column
+highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
+highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
+
+"autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
+"autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
+"autocmd InsertLeave * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd InsertLeave * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+"autocmd VimEnter * hi CursorLine term=none cterm=none ctermbg=233 guibg=#303030
+"autocmd VimEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#303030
+
+" Special Color Highlighting
+" Trailing White-spaces....
+highlight TrailingWhiteSpace guibg=#505050 ctermbg=DarkGray
+match TrailingWhiteSpace /\s\+$/
+autocmd InsertEnter * match TrailingWhiteSpace /\s\+\%#\@<!$/
+autocmd InsertLeave * match TrailingWhiteSpace /\s\+$/
+autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
+
+"set colorcolumn=81
+"hi ColorColumn ctermbg=52 guibg=DarkRed
+"syn match ColorColumn /\%81v.\*/
+
+"	Indent line tab
+set listchars=tab:\|\ ",trail:\  "
+set list
+hi SpecialKey ctermfg=234 ctermbg=black guibg=bg

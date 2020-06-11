@@ -97,7 +97,7 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 
 	assert( ( pPacket != NULL ) && ( pPacket_dle != NULL ) );
 
-	pPacket_dle->stx == STX;
+	pPacket_dle->stx = STX;
 	dle_idx++;
 
 	/*	DLE Injection	*/
