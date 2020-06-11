@@ -56,35 +56,21 @@ Plugin 'tpope/vim-fugitive'		"Need for airline
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
-Plugin 'scrooloose/nerdtree'
-Plugin 'MultipleSearch'
-
 " Colorscheme and Airline
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
+" Syntax Highlighting
+"Plugin 'justinmk/vim-syntax-extra'
+Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'stephpy/vim-yaml'
+Plugin 'ekalinin/dockerfile.vim'
+
 " Code Analysis and Syntax checking
 "Plugin 'scrooloose/syntastic'
 Plugin 'dense-analysis/ale'
-
-" tags and cscope
-"Plugin 'taglist.vim'
-"Plugin 'taglist-plus'
-"Plugin 'easytags.vim'
-"Plugin 'cscope.vim'
-"Plugin 'cscope_plus.vim'
-"Plugin 'cscope-wrapper'
-
-Plugin 'ctrlp.vim'
-"Plugin 'ervandew/supertab'
-
-Plugin 'ack.vim'
-Plugin 'delimitMate.vim'
-
-"Plugin 'Yggdroot/indentLine'
-"Plugin 'Indent-Guides'
 
 " Auto-completions
 Plugin 'AutoComplPop'
@@ -92,11 +78,21 @@ Plugin 'AutoComplPop'
 "Plugin 'honza/vim-snippets'
 "Plugin 'Valloric/YouCompleteMe'
 
-" Syntax Highlighting
-"Plugin 'justinmk/vim-syntax-extra'
-Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'stephpy/vim-yaml'
-Plugin 'ekalinin/dockerfile.vim'
+" tags and cscope
+"Plugin 'simplyzhao/cscope_maps.vim'
+
+" Useful plugins
+Plugin 'scrooloose/nerdtree'
+Plugin 'MultipleSearch'
+
+Plugin 'ctrlp.vim'
+Plugin 'ack.vim'
+"Plugin 'ervandew/supertab'
+
+Plugin 'delimitMate.vim'
+
+"Plugin 'Yggdroot/indentLine'
+"Plugin 'Indent-Guides'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
