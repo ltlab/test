@@ -126,7 +126,7 @@ if [[ "$SERVER" = "Y" ]] ; then
 fi
 
 # Clean ${APT} packages and cache
-#sudo ${APT} clean && sudo ${APT} autoremove
+sudo ${APT} clean && sudo ${APT} autoremove
 #sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #sudo ${APT} ${APT_CACHE_OPTION} install libpython2.7-dev
