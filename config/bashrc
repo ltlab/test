@@ -83,7 +83,7 @@ if [ -z "$GREP_OPTIONS" ]; then
 	for PATTERN in tags cscope*;
 	do
 		GREP_OPTIONS+="--exclude=$PATTERN "
-		AG_OPTIONS+="--ignore $PATTERN "
+		AG_OPTIONS+="--ignore \"$PATTERN\" "
 	done
 
 	GREP_OPTIONS+='--binary-files=without-match '
@@ -285,9 +285,9 @@ fi
 export USE_CCACHE=1
 export CCACHE_BASEDIR="$HOME"
 export CCACHE_TEMPDIR="/tmp"
-if [[ -d "/home/jay/out/.ccache" ]] ; then
-	export CCACHE_DIR="$HOME/out/.ccache"
-	#export OUT_DIR_COMMON_BASE="$HOME/out"
+if [[ -d "/opt/nvme" ]] ; then
+	export CCACHE_DIR="/opt/nvme/ccache"
+	export OUT_DIR_COMMON_BASE="/opt/nvme/out"
 fi
 
 set -o vi
