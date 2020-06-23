@@ -445,7 +445,10 @@ hi cppAccess					guifg=Red ctermfg=Red
 "let g:indent_guides_guide_size = 1
 
 " Termdebug
+" :packadd termdebug
+" :TermDebug
 let g:termdebug_wide = 163
+"let g:termdebugger = "arm-none-eabi-gdb"
 
 " Colorscheme and Highlighting =======================================
 colorscheme solarized
