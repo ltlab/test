@@ -83,7 +83,7 @@ if [ -z "$GREP_OPTIONS" ]; then
 	for PATTERN in tags cscope*;
 	do
 		GREP_OPTIONS+="--exclude=$PATTERN "
-		AG_OPTIONS+="--ignore \"$PATTERN\" "
+		AG_OPTIONS+="--ignore \\\"$PATTERN\\\" "
 	done
 
 	GREP_OPTIONS+='--binary-files=without-match '
