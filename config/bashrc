@@ -266,6 +266,7 @@ WSL=`uname -v | grep Microsoft`
 echo "WSL: $WSL"
 if [ ! -z "$WSL" ] ; then
 	export DISPLAY="localhost:0"
+	#export GDK_SCALE=2
 fi
 unset WSL
 

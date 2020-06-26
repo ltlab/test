@@ -353,6 +353,7 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
 "let g:ycm_key_invoke_completion = '<C-c>'	" C-Space for trigger
 let g:ycm_auto_trigger = 0	" C-Space for trigger
+let g:ycm_show_diagnostics_ui = 0	" Disable YCM's Syntax check
 
 "nnoremap <leader>g :YcmCompleter GoTo<CR>
 "nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
@@ -360,9 +361,31 @@ let g:ycm_auto_trigger = 0	" C-Space for trigger
 "nnoremap <leader>t :YcmCompleter GetType<CR>
 "nnoremap <leader>p :YcmCompleter GetParent<CR>
 
+if filereadable("Makefile")
+	let g:arm_prefix = system( 'grep arm- Makefile' )
+endif
+
+let g:ale_c_parse_makefile = 1
+if exists( "g:arm_prefix" )
+	if g:arm_prefix !=""
+		let g:ale_c_gcc_executable = 'arm-none-eabi-gcc'
+		let g:ale_cpp_gcc_executable = 'arm-none-eabi-gcc'
+"let g:ale_c_gcc_options = '-std=c11 -Wall -I Core/Inc'
+	endif
+endif
+
+let g:ale_linters = { 'c' : [ 'gcc' ], 'cpp' : [ 'gcc' ] }
+let g:ale_fixers = {
+			\'*' : [
+			\	'remove_trailing_lines',
+			\	'trim_whitespace'
+			\]
+			\}
+
 " for vim-airline
 let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
 let g:airline#extensions#whitespace#enabled = 1 " trailing whitespace and mixed indent
+let g:airline#extensions#whitespace#mixed_indent_algo = 1 " trailing whitespace and mixed indent
 let g:airline#extensions#tabline#formatter = 'default' "'unique_tail'
 "AirlineTheme dark
 "let g:airline_theme='dark'
