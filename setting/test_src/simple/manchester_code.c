@@ -9,55 +9,67 @@
 
 #include <assert.h>
 
-/*	NOTE:
- *	*/
-int manchesterEncoder( const uint8_t * const pData, MANCHESTER_DATA * const pEncodedData )
+MANCHESTER_DATA manchesterEncoderChar( const uint8_t data )
 {
-	assert( ( pData != NULL ) && ( pEncodedData != NULL ) );
+	MANCHESTER_DATA	encodedData = { .data_short = 0x0 };
 
-	/*	NOTE:
-	 *	*/
-	pEncodedData->data_short = 0x0;
 	for( int bitIdx = 7 ; bitIdx >= 0 ; bitIdx-- )
 	{
-		pEncodedData->data_short <<= 2;
-		if( ( ( *pData >> bitIdx ) & 0x1 ) == 0x1 )
+		encodedData.data_short <<= 2;
+		if( ( ( data >> bitIdx ) & 0x1 ) == 0x1 )
 		{
-			pEncodedData->data_short |= MANCHESTER_ONE;
+			encodedData.data_short |= MANCHESTER_ONE;
 		}
 		else
 		{
-			pEncodedData->data_short |= MANCHESTER_ZERO;
+			encodedData.data_short |= MANCHESTER_ZERO;
 		}
 	}
 
-	MANCHESTER_DEBUG( *pData, *pEncodedData );
+	MANCHESTER_DEBUG( data, encodedData );
 
-	return 0;
+	return encodedData;
 }
 
-int manchesterDecoder( uint8_t * const pData, const MANCHESTER_DATA * const pEncodedData )
+uint8_t manchesterDecoderChar( const MANCHESTER_DATA encodedData )
 {
-	assert( ( pData != NULL ) && ( pEncodedData != NULL ) );
+	uint8_t data = 0x0;
 
-	*pData = 0x0;
 	for( int bitIdx = 7 ; bitIdx >= 0 ; bitIdx-- )
 	{
-		*pData <<= 1;
-		if( ( ( pEncodedData->data_short >> ( bitIdx << 1 ) ) & 0b11 ) == MANCHESTER_ONE )
+		data <<= 1;
+		if( ( ( encodedData.data_short >> ( bitIdx << 1 ) ) & 0b11 ) == MANCHESTER_ONE )
 		{
-			*pData |= 0b1;
+			data |= 0b1;
 		}
 	}
-	MANCHESTER_DEBUG( *pData, *pEncodedData );
+	MANCHESTER_DEBUG( data, encodedData );
 
-	return 0;
+	return data;
+}
+
+size_t manchesterEncoderString( const uint8_t * const pData, MANCHESTER_DATA * const pEncodedData, const size_t len )
+{
+	for( size_t i = 0 ; i < len ; i++ )
+	{
+		pEncodedData[ i ] = manchesterEncoderChar( pData[ i ] );
+	}
+	return len;
+}
+
+size_t manchesterDecoderString( uint8_t * const pData, const MANCHESTER_DATA * const pEncodedData, const size_t len )
+{
+	for( size_t i = 0 ; i < len ; i++ )
+	{
+		pData[ i ] = manchesterDecoderChar( pEncodedData[ i ] );
+	}
+	return len;
 }
 
 #ifdef __DEBUG_MANCHESTER_CODE__
 void manchesterPrint( const uint8_t data, const MANCHESTER_DATA encodedData )
 {
-	printf( "[ %s : %d ] 0x%02x => 0x%04x | %02x %02x| ", __func__, __LINE__,
+	printf( "[ %s : %d ] 0x%02x <=> 0x%04x | %02x %02x| ", __func__, __LINE__,
 			data, encodedData.data_short, encodedData.data[ 1 ], encodedData.data[ 0 ] );
 	for( int bitIdx = 15 ; bitIdx >= 0 ; bitIdx-- )
 	{
@@ -70,16 +82,35 @@ void manchesterPrint( const uint8_t data, const MANCHESTER_DATA encodedData )
 }
 #endif	//	__DEBUG_MANCHESTER_CODE__
 
+#define TEST_LEN	(16)
+
 int main ()
 {
-	MANCHESTER_DATA	encodedData = { .data_short = 0x0 };
+	uint8_t data[ TEST_LEN ] = { 0x0 };
+	MANCHESTER_DATA	encodedData[ TEST_LEN ];
 
-	for( uint8_t i = 0x0 ; i < 0x10 ; i++ )
+	printf( "========= Character Test\n" );
+	for( int i = 0x0 ; i < TEST_LEN ; i++ )
 	{
 		uint8_t data = i;
-		manchesterEncoder( &data, &encodedData );
-		manchesterDecoder( &data, &encodedData );
+		MANCHESTER_DATA	encodedData = { .data_short = 0x0 };
+
+		encodedData = manchesterEncoderChar( data );
+		data = manchesterDecoderChar( encodedData );
 	}
+
+	printf( "========= String Test\n" );
+	for( int i = 0 ; i < TEST_LEN ; i++ )
+	{
+		data[ i ] = i;
+		encodedData[ i ].data_short = 0x0;
+	}
+
+	printf( "=========Encoding\n" );
+	manchesterEncoderString( data, encodedData, TEST_LEN );
+	memset( data, 0x55, TEST_LEN );
+	printf( "=========Decoding\n" );
+	manchesterDecoderString( data, encodedData, TEST_LEN );
 
 	return 0;
 }

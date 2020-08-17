@@ -1,5 +1,11 @@
-#ifndef _MANCHESTER_CODE_H_
-#define _MANCHESTER_CODE_H_
+#ifndef _MANCHESTER_CODE_HPP_
+#define _MANCHESTER_CODE_HPP_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+#include <stdio.h>	//	size_t
 
 //#include <stdint.h>
 #include <inttypes.h>
@@ -15,8 +21,11 @@ typedef union MANCHESTER_DATA_U
 	uint16_t data_short;
 } MANCHESTER_DATA;
 
-int manchesterEncoder( const uint8_t * const pData, MANCHESTER_DATA * const pEncodedData );
-int manchesterDecoder( uint8_t * const pData, const MANCHESTER_DATA * const pEncodedData );
+MANCHESTER_DATA manchesterEncoderChar( const uint8_t data );
+uint8_t manchesterDecoderChar( const MANCHESTER_DATA encodedData );
+
+size_t manchesterEncoderString( const uint8_t * const pData, MANCHESTER_DATA * const pEncodedData, const size_t len );
+size_t manchesterDecoderString( uint8_t * const pData, const MANCHESTER_DATA * const pEncodedData, const size_t len );
 
 #ifdef __DEBUG_MANCHESTER_CODE__
 
@@ -28,6 +37,8 @@ void manchesterPrint( const uint8_t data, const MANCHESTER_DATA encodedData );
 #define MANCHESTER_DEBUG( fmt, args... )
 #endif	//	__DEBUG_MANCHESTER_CODE__
 
-#endif /* ifndef _MANCHESTER_CODE_H_
 
- */
+#ifdef __cplusplus
+}
+#endif
+#endif /* ifndef _MANCHESTER_CODE_HPP_ */
