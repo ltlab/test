@@ -499,6 +499,10 @@ hi Normal ctermbg=none guibg=black
 hi Visual cterm=none ctermfg=none ctermbg=17
 "hi LineNr ctermfg=235 ctermbg=black guifg=#303030 guibg=black
 
+" ALE Sign Column
+highlight SignColumn ctermbg=233
+highlight LineNr ctermbg=233
+
 " Cursor Line and Column
 highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
 highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
