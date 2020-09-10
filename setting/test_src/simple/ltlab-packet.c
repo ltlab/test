@@ -15,50 +15,68 @@ enum
 };
 
 /*	Packet format
- *	| STX | LID | DID | CMD | DATA_L | DATA_H | CHKSUM | ETX |
- *
  *	Byte index: LSB first
  *	bitfield: LSB first
+ *	LT_PACKET: between CCU and DEVICE.
+ *	| DID | CMD | DATA_L | DATA_H | CHKSUM |
+ *	|<----- LT_PACKET_BODY ------>|
+ *
+ * PACKET: between MB and CCU.
+ *	| STX | LID | DID | CMD | DATA_L | DATA_H | CHKSUM | ETX |
+ *	            |<----- LT_PACKET_BODY ------>|
  *	by jay 2020-05-29 17:30:40	*/
+typedef struct LT_PACKET_BODY_S
+{
+	uint8_t deviceId;
+	uint8_t command;
+
+	union
+	{
+		uint8_t data[ 2 ];
+		uint16_t data_short;
+
+		union
+		{
+			/*	DEV_STATUS for Detector	*/
+			struct
+			{
+				uint16_t	value	: 10;
+				uint16_t	period	: 3;
+				uint16_t	type	: 3;
+			};
+			/*	SCAN LOOP	*/
+			struct
+			{
+				uint8_t		start;
+				uint8_t		end;
+			};
+			uint16_t		seq;	//	for Test
+		};
+	} __attribute__ (( packed));
+} __attribute__ (( packed)) LT_PACKET_BODY;
+
+typedef struct LT_PACKET_S
+{
+	LT_PACKET_BODY	packet;
+	uint8_t			chksum;
+} __attribute__ (( packed)) LT_PACKET;
+
+/*	PACKET: between Manboard and CCU	*/
 typedef union PACKET_U
 {
 #define PACKET_INIT 		\
 	{						\
-		._byte = { 0x0 },	\
+		._byte = { 0x0, },	\
 	}
 
-	uint8_t		_byte[ 6 ];
-	uint16_t	_short[ 3 ];
+	uint8_t		_byte[ sizeof( LT_PACKET_BODY ) + 2 ];
+	uint16_t	_short[ ( sizeof( LT_PACKET_BODY ) + 2 ) / sizeof( uint16_t ) ];
 
 	struct
 	{
-		uint8_t loopId;
-		uint8_t deviceId;
-		uint8_t command;
-
-		union
-		{
-			uint8_t data[ 2 ];
-			uint16_t data_short;
-
-			union
-			{
-				/*	DEV_STATUS for Detector	*/
-				struct
-				{
-					uint16_t	value	: 10;
-					uint16_t	period	: 3;
-					uint16_t	type	: 3;
-				};
-				/*	SCAN LOOP	*/
-				struct
-				{
-					uint8_t		start;
-					uint8_t		end;
-				};
-			};
-		} __attribute__ (( packed));
-		uint8_t chksum;
+		uint8_t			loopId;
+		LT_PACKET_BODY	body;
+		uint8_t			chksum;
 	};
 } __attribute__ (( packed)) PACKET;
 
@@ -97,6 +115,8 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 
 	assert( ( pPacket != NULL ) && ( pPacket_dle != NULL ) );
 
+	printf( "START--------------\n" );
+
 	pPacket_dle->stx = STX;
 	dle_idx++;
 
@@ -107,9 +127,9 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 
 		switch( pPacket->_byte[ i ] )
 		{
-			case STX: printf( "STX\t" ); break;
-			case ETX: printf( "ETX\t" ); break;
-			case DLE: printf( "DLE\t" ); break;
+			case STX: printf( "STX in packet\t" ); break;
+			case ETX: printf( "ETX in packet\t" ); break;
+			case DLE: printf( "DLE in packet\t" ); break;
 			default: printf( "\t" ); break;
 		}
 		if( ( pPacket->_byte[ i ] == STX )
@@ -122,7 +142,7 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 		}
 		pPacket_dle->_byte[ dle_idx ] = pPacket->_byte[ i ];
 		sum += pPacket->_byte[ i ];
-		printf( "0x%02x\n", pPacket_dle->_byte[ dle_idx ] );
+		printf( "0x%02x sum: %d %x\n", pPacket_dle->_byte[ dle_idx ], sum, sum );
 		dle_idx++;
 	}
 
@@ -138,7 +158,7 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 	/*	Add ETX to tailing	*/
 	pPacket_dle->_byte[ dle_idx++ ] = ETX;
 	pPacket_dle->len = dle_idx;
-	printf( "FINAL: len %d idx %d\n", pPacket_dle->len, dle_idx );
+	printf( "\nFINAL: len %d idx %d\n\n", pPacket_dle->len, dle_idx );
 
 	for( int i = 0 ; i < pPacket_dle->len ; i++ )
 	{
@@ -153,6 +173,7 @@ bool generatePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 			default: printf( "\n" ); break;
 		}
 	}
+	printf( "END --------------\n" );
 	return true;
 }
 
@@ -177,7 +198,7 @@ bool parsePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 	{
 		//pData = ( pPacket_dle->_byte ) + i;
 		pData++;
-		printf( "%d: data: 0x%02x => ", i, *pData );
+		printf( "%2d: data: 0x%02x => ", i, *pData );
 
 		switch( *pData )
 		{
@@ -215,13 +236,14 @@ bool parsePacket( PACKET * const pPacket, PACKET_DLE * const pPacket_dle )
 
 		switch( *pData )
 		{
-			case STX: printf( " -> STX\n" ); break;
-			case ETX: printf( " -> ETX\n" ); break;
-			case DLE: printf( " ==> DLE\n" ); break;
+			case STX: printf( " -> STX in packet\n" ); break;
+			case ETX: printf( " -> ETX in packet\n" ); break;
+			case DLE: printf( " -> DLE in packet\n" ); break;
 			default: printf( "\n" ); break;
 		}
 		pData++;
 	}
+	printf( "END --------------\n" );
 	return true;
 }
 
@@ -231,19 +253,23 @@ int main ()
 	PACKET_DLE	packet_dle = PACKET_DLE_INIT;
 
 	packet.loopId = 0x02;
-	packet.deviceId = 0x01;
-	packet.command = 0xC2;
+	packet.body.deviceId = 0x10;
+	packet.body.command = 0x03;
 #if 1
-	packet.start = 0xC0;
-	packet.end = 0x00;
+	packet.body.start = 0xC0;
+	packet.body.end = 0x00;
 #else
 	packet.value = 0x04;
 	packet.period = 0x05;
 	packet.type = 0x03;
 #endif
 
-	generatePacket( &packet, &packet_dle );
-	parsePacket( &packet_1, &packet_dle );
+	for( uint16_t seq ; seq < 4 ; seq++ )
+	{
+		packet.body.seq = seq;
+		generatePacket( &packet, &packet_dle );
+		parsePacket( &packet_1, &packet_dle );
+	}
 
 	//printf( "SIZE: PACKET %zd PACKET_DLE %zd\n", sizeof( PACKET ), sizeof( PACKET_DLE ) );
 
