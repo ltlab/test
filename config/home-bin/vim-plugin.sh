@@ -16,6 +16,12 @@ if [ ! -e "$PLUGIN_PATH" ] ; then
 	git clone $PLUGIN_URL $PLUGIN_PATH
 fi
 
+if [[ ! -d $HOME/.fzf ]] ; then
+  echo "[FZF] Clone and install fzf."
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+fi
+
 vim +PluginInstall +qall
 
 # patch for syntax Highlighting

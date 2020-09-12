@@ -84,6 +84,7 @@ Plugin 'MultipleSearch'
 Plugin 'ctrlp.vim'
 Plugin 'ack.vim'
 "Plugin 'ervandew/supertab'
+Plugin 'junegunn/fzf.git'
 
 Plugin 'Raimondi/delimitMate'
 
