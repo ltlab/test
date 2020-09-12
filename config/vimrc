@@ -594,8 +594,7 @@ let g:termdebug_wide = 163
 let g:termdebugger = "arm-none-eabi-gdb"
 
 " Colorscheme and Highlighting =======================================
-"colorscheme torte
-colorscheme solarized
+"colorscheme solarized
 "colorscheme PaperColor
 
 " If using a dark background within the editing area and syntax highlighting
