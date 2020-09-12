@@ -153,7 +153,7 @@ if [[ ! -e "${USER_HOME}/bin" ]] ; then
 fi
 
 # install Vundle
-sudo -u ${USER_ID} ${USER_HOME}/bin/vundle.sh ${USER_HOME}
+#sudo -u ${USER_ID} ${USER_HOME}/bin/vundle.sh ${USER_HOME}
 
 # install repo
 sudo -u ${USER_ID} curl https://storage.googleapis.com/git-repo-downloads/repo -o ${USER_HOME}/bin/repo

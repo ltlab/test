@@ -1,34 +1,45 @@
 #!/bin/sh
 
-PLUGIN_URL="https://github.com/VundleVim/Vundle.vim.git"
+#USE_VUNDLE=1
+
+# vim-plug
+PLUG_PLUGIN_PATH=".vim/plugged"
+
+if [ ! -z "$USE_VUNDLE" ] ; then
+  PLUGIN_URL="https://github.com/VundleVim/Vundle.vim.git"
+  PLUGIN_PATH=".vim/bundle"
+  PLUGIN_INSTALL="+PluginInstall"
+else
+  PLUGIN_PATH=${PLUG_PLUGIN_PATH}
+  PLUGIN_INSTALL="+PlugInstall"
+fi
 
 if [ -z "$1" ] ; then
 	HOME_PATH="$HOME"
-	PLUGIN_PATH="$HOME/.vim/bundle/Vundle.vim"
-	HIGHLIGHT_PLUGIN_PATH="$HOME/.vim/bundle/vim-cpp-enhanced-highlight/"
 else
 	HOME_PATH="$1"
-	PLUGIN_PATH="$1/.vim/bundle/Vundle.vim"
-	HIGHLIGHT_PLUGIN_PATH="$1/.vim/bundle/vim-cpp-enhanced-highlight"
 fi
 
-if [ ! -e "$PLUGIN_PATH" ] ; then
-	git clone $PLUGIN_URL $PLUGIN_PATH
+PLUGIN_FULL_PATH="${HOME_PATH}/${PLUGIN_PATH}/Vundle.vim"
+HIGHLIGHT_PLUGIN_PATH="${HOME_PATH}/${PLUGIN_PATH}/vim-cpp-enhanced-highlight/"
+
+if [ ! -e "$PLUGIN_URL" ] ; then
+	git clone "$PLUGIN_URL" "$PLUGIN_FULL_PATH"
 fi
 
-if [[ ! -d $HOME/.fzf ]] ; then
+if [ ! -d "$HOME_PATH/.fzf" ] ; then
   echo "[FZF] Clone and install fzf."
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install
 fi
 
-vim +PluginInstall +qall
+vim $PLUGIN_INSTALL +qall
 
 # patch for syntax Highlighting
 C_VIM_FILE="$HIGHLIGHT_PLUGIN_PATH/after/syntax/c.vim"
 CPP_VIM_FILE="$HIGHLIGHT_PLUGIN_PATH/after/syntax/cpp.vim"
 
-if [ ! -z "`grep Macro $C_VIM_FILE`" ] ; then
+if [ ! -z "$(grep Macro $C_VIM_FILE)" ] ; then
 	echo "[VIM] Syntax files are already updated."
 	exit 0
 fi

@@ -26,19 +26,49 @@ endif
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" let Vundle manage Vundle, required
-Plugin 'vundlevim/vundle.vim'
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+"Plug 'junegunn/vim-easy-align'
+
+" Any valid git URL is allowed
+"Plug 'https://github.com/junegunn/vim-github-dashboard.git'
+
+" Multiple Plug commands can be written in a single line using | separators
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+" On-demand loading
+"Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+"Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+
+" Using a non-default branch
+"Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+"Plug 'fatih/vim-go', { 'tag': '*' }
+
+" Plugin options
+"Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+" Unmanaged plugin (manually installed and updated)
+"Plug '~/my-prototype-plugin'
+
 " plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'		"Need for airline
+Plug 'tpope/vim-fugitive'		"Need for airline
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -53,61 +83,131 @@ Plugin 'tpope/vim-fugitive'		"Need for airline
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
 " Colorscheme and Airline
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'NLKNguyen/papercolor-theme'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " Syntax Highlighting
-"Plugin 'justinmk/vim-syntax-extra'
-Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'stephpy/vim-yaml'
-Plugin 'ekalinin/dockerfile.vim'
+"Plug 'justinmk/vim-syntax-extra'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'stephpy/vim-yaml'
+Plug 'ekalinin/dockerfile.vim'
 
 " Code Analysis and Syntax checking
-"Plugin 'scrooloose/syntastic'
-Plugin 'dense-analysis/ale'
+"Plug 'scrooloose/syntastic'
+Plug 'dense-analysis/ale'
 
 " Auto-completions
-"Plugin 'AutoComplPop'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'Valloric/YouCompleteMe'
+"Plug 'AutoComplPop'
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
 " tags and cscope
-Plugin 'simplyzhao/cscope_maps.vim'
+Plug 'simplyzhao/cscope_maps.vim'
 
 " Useful plugins
-Plugin 'scrooloose/nerdtree'
-Plugin 'MultipleSearch'
+Plug 'scrooloose/nerdtree'
+Plug 'vim-scripts/MultipleSearch'
 
-Plugin 'ctrlp.vim'
-Plugin 'ack.vim'
-"Plugin 'ervandew/supertab'
-Plugin 'junegunn/fzf.git'
+Plug 'vim-scripts/ctrlp.vim'
+Plug 'vim-scripts/ack.vim'
+"Plug 'ervandew/supertab'
 
-Plugin 'Raimondi/delimitMate'
+Plug 'Raimondi/delimitMate'
 
-Plugin 'meiraka/vim-google-cpp-style-indent'
-"Plugin 'Yggdroot/indentLine'
-"Plugin 'Indent-Guides'
+Plug 'meiraka/vim-google-cpp-style-indent'
+"Plug 'Yggdroot/indentLine'
+"Plug 'Indent-Guides'
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
+" Initialize plugin system
+call plug#end()
+
+
+
+"" set the runtime path to include Vundle and initialize
+"set rtp+=~/.vim/bundle/vundle.vim
+"call vundle#begin()
+"" alternatively, pass a path where Vundle should install plugins
+""call vundle#begin('~/some/path/here')
 "
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"" let Vundle manage Vundle, required
+"Plugin 'vundlevim/vundle.vim'
 "
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+"" The following are examples of different formats supported.
+"" Keep Plugin commands between vundle#begin/end.
+"" plugin on GitHub repo
+"Plugin 'tpope/vim-fugitive'		"Need for airline
+"" plugin from http://vim-scripts.org/vim/scripts.html
+"" Plugin 'L9'
+"" Git plugin not hosted on GitHub
+""Plugin 'git://git.wincent.com/command-t.git'
+"" git repos on your local machine (i.e. when working on your own plugin)
+""Plugin 'file:///home/gmarik/path/to/plugin'
+"" The sparkup vim script is in a subdirectory of this repo called vim.
+"" Pass the path to set the runtimepath properly.
+""Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+"" Install L9 and avoid a Naming conflict if you've already installed a
+"" different version somewhere else.
+"" Plugin 'ascenator/L9', {'name': 'newL9'}
 "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Colorscheme and Airline
+"Plugin 'altercation/vim-colors-solarized'
+"Plugin 'NLKNguyen/papercolor-theme'
+"Plugin 'vim-airline/vim-airline'
+"Plugin 'vim-airline/vim-airline-themes'
+"
+"" Syntax Highlighting
+""Plugin 'justinmk/vim-syntax-extra'
+"Plugin 'octol/vim-cpp-enhanced-highlight'
+"Plugin 'stephpy/vim-yaml'
+"Plugin 'ekalinin/dockerfile.vim'
+"
+"" Code Analysis and Syntax checking
+""Plugin 'scrooloose/syntastic'
+"Plugin 'dense-analysis/ale'
+"
+"" Auto-completions
+""Plugin 'AutoComplPop'
+"Plugin 'SirVer/ultisnips'
+"Plugin 'honza/vim-snippets'
+"Plugin 'Valloric/YouCompleteMe'
+"
+"" tags and cscope
+"Plugin 'simplyzhao/cscope_maps.vim'
+"
+"" Useful plugins
+"Plugin 'scrooloose/nerdtree'
+"Plugin 'MultipleSearch'
+"
+"Plugin 'ctrlp.vim'
+"Plugin 'ack.vim'
+""Plugin 'ervandew/supertab'
+"Plugin 'junegunn/fzf.git'
+"
+"Plugin 'Raimondi/delimitMate'
+"
+"Plugin 'meiraka/vim-google-cpp-style-indent'
+""Plugin 'Yggdroot/indentLine'
+""Plugin 'Indent-Guides'
+"
+"" All of your Plugins must be added before the following line
+"call vundle#end()            " required
+"filetype plugin indent on    " required
+"" To ignore plugin indent changes, instead use:
+""filetype plugin on
+""
+"" Brief help
+"" :PluginList       - lists configured plugins
+"" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+"" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+"" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+""
+"" see :h vundle for more details or wiki for FAQ
+"" Put your non-Plugin stuff after this line
+""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -348,7 +448,8 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 "let g:ycm_clangd_binary_path = exepath("clangd")
 
 let g:ycm_server_python_interpreter = '/usr/bin/python3'
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+"let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 
 "let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -493,6 +594,7 @@ let g:termdebug_wide = 163
 let g:termdebugger = "arm-none-eabi-gdb"
 
 " Colorscheme and Highlighting =======================================
+"colorscheme torte
 colorscheme solarized
 "colorscheme PaperColor
 
