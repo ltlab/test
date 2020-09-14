@@ -70,6 +70,7 @@ Plug 'junegunn/fzf.vim'
 
 " plugin on GitHub repo
 Plug 'tpope/vim-fugitive'		"Need for airline
+Plug 'airblade/vim-gitgutter'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -97,7 +98,7 @@ Plug 'ekalinin/dockerfile.vim'
 
 " Code Analysis and Syntax checking
 "Plug 'scrooloose/syntastic'
-Plug 'dense-analysis/ale'
+Plug 'w0rp/ale'
 
 " Auto-completions
 "Plug 'AutoComplPop'
@@ -110,21 +111,23 @@ Plug 'simplyzhao/cscope_maps.vim'
 
 " Useful plugins
 Plug 'scrooloose/nerdtree'
-Plug 'vim-scripts/MultipleSearch'
+Plug 'scrooloose/nerdcommenter'
+"Plug 'vim-scripts/MultipleSearch'
+Plug 'terryma/vim-multiple-cursors'
 
-Plug 'vim-scripts/ctrlp.vim'
-Plug 'vim-scripts/ack.vim'
+"Plug 'vim-scripts/ctrlp.vim'
+"Plug 'vim-scripts/ack.vim'
 "Plug 'ervandew/supertab'
 
 Plug 'Raimondi/delimitMate'
 
 Plug 'meiraka/vim-google-cpp-style-indent'
-"Plug 'Yggdroot/indentLine'
-"Plug 'Indent-Guides'
+Plug 'nathanaelkane/vim-indent-guides'
+
+Plug 'blueyed/vim-diminactive'
 
 " Initialize plugin system
 call plug#end()
-
 
 
 "" set the runtime path to include Vundle and initialize
@@ -481,22 +484,30 @@ let g:ycm_show_diagnostics_ui = 0	" Disable YCM's Syntax check
 "nnoremap <leader>t :YcmCompleter GetType<CR>
 "nnoremap <leader>p :YcmCompleter GetParent<CR>
 
-if filereadable("Makefile")
-	let g:arm_prefix = system( 'grep arm- Makefile' )
-endif
-
+" ALE
 let g:ale_c_parse_makefile = 1
-if exists( "g:arm_prefix" )
-	if g:arm_prefix !=""
-		let g:ale_c_gcc_executable = 'arm-none-eabi-gcc'
-		let g:ale_cpp_gcc_executable = 'arm-none-eabi-gcc'
-"let g:ale_c_gcc_options = '-std=c11 -Wall -I Core/Inc'
-	endif
-endif
 
-let g:ale_linters = { 'c' : [ 'gcc' ], 'cpp' : [ 'gcc' ] }
+"if filereadable("Makefile")
+"	let g:arm_prefix = system( 'grep arm- Makefile' )
+"endif
+
+"if exists( "g:arm_prefix" )
+"	if g:arm_prefix !=""
+"		let g:ale_c_gcc_executable = 'arm-none-eabi-gcc'
+"		let g:ale_cpp_gcc_executable = 'arm-none-eabi-gcc'
+""let g:ale_c_gcc_options = '-std=c11 -Wall -I Core/Inc'
+"	endif
+"endif
+
+"let g:ale_linters_explicit = 1
+let g:ale_linters = {
+      \ 'c' : [ 'gcc' ],
+      \ 'cpp' : [ 'g++' ]
+      \ }
+
 let g:ale_fixers = {
 			\'*' : [
+      \ 'clang-format',
 			\	'remove_trailing_lines',
 			\	'trim_whitespace'
 			\]
@@ -522,9 +533,9 @@ let g:airline_symbols.space = "\ua0"
 "set rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
 
 " for MultipleSearch
-let g:MultipleSearchMaxColors=11
-let g:MultipleSearchColorSequence="darkcyan,gray,LightCyan,LightBlue,LightGreen,blue,green,magenta,cyan,gray,brown"
-let g:MultipleSearchTextColorSequence="white,DarkRed,black,black,black,white,black,white,red,black,white"
+"let g:MultipleSearchMaxColors=11
+"let g:MultipleSearchColorSequence="darkcyan,gray,LightCyan,LightBlue,LightGreen,blue,green,magenta,cyan,gray,brown"
+"let g:MultipleSearchTextColorSequence="white,DarkRed,black,black,black,white,black,white,red,black,white"
 "nmap ,H 0vv\*,<space>
 nnoremap <silent> ,H :SearchReset <CR>
 nnoremap <silent> ,h :SearchBuffers <C-R>=expand("<cword>")<CR><CR>
@@ -651,3 +662,11 @@ autocmd WinEnter * match TrailingWhiteSpace /\s\+$/
 set listchars=tab:\|\ ",trail:\  "
 set list
 hi SpecialKey ctermfg=234 ctermbg=black guibg=bg
+
+" Indent-guide
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+
+let g:indent_guides_auto_colors = 0
+hi IndentGuidesOdd ctermfg=238 ctermbg=233
+hi IndentGuidesEven ctermfg=238 ctermbg=236
