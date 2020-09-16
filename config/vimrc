@@ -329,17 +329,16 @@ behave xterm
 
 let g:ale_c_parse_makefile = 1
 
-"if filereadable("Makefile")
-"	let g:arm_prefix = system( 'grep arm- Makefile' )
-"endif
+if filereadable("Makefile")
+	let g:arm_prefix = system( 'grep arm- Makefile' )
+endif
 
-"if exists( "g:arm_prefix" )
-"	if g:arm_prefix !=""
-"		let g:ale_c_gcc_executable = 'arm-none-eabi-gcc'
-"		let g:ale_cpp_gcc_executable = 'arm-none-eabi-gcc'
-""let g:ale_c_gcc_options = '-std=c11 -Wall -I Core/Inc'
-"	endif
-"endif
+if exists( "g:arm_prefix" )
+	if g:arm_prefix !=""
+		let g:ale_c_cc_executable = 'arm-none-eabi-gcc'
+		let g:ale_cpp_cc_executable = 'arm-none-eabi-g++'
+	endif
+endif
 
 "let g:ale_linters_explicit = 1
 let g:ale_linters = {
@@ -356,6 +355,13 @@ let g:ale_fixers = {
 			\}
 let g:ale_completion_enabled = 0
 
+" Add to .vimrc to enable project-specific vimrc
+
+set exrc
+set secure
+
+" exrc allows loading local executing local rc files.
+" secure disallows the use of :autocmd, shell and write commands in local .vimrc files.
 
 " --- delimitMate
 let delimitMate_expand_inside_quotes = 1
