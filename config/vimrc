@@ -19,7 +19,7 @@ runtime! debian.vim
 " Vim5 and later versions support syntax highlighting. Uncommenting the next
 " line enables syntax highlighting by default.
 if has("syntax")
-	syntax on
+  syntax on
 endif
 
 " }}}=============================================================
@@ -28,7 +28,7 @@ filetype off                  " required
 
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -141,7 +141,7 @@ call plug#end()
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 if has("autocmd")
-	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
 " The following are commented out as they cause vim to behave a lot
@@ -156,13 +156,13 @@ set autowrite		" Automatically save before commands like :next and :make
 set mouse=a		" Enable mouse usage (all modes)
 
 if &term =~ '^screen'
-	" tmux knows the extended mouse mode
-	set ttymouse=xterm2
+  " tmux knows the extended mouse mode
+  set ttymouse=xterm2
 endif
 
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
-	source /etc/vim/vimrc.local
+  source /etc/vim/vimrc.local
 endif
 
 "=========== By jay-huh
@@ -260,7 +260,7 @@ set tags+=tags
 set tags+=/usr/include/tags
 
 if filereadable( "/usr/include/cscope.out" )
-	cs add /usr/include/cscope.out
+  cs add /usr/include/cscope.out
 endif
 
 "let cwd=fnamemodify(getcwd(), ":p" )
@@ -280,11 +280,11 @@ endif
 "endif
 
 "if has("autocmd")
-	" When editing a file, always jump to the last cursor position
-	"autocmd BufReadPost *
-	"			\ if line("'\"") > 0 && line ("'\"") <= line("$") |
-	"			\   exe "normal g'\"" |
-	"			\ endif
+" When editing a file, always jump to the last cursor position
+"autocmd BufReadPost *
+"			\ if line("'\"") > 0 && line ("'\"") <= line("$") |
+"			\   exe "normal g'\"" |
+"			\ endif
 "endif
 
 "Do highlighting similarly to the C syntax file supplied with VIM
@@ -295,21 +295,21 @@ endif
 "let c_syntax_for_h = 1
 
 if has("gui_running")
-	"set textwidth=80
-	set guioptions-=T "remove Toolbar
-	set guioptions+=b
-	"set guioptions-=m "remove memu bar
-	"set guioptions+=b "bottom scroll bar
-	"set nowrap
-	set wrap
+  "set textwidth=80
+  set guioptions-=T "remove Toolbar
+  set guioptions+=b
+  "set guioptions-=m "remove memu bar
+  "set guioptions+=b "bottom scroll bar
+  "set nowrap
+  set wrap
 
-	"set gfn=Courier\ New:h10
-	map <A-SPACE> :simalt~x <CR>
-	map <C-SPACE> :simalt~r <CR>
+  "set gfn=Courier\ New:h10
+  map <A-SPACE> :simalt~x <CR>
+  map <C-SPACE> :simalt~r <CR>
 
-	winp 0 0
-	win 130 50
-	"set scrolloff=3
+  winp 0 0
+  win 130 50
+  "set scrolloff=3
 endif
 
 "set gfn=LucidaSansTypewriter\ 9
@@ -330,14 +330,14 @@ behave xterm
 let g:ale_c_parse_makefile = 1
 
 if filereadable("Makefile")
-	let g:arm_prefix = system( 'grep arm- Makefile' )
+  let g:arm_prefix = system( 'grep arm- Makefile' )
 endif
 
 if exists( "g:arm_prefix" )
-	if g:arm_prefix !=""
-		let g:ale_c_cc_executable = 'arm-none-eabi-gcc'
-		let g:ale_cpp_cc_executable = 'arm-none-eabi-g++'
-	endif
+  if g:arm_prefix !=""
+    let g:ale_c_cc_executable = 'arm-none-eabi-gcc'
+    let g:ale_cpp_cc_executable = 'arm-none-eabi-g++'
+  endif
 endif
 
 "let g:ale_linters_explicit = 1
@@ -361,13 +361,13 @@ let g:ale_c_clangtidy_extra_options = '--format-style=google'
 let g:ale_cpp_clangtidy_extra_options = '--format-style=google'
 
 let g:ale_fixers = {
-			\ 'c' : [ 'clang-format' ],
-			\ 'cpp' : [ 'clang-format' ],
-			\ '*' : [
-			\	'remove_trailing_lines',
-			\	'trim_whitespace'
-			\ ],
-			\ }
+      \ 'c' : [ 'clang-format' ],
+      \ 'cpp' : [ 'clang-format' ],
+      \ '*' : [
+      \	'remove_trailing_lines',
+      \	'trim_whitespace'
+      \ ],
+      \ }
 let g:ale_c_clangformat_options = '-style=google'
 let g:ale_cpp_clangformat_options = '-style=google'
 let g:ale_completion_enabled = 0
@@ -453,7 +453,7 @@ let g:airline_solarized_bg='dark'
 "set laststatus=2 " turn on bottom bar
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
-	let g:airline_symbols = {}
+  let g:airline_symbols = {}
 endif
 let g:airline_symbols.space = "\ua0"
 "set rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
@@ -589,8 +589,8 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 
 let g:indent_guides_auto_colors = 0
-hi IndentGuidesOdd ctermfg=238 ctermbg=233
-hi IndentGuidesEven ctermfg=238 ctermbg=236
+hi IndentGuidesOdd ctermfg=238 ctermbg=235
+hi IndentGuidesEven ctermfg=238 ctermbg=233
 
 " GNU Global
 "set csprg=gtags-cscope
@@ -628,15 +628,15 @@ augroup lsp_install
 augroup END
 
 if executable('clangd')
-    augroup vim_lsp_cpp
-        autocmd!
-        autocmd User lsp_setup call lsp#register_server({
-                    \ 'name': 'clangd',
-                    \ 'cmd': {server_info->['clangd']},
-                    \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-                    \ })
-	autocmd FileType c,cpp,objc,objcpp,cc setlocal omnifunc=lsp#complete
-    augroup end
+  augroup vim_lsp_cpp
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \ 'name': 'clangd',
+          \ 'cmd': {server_info->['clangd']},
+          \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+          \ })
+    autocmd FileType c,cpp,objc,objcpp,cc setlocal omnifunc=lsp#complete
+  augroup end
 endif
 
 " vim-lsp debug
@@ -655,14 +655,14 @@ inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
 let g:asyncomplete_auto_popup = 0
 
 function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ asyncomplete#force_refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " allow modifying the completeopt variable, or it will
