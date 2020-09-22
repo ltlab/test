@@ -107,12 +107,26 @@ Plug 'w0rp/ale'
 "Plug 'honza/vim-snippets'
 "Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --all' }
 
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
+Plug 'rip-rip/clang_complete'
+  let g:clang_library_path = '/usr/lib/llvm-10/lib/libclang.so.1'
+  "let g:clang_user_options = '-std=c++11 -I./'
+  let g:clang_auto_select = 1
+  let g:clang_snippets = 1
+  "let g:clang_snippets_engine = 'ultisnips'
+  let g:clang_complete_macros = 1
+  let g:clang_complete_patterns = 1
+  let g:clang_complete_optional_args_in_snippets = 1
+  let g:clang_trailing_placeholder = 1
+
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'mattn/vim-lsp-settings'
+
+"Plug 'thomasfaingnaert/vim-lsp-snippets'
+"Plug 'thomasfaingnaert/vim-lsp-ultisnips'
 
 "Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " tags and cscope
 Plug 'simplyzhao/cscope_maps.vim'
@@ -341,22 +355,24 @@ if exists( "g:arm_prefix" )
 endif
 
 "let g:ale_linters_explicit = 1
-let g:ale_linters = {
-      \ 'c' : [ 'gcc', 'clangd' ],
-      \ 'cpp' : [ 'g++', 'clangd' ]
-      \ }
 "let g:ale_linters = {
-"      \ 'c' : [ 'gcc', 'clangd', 'clangtidy' ],
-"      \ 'cpp' : [ 'g++', 'clangd', 'clangtidy' ]
+"      \ 'c' : [ 'gcc', 'clangd' ],
+"      \ 'cpp' : [ 'g++', 'clangd' ]
 "      \ }
-let g:ale_c_clangtidy_checks = [
-      \ '*',
-      \ 'clang-analyzer-*',
-      \ ]
-let g:ale_cpp_clangtidy_checks = [
-      \ '*',
-      \ 'clang-analyzer-*',
-      \ ]
+let g:ale_linters = {
+      \ 'c' : [ 'gcc', 'clangd', 'clangtidy' ],
+      \ 'cpp' : [ 'g++', 'clangd', 'clangtidy' ]
+      \ }
+" default config: .clang-tidy
+"let g:ale_c_clangtidy_checks = [
+"      \ '*',
+"      \ 'clang-analyzer-*',
+"      \ ]
+"let g:ale_cpp_clangtidy_checks = [
+"      \ '*',
+"      \ 'clang-analyzer-*',
+"      \ ]
+
 let g:ale_c_clangtidy_extra_options = '--format-style=google'
 let g:ale_cpp_clangtidy_extra_options = '--format-style=google'
 
@@ -387,7 +403,7 @@ let delimitMate_expand_space = 1
 
 " --- UltiSnips
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsExpandTrigger="<S-Tab>"
+let g:UltiSnipsExpandTrigger="<Tab>"
 let g:UltiSnipsJumpForwardTrigger="<C-n>"
 let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 "let g:UltiSnipsSnippetDirectories = ['UltiSnips']
@@ -402,37 +418,37 @@ nnoremap <silent> ,ff :UltiSnipsEdit<CR>
 " --- Deoplete: Need neoVim
 "let g:deoplete#enable_at_startup = 1
 
-"	--- YCM
-" Let clangd fully control code completion
-"let g:ycm_clangd_uses_ycmd_caching = 0
-" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
-"let g:ycm_clangd_binary_path = exepath("clangd")
-
-let g:ycm_server_python_interpreter = '/usr/bin/python3'
-let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
-let g:ycm_confirm_extra_conf = 0
-
-"let g:ycm_collect_identifiers_from_comments_and_strings = 1
-"let g:ycm_complete_in_strings = 1
-"let g:ycm_complete_in_comments = 1
-let g:ycm_min_num_of_chars_for_completion = 2
-let g:ycm_filetype_blacklist = {}
+""	--- YCM
+"" Let clangd fully control code completion
+""let g:ycm_clangd_uses_ycmd_caching = 0
+"" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
+""let g:ycm_clangd_binary_path = exepath("clangd")
 "
-set completeopt-=preview	"Disable Preview Window
-
-"To avoid conflict snippets
-"let g:ycm_use_ultisnips_completer = 0
-"let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-"let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
-let g:ycm_key_list_select_completion = ['', '']
-let g:ycm_key_list_previous_completion = ['', '']
-let g:ycm_seed_identifiers_with_syntax = 1
-""let g:ycm_autoclose_preview_window_after_completion = 1
-""let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_collect_identifiers_from_tags_files = 1
-"let g:ycm_key_invoke_completion = '<C-c>'	" C-Space for trigger
-let g:ycm_auto_trigger = 0	" C-Space for trigger
-let g:ycm_show_diagnostics_ui = 0	" Disable YCM's Syntax check
+"let g:ycm_server_python_interpreter = '/usr/bin/python3'
+"let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
+"let g:ycm_confirm_extra_conf = 0
+"
+""let g:ycm_collect_identifiers_from_comments_and_strings = 1
+""let g:ycm_complete_in_strings = 1
+""let g:ycm_complete_in_comments = 1
+"let g:ycm_min_num_of_chars_for_completion = 2
+"let g:ycm_filetype_blacklist = {}
+""
+"set completeopt-=preview	"Disable Preview Window
+"
+""To avoid conflict snippets
+""let g:ycm_use_ultisnips_completer = 0
+""let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+""let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+"let g:ycm_key_list_select_completion = ['', '']
+"let g:ycm_key_list_previous_completion = ['', '']
+"let g:ycm_seed_identifiers_with_syntax = 1
+"""let g:ycm_autoclose_preview_window_after_completion = 1
+"""let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_collect_identifiers_from_tags_files = 1
+""let g:ycm_key_invoke_completion = '<C-c>'	" C-Space for trigger
+"let g:ycm_auto_trigger = 0	" C-Space for trigger
+"let g:ycm_show_diagnostics_ui = 0	" Disable YCM's Syntax check
 
 "nnoremap <leader>g :YcmCompleter GoTo<CR>
 "nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
@@ -593,51 +609,53 @@ hi IndentGuidesOdd ctermfg=238 ctermbg=235
 hi IndentGuidesEven ctermfg=238 ctermbg=233
 
 " GNU Global
-"set csprg=gtags-cscope
-"cs add GTAGS
-
-" vim-lsp settings
-let g:lsp_diagnostics_enabled = 0
-let g:lsp_signs_enabled = 1         " enable signs
-let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-
-let g:lsp_signs_error = {'text': '✗'}
-let g:lsp_signs_warning = {'text': '‼', 'icon': '/path/to/some/icon'} " icons require GUI
-let g:lsp_signs_hint = {'icon': '/path/to/some/other/icon'} " icons require GUI
-
-function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
-  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-  nmap <buffer> gd <plug>(lsp-definition)
-  nmap <buffer> gr <plug>(lsp-references)
-  nmap <buffer> gi <plug>(lsp-implementation)
-  nmap <buffer> gt <plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <plug>(lsp-rename)
-  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-  nmap <buffer> K <plug>(lsp-hover)
-
-  " refer to doc to add more commands
-endfunction
-
-augroup lsp_install
-  au!
-  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-if executable('clangd')
-  augroup vim_lsp_cpp
-    autocmd!
-    autocmd User lsp_setup call lsp#register_server({
-          \ 'name': 'clangd',
-          \ 'cmd': {server_info->['clangd']},
-          \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-          \ })
-    autocmd FileType c,cpp,objc,objcpp,cc setlocal omnifunc=lsp#complete
-  augroup end
+if filereadable( "GTAGS" )
+  set csprg=gtags-cscope
+  cs add GTAGS
 endif
+
+"" vim-lsp settings
+"let g:lsp_diagnostics_enabled = 0
+"let g:lsp_signs_enabled = 1         " enable signs
+"let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+"
+"let g:lsp_signs_error = {'text': '✗'}
+"let g:lsp_signs_warning = {'text': '‼', 'icon': '/path/to/some/icon'} " icons require GUI
+"let g:lsp_signs_hint = {'icon': '/path/to/some/other/icon'} " icons require GUI
+"
+"function! s:on_lsp_buffer_enabled() abort
+"  setlocal omnifunc=lsp#complete
+"  setlocal signcolumn=yes
+"  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+"  nmap <buffer> gd <plug>(lsp-definition)
+"  nmap <buffer> gr <plug>(lsp-references)
+"  nmap <buffer> gi <plug>(lsp-implementation)
+"  nmap <buffer> gt <plug>(lsp-type-definition)
+"  nmap <buffer> <leader>rn <plug>(lsp-rename)
+"  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+"  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+"  nmap <buffer> K <plug>(lsp-hover)
+"
+"  " refer to doc to add more commands
+"endfunction
+"
+"augroup lsp_install
+"  au!
+"  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+"  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+"augroup END
+"
+"if executable('clangd')
+"  augroup vim_lsp_cpp
+"    autocmd!
+"    autocmd User lsp_setup call lsp#register_server({
+"          \ 'name': 'clangd',
+"          \ 'cmd': {server_info->['clangd']},
+"          \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+"          \ })
+"    autocmd FileType c,cpp,objc,objcpp,cc setlocal omnifunc=lsp#complete
+"  augroup end
+"endif
 
 " vim-lsp debug
 "let g:lsp_log_verbose = 1
@@ -648,22 +666,22 @@ endif
 
 " asyncomplete
 
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
-
-let g:asyncomplete_auto_popup = 0
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+"
+"let g:asyncomplete_auto_popup = 0
+"
+"function! s:check_back_space() abort
+"  let col = col('.') - 1
+"  return !col || getline('.')[col - 1]  =~ '\s'
+"endfunction
+"
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ asyncomplete#force_refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " allow modifying the completeopt variable, or it will
 " be overridden all the time
@@ -671,7 +689,8 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 "imap <c-space> <Plug>(asyncomplete_force_refresh)
 
-set completeopt=menuone,noinsert,noselect
+set completeopt=menu,longest,noinsert,noselect
+"set completeopt=menuone,noinsert,noselect
 "set completeopt=menuone,noinsert,noselect,preview
 
 " ALE Colors
