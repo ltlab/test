@@ -142,10 +142,39 @@ Plug 'terryma/vim-multiple-cursors'
 "Plug 'ervandew/supertab'
 
 Plug 'Raimondi/delimitMate'
-
 Plug 'nathanaelkane/vim-indent-guides'
-
 Plug 'blueyed/vim-diminactive'
+
+Plug 'alpertuna/vim-header'
+  let g:header_auto_add_header = 0
+  let g:header_field_filename = 0
+  let g:header_field_modified_timestamp = 0
+  let g:header_field_modified_by = 0
+  function! s:GetGitUserName()
+    let _author = get( g:, 'header_field_author' )
+    if empty(_author)
+      let _author = system( 'git config --get user.name' )
+      let _author = strpart( _author, 0, strlen( _author ) - 1 )
+    endif
+    return _author
+  endfunction
+  function! s:GetGitUserEmail()
+    let _email = get( g:, 'header_field_author_email' )
+    if empty(_email)
+      let _email = system( 'git config --get user.email' )
+      let _email = strpart( _email, 0, strlen( _email ) - 1 )
+    endif
+    return _email
+  endfunction
+
+  let g:header_field_author = s:GetGitUserName()
+  let g:header_field_author_email = s:GetGitUserEmail()
+  let g:header_field_timestamp_format = '%Y-%m-%d %T %Z'
+  "let g:header_field_license_id = 'MIT'
+  let g:header_field_copyright = 'Copyright (c) ' . strftime('%Y')
+        \ . ', Jay Huh
+        \ - All Rights Reserved'
+  map <F4> :AddHeader<CR>
 
 " Initialize plugin system
 call plug#end()
