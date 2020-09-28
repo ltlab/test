@@ -43,3 +43,8 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq powerline fonts-powerline
 curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
 sudo dpkg -i ripgrep_11.0.2_amd64.deb
 rm ripgrep_11.0.2_amd64.deb
+
+if [[ -z "${CI}" ]] ; then
+  sudo ${APT} ${APT_CACHE_OPTION} install -y -qq fail2ban
+  sudo ${APT} ${APT_CACHE_OPTION} install -y -qq iptables-persistent netfilter-persistent ipset
+fi
