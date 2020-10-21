@@ -143,7 +143,7 @@ Plug 'terryma/vim-multiple-cursors'
 
 Plug 'Raimondi/delimitMate'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'blueyed/vim-diminactive'
+"Plug 'blueyed/vim-diminactive'
 
 Plug 'alpertuna/vim-header'
   let g:header_auto_add_header = 0
@@ -285,11 +285,7 @@ set textwidth=80
 set wrap
 set colorcolumn=80
 
-fun! CPPFormatSettings()
-  setlocal equalprg=clang-format\ -style=google
-endfun
-
-autocmd filetype c,cpp,h,hpp call CPPFormatSettings()
+autocmd filetype c,cc,cpp,h,hpp setlocal equalprg=clang-format\ -style=google
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "set comments=sl:/*,mb:*,elx:*/
@@ -567,8 +563,10 @@ hi cppAccess					guifg=Red ctermfg=Red
 " Termdebug
 " :packadd termdebug
 " :TermDebug
+"let g:termdebug_popup = 0
 let g:termdebug_wide = 163
 let g:termdebugger = "arm-none-eabi-gdb"
+packadd termdebug
 
 " Colorscheme and Highlighting =======================================
 "colorscheme solarized
