@@ -25,39 +25,54 @@ enum
  *	| STX | LID | DID | CMD | DATA_L | DATA_H | CHKSUM | ETX |
  *	            |<----- LT_PACKET_BODY ------>|
  *	by jay 2020-05-29 17:30:40	*/
-typedef struct LT_PACKET_BODY_S
-{
-	uint8_t deviceId;
-	uint8_t command;
 
-	union
-	{
-		uint8_t data[ 2 ];
-		uint16_t data_short;
+typedef uint8_t Command;
 
-		union
-		{
-			/*	DEV_STATUS for Detector	*/
-			struct
-			{
-				uint16_t	value	: 10;
-				uint16_t	period	: 3;
-				uint16_t	type	: 3;
-			};
-			/*	SCAN LOOP	*/
-			struct
-			{
-				uint8_t		start;
-				uint8_t		end;
-			};
-			uint16_t		seq;	//	for Test
-		};
-	} __attribute__ (( packed));
-} __attribute__ (( packed)) LT_PACKET_BODY;
+typedef struct LT_PACKET_BODY_S {
+  uint8_t device_id;
+  Command command;
+
+  union {
+    uint8_t _byte[2];
+    uint16_t _short;
+
+    //uint16_t seq;  //	for Test
+    struct {
+      uint8_t mode;
+      uint8_t reserved;
+    } master;
+    /*	DEV_STATUS for Detector	*/
+    struct {
+      uint16_t value : 10;
+      uint16_t period : 3;
+      uint16_t type : 3;
+    } detector_status;
+    /*	DEV_STATUS for Repeater */
+    struct {
+      uint16_t input : 4;
+      uint16_t output : 4;
+      uint16_t disconnect : 4;
+      uint16_t reserved : 1;
+      uint16_t type : 3;
+    } repeater_status;
+    /*  ACK */
+    struct {
+      uint8_t command;
+      uint8_t reserved;
+    } ack;
+    /*	SCAN LOOP	*/
+    struct {
+      uint8_t start;
+      uint8_t end;
+    } loop;
+    // VERSION version;
+  } __attribute__((packed));
+  uint16_t seq;  //	for Test
+} __attribute__((packed)) LT_PACKET_BODY;
 
 typedef struct LT_PACKET_S
 {
-	LT_PACKET_BODY	packet;
+	LT_PACKET_BODY	body;
 	uint8_t			chksum;
 } __attribute__ (( packed)) LT_PACKET;
 
@@ -253,22 +268,27 @@ int main ()
 	PACKET_DLE	packet_dle = PACKET_DLE_INIT;
 
 	packet.loopId = 0x02;
-	packet.body.deviceId = 0x10;
+	packet.body.device_id = 0x10;
 	packet.body.command = 0x03;
-#if 1
-	packet.body.start = 0xC0;
-	packet.body.end = 0x00;
+#if 0
+	packet.body.loop.start = 0xC0;
+	packet.body.loop.end = 0x00;
 #else
-	packet.value = 0x04;
-	packet.period = 0x05;
-	packet.type = 0x03;
+	packet.body.detector_status.value = 0x04;
+	packet.body.detector_status.period = 0x05;
+	packet.body.detector_status.type = 0x03;
 #endif
 
-	for( uint16_t seq ; seq < 4 ; seq++ )
+	for( uint16_t seq = 0xFF0A ; seq < 0xFF10 ; seq++ )
 	{
 		packet.body.seq = seq;
 		generatePacket( &packet, &packet_dle );
 		parsePacket( &packet_1, &packet_dle );
+
+    printf("seq: 0x%04x v 0x%02x p 0x%02x t 0x%02x\n", packet.body.seq,
+        packet.body.detector_status.value,
+        packet.body.detector_status.period,
+        packet.body.detector_status.type );
 	}
 
 	//printf( "SIZE: PACKET %zd PACKET_DLE %zd\n", sizeof( PACKET ), sizeof( PACKET_DLE ) );

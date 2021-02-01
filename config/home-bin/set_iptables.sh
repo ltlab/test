@@ -15,13 +15,16 @@ sudo iptables -P FORWARD DROP
 sudo iptables -A INPUT -i lo -j ACCEPT
 sudo iptables -A OUTPUT -o lo -j ACCEPT
 
+sudo iptables -A INPUT -s 192.168.0.0/16 -j ACCEPT
+sudo iptables -A OUTPUT -d 192.168.0.0/16 -j ACCEPT
+
 # internal network
 #sudo iptables -A INPUT -s 192.168.0.0/16 -d 192.168.0.0/16 -j ACCEPT 
 #sudo iptables -A OUTPUT -s 192.168.0.0/16 -d 192.168.0.0/16 -j ACCEPT 
 
 # DNS
-sudo iptables -A INPUT -p udp -m udp --sport 53 -j ACCEPT 
-sudo iptables -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT 
+sudo iptables -A INPUT -p udp -m udp --sport 53 -j ACCEPT
+sudo iptables -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 
 # ICMP( Ping )
 sudo iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT 
@@ -40,8 +43,8 @@ sudo iptables -A OUTPUT -p tcp -m tcp --dport 37 -j ACCEPT
 #	to External
 #sudo iptables -A INPUT -i eth0 -p tcp -m tcp --sport 23 -j ACCEPT 
 #sudo iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 23 -j ACCEPT 
-sudo iptables -A INPUT -s 192.168.0.0/16 -p tcp -m tcp --sport 23 -j ACCEPT 
-sudo iptables -A OUTPUT -d 192.168.0.0/16 -p tcp -m tcp --dport 23 -j ACCEPT 
+#sudo iptables -A INPUT -s 192.168.0.0/16 -p tcp -m tcp --sport 23 -j ACCEPT 
+#sudo iptables -A OUTPUT -d 192.168.0.0/16 -p tcp -m tcp --dport 23 -j ACCEPT 
 
 #	From External
 #sudo iptables -A INPUT -s 192.168.0.0/16 -p tcp -m tcp --dport 23 -j ACCEPT 

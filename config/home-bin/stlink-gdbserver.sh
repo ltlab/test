@@ -1,9 +1,11 @@
 #!/bin/sh
 
 STM_CUBE_IDE_VERSION="1.3.0_1935175002"
-PLUGIN_VERSION="1.4.0.202007081208"
+#PLUGIN_VERSION="1.4.0.202007081208"
+PLUGIN_VERSION="1.5.0.202011040924"
 
-STM_INSTALL_PATH="${HOME}/.eclipse/com.st.stm32cube.ide.mcu.rcp.product_${STM_CUBE_IDE_VERSION}_linux_gtk_x86_64"
+#STM_INSTALL_PATH="${HOME}/.eclipse/com.st.stm32cube.ide.mcu.rcp.product_${STM_CUBE_IDE_VERSION}_linux_gtk_x86_64"
+STM_INSTALL_PATH="/opt/st/stm32cubeide_1.3.0"
 PLUGIN_NAME="com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.linux64"
 
 PLUGIN_PATH="${STM_INSTALL_PATH}/plugins/${PLUGIN_NAME}_${PLUGIN_VERSION}"
@@ -28,4 +30,3 @@ echo $OPTIONS
 cd ${BIN_PATH}
 #cat config.txt
 ./ST-LINK_gdbserver ${OPTIONS}
-

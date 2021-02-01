@@ -39,6 +39,11 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y \
 	gnupg-agent \
 	software-properties-common
 
+if [[ -z "${CI}" ]] ; then
+  sudo ${APT} ${APT_CACHE_OPTION} install -y -qq fail2ban
+  sudo ${APT} ${APT_CACHE_OPTION} install -y -qq iptables-persistent netfilter-persistent ipset
+fi
+
 # Get Docker Official GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
