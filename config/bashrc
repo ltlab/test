@@ -12,23 +12,22 @@ echo "START .bashrc"
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-#HISTCONTROL=ignoreboth
-HISTCONTROL=ignoredups:erasedups
+#HISTCONTROL=ignoredups:erasedups
+HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=3000
+HISTFILESIZE=${HISTSIZE}
+HISTIGNORE='&:ls:ll:la:cd:exit:clear:history:fg:man'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -169,13 +168,6 @@ parse_git_branch() {
 
 PS1="${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[00m\]@\[\033[00;32m\]\h\[\033[00m\]:\[\033[00;36m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\n$ "
 
-#export SVN_EDITOR=/usr/bin/vi
-#alias svndiff="svn diff --diff-cmd=colordiff"
-#alias svn-add-new-files='svn status | grep ^\? | sed s/\?// | xargs svn add $1'
-#alias svn-del-files='svn status | grep ^\! | sed s/\!// | xargs svn --force delete $1'
-#alias svn-mod-files="svn status | grep -v ^\? | awk '{ print \$2 }' "
-#alias svn-merge-trunk="svn merge svn://192.168.10.180/ctrqt/trunk ./"
-
 alias gitdiff="git difftool --dir-diff"
 #alias gitdiff="git difftool --dir-diff --no-symlinks"
 
@@ -213,31 +205,8 @@ alias repo-status="repo forall -c \"git remote -v && git status\""
 alias repo-branch="repo forall -c \"git remote -v && git branch -avv\""
 alias repo-clean="repo forall -c \"time git reset --hard && time git clean -fdx\" -j$(nproc)"
 
-#	pettra
-#AOSP_PATH="~/work/gitlab/aosp-test"
-#GITLAB_PATH="~/work/gitlab"
-#AOSP_TARGET="aosp_s5p6818_rookie-userdebug"
-
-#alias cd-gitlab="cd $GITLAB_PATH"
-#alias cd-aosp="cd $AOSP_PATH"
-#alias cd-frameworks="cd $AOSP_PATH/frameworks"
-#alias cd-2ndboot="cd $AOSP_PATH/linux/2ndboot"
-#alias cd-uboot="cd $AOSP_PATH/linux/bootloader/u-boot-2014.07"
-#alias cd-kernel="cd $AOSP_PATH/linux/kernel/kernel-3.4.39"
-#alias cd-rookie="cd $AOSP_PATH/device/nexell/s5p6818_rookie"
-#alias cd-dogtra="cd $AOSP_PATH/hardware/dogtra"
-#alias cd-adf="cd $AOSP_PATH/hardware/dogtra/adf7021"
-
-#alias aosp-help="head -n 20 $AOSP_PATH/ReadMe"
-#alias build="cd-aosp && time ./device/nexell/tools/build.sh -b s5p6818_rookie"
-#alias flash="cd-aosp && time ./device/nexell/tools/update.sh -d sd0"
-#alias aosp="cd-aosp && source build/envsetup.sh && lunch $AOSP_TARGET"
-#alias repo-sync="cd-aosp && time repo sync --force-sync"
-
-#	mBrain
-#alias m3-docker="docker run -it --rm --init -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) -v $HOME:/home/mbrain -h m3-docker --name m3-docker m3"
+# docker
 alias docker-m3="docker run -it --rm --init -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) -v $HOME:/home/mbrain -v /tmp:/tmp -h m3-docker --name m3-docker m3"
-
 alias docker-exec="docker exec -it"
 
 #	history for other terminals.
@@ -257,8 +226,6 @@ if [ "$ENABLE_POWERLINE" != "0" ] ; then
 	POWERLINE_BASH_SELECT=1
 	. /usr/share/powerline/bindings/bash/powerline.sh
 	#. /usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh
-	#POWERLINE_SHELL_CONTINUATION=1
-	#POWERLINE_SHELL_SELECT=1
 	#. /usr/share/powerline/bindings/shell/powerline.sh
 fi
 

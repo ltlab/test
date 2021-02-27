@@ -596,11 +596,14 @@ hi Visual cterm=none ctermfg=none ctermbg=17
 
 " ALE Sign Column
 highlight SignColumn ctermbg=233
-highlight LineNr ctermbg=233
+highlight LineNr ctermfg=darkyellow ctermbg=black
+highlight CursorLineNr cterm=bold ctermbg=234
+highlight CursorLine ctermbg=234
 
 " Cursor Line and Column
 highlight Cursor guibg=Red guifg=Black ctermbg=Red ctermfg=Black
 highlight CursorIM guibg=Blue guifg=NONE ctermbg=Blue ctermfg=NONE
+highlight ColorColumn ctermbg=17
 
 "autocmd InsertEnter * hi CursorLine term=none cterm=none ctermbg=17 guibg=#000060
 "autocmd InsertEnter * hi CursorColumn term=none cterm=none ctermbg=232 guibg=#000060
@@ -731,3 +734,6 @@ hi ALEWarning ctermfg=lightgrey ctermbg=darkblue guifg=lightgrey guibg=darkblue
 hi ALEWarningSign cterm=bold ctermfg=94 ctermbg=233
 "hi ALEWarningLine cterm=reverse
 
+"let g:ale_enabled = 0
+
+hi clear SignColumn

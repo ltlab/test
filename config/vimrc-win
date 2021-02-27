@@ -750,3 +750,4 @@ hi ALEWarning ctermfg=lightgrey ctermbg=darkblue guifg=lightgrey guibg=darkblue
 hi ALEWarningSign cterm=bold ctermfg=94 ctermbg=233
 "hi ALEWarningLine cterm=reverse
 
+set clipboard^=unnamed,unnamedplus
