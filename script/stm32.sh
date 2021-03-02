@@ -14,5 +14,8 @@ sudo ${APT} update -qq
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq \
 	gcc-arm-embedded \
 
+#sudo ${APT} ${APT_CACHE_OPTION} install -y -qq \
+#	gcc-arm-none-eabi
+
 #sudo ${APT} clean && sudo ${APT} autoremove
 #sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

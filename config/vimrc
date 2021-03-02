@@ -565,7 +565,7 @@ hi cppAccess					guifg=Red ctermfg=Red
 " :TermDebug
 "let g:termdebug_popup = 0
 let g:termdebug_wide = 163
-let g:termdebugger = "arm-none-eabi-gdb"
+let g:termdebugger = "gdb-multiarch"
 packadd termdebug
 
 " Colorscheme and Highlighting =======================================
@@ -737,3 +737,12 @@ hi ALEWarningSign cterm=bold ctermfg=94 ctermbg=233
 "let g:ale_enabled = 0
 
 hi clear SignColumn
+
+" Termdebug highlight
+if &background == 'light'
+  hi default debugPC term=reverse ctermbg=lightblue guibg=lightblue
+else
+  hi default debugPC term=reverse ctermbg=darkblue guibg=darkblue
+endif
+hi default debugBreakpoint term=reverse ctermfg=black ctermbg=red guifg=black guibg=red
+
