@@ -177,7 +177,8 @@ echo "[ NOTE!!!!!!!!! ]"
 echo "[ GIT ] excute git-conf.sh for e-mail registration."
 echo "[ VIM ] excute vim-plugin.sh for syntax highlighting."
 
-sudo su - "${USER_ID}" -c "git clone --depth 1 https://github.com/junegunn/fzf.git $USER_HOME/.fzf"
-sudo su - "${USER_ID}" -c "$USER_HOME/.fzf/install --all"
+#sudo su - "${USER_ID}" -c "git clone --depth 1 https://github.com/junegunn/fzf.git $USER_HOME/.fzf"
+#sudo su - "${USER_ID}" -c "$USER_HOME/.fzf/install --all"
+
 #su - ${USER_ID} -c "git-conf.sh"
 sudo su - "${USER_ID}" -c "vim-plugin.sh"

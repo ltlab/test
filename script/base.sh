@@ -26,10 +26,8 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq make curl cmake
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq git git-review
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq gnupg
 
-sudo ${APT} ${APT_CACHE_OPTION} install -y -qq vim ctags cscope shellcheck
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq vim ctags cscope global shellcheck
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq silversearcher-ag ack-grep
-
-# TODO: Install ripgrep(rg) and fzf
 
 # Resource Monitoring
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq tmux sysstat
@@ -40,9 +38,13 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq powerline fonts-powerline
 # MOST for color manpages
 #sudo ${APT} ${APT_CACHE_OPTION} install -y -qq most
 
-curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
-sudo dpkg -i ripgrep_11.0.2_amd64.deb
-rm ripgrep_11.0.2_amd64.deb
+# TODO: Install ripgrep(rg) and fzf
+# ripgrep: ubuntu 18.10 ~
+# fzf: ubuntu 19.10 ~
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ripgrep fzf
+#curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
+#sudo dpkg -i ripgrep_11.0.2_amd64.deb
+#rm ripgrep_11.0.2_amd64.deb
 
 if [[ -z "${CI}" ]] ; then
   sudo ${APT} ${APT_CACHE_OPTION} install -y -qq fail2ban
