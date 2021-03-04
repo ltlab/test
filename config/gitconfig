@@ -1,20 +1,53 @@
 [user]
 
-[merge]
-#tool = kdiff3
-#	tool = bc
+[core]
+	editor = vi
+#  editor = nvim
 
 [color]
-	ui = auto
-	status = auto
-#	diff = auto
-#	branch = auto
-#	interactive = auto
-#	grep = auto
+  ui = always
+  branch = always
+  diff = always
+  interactive = always
+  status = always
+  grep = always
+  pager = true
+  decorate = always
+  showbranch = always
+
+[commit]
+#  gpgsign = true
+
+[pull]
+  rebase = true
 
 [diff]
 	rename = copy
-	tool = bc
+  tool = vimdiff
+	#tool = bc
+[difftool]
+	prompt = false
+[difftool "vimdiff"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+[difftool "bc"]
+	trustExitCode = true
+
+[merge]
+#tool = kdiff3
+  tool = vimdiff
+#	tool = bc
+[mergetool]
+  keepBackup = false
+[mergetool "vimdiff"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+[mergetool "bc"]
+	trustExitCode = true
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  required = true
+  process = git-lfs filter-process
 
 [pager]
 	color = true
@@ -26,19 +59,36 @@
 	sh = show
 	co = checkout
 	ci = commit
+  a = add
+  aa = add --all
+  amend = commit --amend
+  b = branch
+  bb = branch -a
+  bd = branch -d
+  cherry-pit = "!f() { git rebase -p --onto \"$1\"^ \"$1\"; }; f"
+  cm = commit -m
+  d = diff
+  ec = config --global -e
+  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+  lg = log --graph --pretty=format:'%C(auto)%h -%d %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  l = log --relative-date --graph --abbrev-commit -10
+  ll = log --relative-date --graph --abbrev-commit
+  p = push
+  remotes = remote -v
+  s = status -s
+  sd = d --cached
+
+#[format]
+#  pretty = format:'%C(auto)%h -%d %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
+[gpg]
+  program = gpg2
 
 [http]
 	cookiefile = /home/vagrant/.gitcookies
 	postBuffer = 33554432
 	#postBuffer = 67108864
-[difftool "bc"]
-	trustExitCode = true
-[mergetool "bc"]
-	trustExitCode = true
-[difftool]
-	prompt = false
-[core]
-	editor = vi
+
 [tar "tar.xz"]
 	command = xz -c
 [push]
