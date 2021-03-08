@@ -42,18 +42,13 @@ while getopts $OPTSPEC  opt ; do
 		o )
 			FILE=$OPTARG
 			;;
-		h )
+		h|* )
 			help
 			exit 1
 			;;
 		v )
 			echo "opt: $opt OPTARG: $OPTARG"
 			echo "Verbose: $OPTARG"
-			;;
-		\? )
-			echo "Invalid option $opt"
-			help
-			exit 1
 			;;
 	esac
 done
