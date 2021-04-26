@@ -229,7 +229,7 @@ if [ "$ENABLE_POWERLINE" != "0" ] ; then
 	#. /usr/share/powerline/bindings/shell/powerline.sh
 fi
 
-WSL=`uname -v | grep Microsoft`
+WSL=`uname -a | grep -i microsoft`
 echo "WSL: $WSL"
 if [ ! -z "$WSL" ] ; then
 	export DISPLAY="localhost:0"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WSL=`uname -v | grep Microsoft`
+WSL=`uname -a | grep -i microsoft`
 
 set -e
 #set -x	#	debug

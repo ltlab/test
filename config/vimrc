@@ -488,7 +488,9 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1 " trailing whitespace 
 let g:airline#extensions#tabline#formatter = 'default' "'unique_tail'
 "AirlineTheme dark
 "let g:airline_theme='dark'
-let g:airline_theme='base16_chalk'
+"let g:airline_theme='base16_chalk'
+let g:airline_theme='base16_google'
+"let g:airline_theme='base16_colors'
 "let g:airline_theme='dracula'
 let g:airline_solarized_bg='dark'
 "set laststatus=2 " turn on bottom bar

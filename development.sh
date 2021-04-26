@@ -3,7 +3,7 @@
 #set -e
 #set -x	#	debug
 
-WSL=`uname -v | grep Microsoft`
+WSL=`uname -a | grep -i microsoft`
 
 APT="apt-get"
 
