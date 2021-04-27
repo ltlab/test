@@ -13,7 +13,7 @@ fi
 
 export APT
 
-export SERVER="Y"
+export SERVER="N"
 export DOCKER="N"
 
 export CONF_PATH=/root/config

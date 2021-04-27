@@ -5,15 +5,15 @@
 #  editor = nvim
 
 [color]
-  ui = always
-  branch = always
-  diff = always
-  interactive = always
-  status = always
-  grep = always
+  ui = auto
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  grep = auto
   pager = true
-  decorate = always
-  showbranch = always
+  decorate = auto
+  showbranch = auto
 
 [commit]
 #  gpgsign = true
