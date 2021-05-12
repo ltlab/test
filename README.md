@@ -37,6 +37,15 @@ Test: [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](ht
     ```
 ---
 
+## `vimrc` and plugins for Windows `gvim`
+- for `Git bash`
+  - Install Git for Windows
+  - Copy `config/vimrc-win` to `~/.vimrc`
+  - Open `vi` => install plugins automatically
+
+- for `gVim`
+  - Copy `plug.vim` into `~/vimfiles/autoload`
+
 ## ISSUE: EFI Boot using Virtualbox for Windows in Physical Disk.
 
 1. EFI for Virtualbox using Physical Sorage
