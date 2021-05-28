@@ -105,7 +105,8 @@ echo "Installing Development Tools for gcc..."
 
 # for Development
 sudo dpkg --add-architecture i386
-sudo ${APT} ${APT_CACHE_OPTION} install -y -qq build-essential
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq \
+  build-essential clang-format
 
 sudo ${APT} ${APT_CACHE_OPTION} install -y -qq \
   gcc-multilib g++-multilib gdb-multiarch
