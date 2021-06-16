@@ -41,7 +41,7 @@ sudo ${APT} ${APT_CACHE_OPTION} install -y -qq powerline fonts-powerline
 # TODO: Install ripgrep(rg) and fzf
 # ripgrep: ubuntu 18.10 ~
 # fzf: ubuntu 19.10 ~
-sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ripgrep fzf
+sudo ${APT} ${APT_CACHE_OPTION} install -y -qq ripgrep fzf stow
 #curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
 #sudo dpkg -i ripgrep_11.0.2_amd64.deb
 #rm ripgrep_11.0.2_amd64.deb

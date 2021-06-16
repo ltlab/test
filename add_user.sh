@@ -95,10 +95,10 @@ if [[ ! -e "${CONF_BACKUP}" ]] ; then
 	sudo chown ${USER_ID}:${USER_ID} ${CONF_BACKUP}
 fi
 
-for item in ${ITEMS}
-do
-	update ${item}
-done
+#for item in ${ITEMS}
+#do
+#	update ${item}
+#done
 
 if [[ -z "${WSL}" ]] ; then
 	# use for user's NFS directory: tailing TAB
@@ -121,7 +121,9 @@ if [[ -z "${WSL}" ]] ; then
 
 	if [[ ! -z $(grep -E "^tftp" /etc/group) ]] ; then
 		if [[ -d "/tftpboot" && ! -e "${USER_HOME}/tftpboot" ]] ; then
-			sudo ln -s /tftpboot ${USER_HOME}/tftpboot
+			sudo mkdir ${USER_HOME}/tftpboot
+			#sudo ln -s /tftpboot ${USER_HOME}/tftpboot
+			sudo mount --bind /tftpboot ${USER_HOME}/tftpboot
 		fi
 	fi	#	tftp
 
